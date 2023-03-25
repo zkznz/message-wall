@@ -1,0 +1,72 @@
+{
+  "id": "3976295",
+  "name": "message",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "聊天墙项目",
+  "glyphs": [
+    {
+      "icon_id": "250689",
+      "name": "信息提示-",
+      "font_class": "xinxitishi",
+      "unicode": "e6ce",
+      "unicode_decimal": 59086
+    },
+    {
+      "icon_id": "1418212",
+      "name": "留言",
+      "font_class": "liuyan",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "5651349",
+      "name": "爱心",
+      "font_class": "aixin",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "7140729",
+      "name": "成功提示",
+      "font_class": "chenggongtishi",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "11372770",
+      "name": "失败",
+      "font_class": "shibai",
+      "unicode": "e8c5",
+      "unicode_decimal": 59589
+    },
+    {
+      "icon_id": "34609235",
+      "name": "add",
+      "font_class": "add",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "34609244",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "34609266",
+      "name": "right",
+      "font_class": "right",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "34609281",
+      "name": "left",
+      "font_class": "left",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    }
+  ]
+}

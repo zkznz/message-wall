@@ -1,0 +1,30 @@
+body {
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+  color: #202020;
+  font-size: 14px;
+  border-color: #ffffff;
+  transition: all 0.3s;
+  font-family: Avenir, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+p {
+  padding: 0;
+  margin: 0;
+}
+li {
+  list-style: none;
+}
+img {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+a {
+  text-decoration: none;
+}
+text textarea {
+  outline: none;
+}
