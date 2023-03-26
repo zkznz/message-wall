@@ -3,5 +3,7 @@
 </template>
 
 <style lang="less">
-#app {}
+#app html body {
+  height: 100vh;
+}
 </style>
