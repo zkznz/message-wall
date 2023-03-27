@@ -35,6 +35,28 @@ export const comment = Mock.mock({
         "imgurl|0-13": 0,
     }]
 })
+//照片墙
+export const picture = Mock.mock({
+    "data|19": [{
+        //创建时间
+        "moment": new Date(),
+        "id|+1": 1,
+        "userId|+1": 10,
+        //内容
+        "message|24-96": "@cword",
+        "label|0-10": 0,
+        "name": "@cname",
+        "like|0-120": 0,
+        //评论
+        "comment|0-120": 0,
+        //背景色
+        "imgurl|0-5": 0,
+        //是否撤销
+        "revoke|0-20": 0,
+        //是否举报
+        "report|0-20": 0
+    }]
+})
 //卡片背景色
 export const cardColor = [
     'rgba(252,175,162,0.30)',
