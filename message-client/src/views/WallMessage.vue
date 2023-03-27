@@ -15,16 +15,17 @@
     </div>
     <!--全部留言-->
     <div class="note-wrap">
-      <NoteCard v-for="item in note.data" :note="item" :cardColor="cardColor[item.imgurl]" class="note-card"
-        @click="isPop = true"></NoteCard>
+      <NoteCard v-for="(item, index) in note.data" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
+        :class="{ 'selected-card': index == cardIndex }"></NoteCard>
     </div>
     <!-- 添加留言按钮 -->
-    <div class="add" @click="showPop">
+    <div class="add" @click="addCard">
       <span class="iconfont icon-tianjia"></span>
     </div>
     <!-- 弹窗 -->
-    <PopModal :isPop="isPop" :title="title" @close="showPop">
-      <NewCard :id="id"></NewCard>
+    <PopModal :isPop="isPop" :title="title" @close="handleClose">
+      <NewCard :id="id" v-if="cardIndex == -1"></NewCard>
+      <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
     </PopModal>
   </div>
 </template>
@@ -33,12 +34,15 @@
 import NoteCard from '@/components/NoteCard.vue'
 import PopModal from '@/components/PopModal.vue'
 import NewCard from '@/components/NewCard.vue'
-import { note, cardColor } from '../mock'
+import CardDetail from '@/components/CardDetail.vue'
+import { note } from '../mock'
 import { wallType, label } from '@/utils/data'
 import { ref, provide } from 'vue'
 
 //分类标签下标
 let labelIndex = ref<number>(-1);
+//留言卡片标签下标
+let cardIndex = ref<number>(-1);
 //留言墙与照片墙的切换id
 let id = ref<number>(0);
 provide('id', id);
@@ -50,15 +54,34 @@ let title = ref<string>('写留言');
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
 }
+//关闭弹窗
+const handleClose = (): void => {
+  isPop.value = !isPop.value;
+  cardIndex.value = -1;
+}
 
 //点击单个标签
 const handleLabel = (index: number): void => {
   labelIndex.value = index;
 }
 
-//切换弹窗
-const showPop = (): void => {
-  isPop.value = !isPop.value;
+//点击留言卡片
+const showPop = (index: number): void => {
+  title.value = "";
+  if (cardIndex.value != index) {
+    cardIndex.value = index;
+    isPop.value = true;
+  }
+  else {
+    cardIndex.value = -1;
+    isPop.value = false;
+  }
+
+}
+//添加留言卡片
+const addCard = (): void => {
+  title.value = "写留言";
+  handleClose();
 }
 </script>
 
@@ -118,6 +141,11 @@ const showPop = (): void => {
 
   .note-card {
     margin-top: 10px;
+  }
+
+  //选中留言卡片
+  .selected-card {
+    border: 1px solid @primary;
   }
 }
 
