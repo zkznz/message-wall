@@ -5,8 +5,8 @@
             <h3>轻语留言</h3>
         </div>
         <div class="middle">
-            <a-button shape="round" class="active">留言墙</a-button>
-            <a-button shape="round" middle>照片墙</a-button>
+            <a-button shape="round" :class="{ 'active': id == 0 }" @click="changeWall(0)">留言墙</a-button>
+            <a-button shape="round" :class="{ 'active': id == 1 }" middle @click="changeWall(1)">照片墙</a-button>
         </div>
         <div class="right">
             <div class="user"></div>
@@ -15,6 +15,19 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute, useRouter } from "vue-router"
+import { computed } from "vue"
+const route = useRoute();
+const router = useRouter();
+let id = computed(() => route.query.id);
+//跳转留言墙或照片墙
+const changeWall = (e: number): void => {
+    router.push({
+        query: {
+            id: e
+        }
+    })
+}
 
 </script>
 
