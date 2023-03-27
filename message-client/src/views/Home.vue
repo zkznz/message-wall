@@ -1,7 +1,7 @@
 <template>
   <!-- 背景图片虚化 -->
-  <img src="@/assets/img/img.png" class="bg" alt="">
-  <div>
+  <img src="@/assets/img/bg.png" class="bg" alt="">
+  <div style="padding-bottom: 60px;">
     <TopBar></TopBar>
     <router-view></router-view>
   </div>
@@ -16,7 +16,7 @@ import TopBar from '@/components/TopBar.vue';
   height: calc(100vh);
   width: 100%;
   margin: 0;
-  filter: blur(40px);
+  filter: blur(10px);
   z-index: -20;
 }
 </style>

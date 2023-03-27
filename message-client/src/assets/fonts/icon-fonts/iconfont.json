@@ -6,6 +6,13 @@
   "description": "聊天墙项目",
   "glyphs": [
     {
+      "icon_id": "10886214",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
       "icon_id": "250689",
       "name": "信息提示-",
       "font_class": "xinxitishi",
@@ -39,13 +46,6 @@
       "font_class": "shibai",
       "unicode": "e8c5",
       "unicode_decimal": 59589
-    },
-    {
-      "icon_id": "34609235",
-      "name": "add",
-      "font_class": "add",
-      "unicode": "e65e",
-      "unicode_decimal": 58974
     },
     {
       "icon_id": "34609244",

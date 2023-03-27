@@ -15,28 +15,50 @@
     </div>
     <!--全部留言-->
     <div class="note-wrap">
-      <NoteCard v-for="item in note.data" :note="item" :cardColor="cardColor[item.imgurl]" class="note-card"></NoteCard>
+      <NoteCard v-for="item in note.data" :note="item" :cardColor="cardColor[item.imgurl]" class="note-card"
+        @click="isPop = true"></NoteCard>
     </div>
-
+    <!-- 添加留言按钮 -->
+    <div class="add" @click="showPop">
+      <span class="iconfont icon-tianjia"></span>
+    </div>
+    <!-- 弹窗 -->
+    <PopModal :isPop="isPop" :title="title" @close="showPop">
+      <NewCard :id="id"></NewCard>
+    </PopModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import NoteCard from '@/components/NoteCard.vue'
+import PopModal from '@/components/PopModal.vue'
+import NewCard from '@/components/NewCard.vue'
 import { note, cardColor } from '../mock'
 import { wallType, label } from '@/utils/data'
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 
 //分类标签下标
 let labelIndex = ref<number>(-1);
+//留言墙与照片墙的切换id
+let id = ref<number>(0);
+provide('id', id);
+//控制弹窗
+let isPop = ref<boolean>(false);
+let title = ref<string>('写留言');
 
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
 }
+
 //点击单个标签
 const handleLabel = (index: number): void => {
   labelIndex.value = index;
+}
+
+//切换弹窗
+const showPop = (): void => {
+  isPop.value = !isPop.value;
 }
 </script>
 
@@ -96,6 +118,27 @@ const handleLabel = (index: number): void => {
 
   .note-card {
     margin-top: 10px;
+  }
+}
+
+// 添加按钮
+.add {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 56px;
+  height: 56px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 56px;
+  background: @gray-1;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 28px;
+
+  color: #fff;
+
+  span {
+    font-size: 24px;
   }
 }
 </style>
