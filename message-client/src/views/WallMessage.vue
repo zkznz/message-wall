@@ -13,20 +13,27 @@
           {{ item }}</li>
       </ul>
     </div>
-    <!--全部留言-->
-    <div class="note-wrap">
-      <NoteCard v-for="(item, index) in note.data" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
-        :class="{ 'selected-card': index == cardIndex }"></NoteCard>
+    <!-- 留言墙 -->
+    <div v-if="id == 0">
+      <!--全部留言-->
+      <div class="note-wrap">
+        <NoteCard v-for="(item, index) in note.data" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
+          :class="{ 'selected-card': index == cardIndex }"></NoteCard>
+      </div>
+      <!-- 添加留言按钮 -->
+      <div class="add" @click="addCard">
+        <span class="iconfont icon-tianjia"></span>
+      </div>
+      <!-- 弹窗 -->
+      <PopModal :isPop="isPop" :title="title" @close="handleClose">
+        <NewCard :id="id" v-if="cardIndex == -1"></NewCard>
+        <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
+      </PopModal>
     </div>
-    <!-- 添加留言按钮 -->
-    <div class="add" @click="addCard">
-      <span class="iconfont icon-tianjia"></span>
+    <!-- 照片墙 -->
+    <div v-else>
+      <span>666</span>
     </div>
-    <!-- 弹窗 -->
-    <PopModal :isPop="isPop" :title="title" @close="handleClose">
-      <NewCard :id="id" v-if="cardIndex == -1"></NewCard>
-      <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
-    </PopModal>
   </div>
 </template>
 
@@ -37,15 +44,18 @@ import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
 import { note } from '../mock'
 import { wallType, label } from '@/utils/data'
-import { ref, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute();
+//路由id
+let id = computed(() => route.query.id);
+//留言墙与照片墙的切换id
+provide('id', id);
 //分类标签下标
 let labelIndex = ref<number>(-1);
 //留言卡片标签下标
 let cardIndex = ref<number>(-1);
-//留言墙与照片墙的切换id
-let id = ref<number>(0);
-provide('id', id);
 //控制弹窗
 let isPop = ref<boolean>(false);
 let title = ref<string>('写留言');
