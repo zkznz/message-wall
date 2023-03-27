@@ -25,6 +25,7 @@ const messageTime = computed(() => {
 </script>
 
 <style lang="less" scoped>
+// 字体样式
 @font-face {
     font-family: 'HanziPenSC-W3';
     src: url("@/assets/fonts/HanzipenSC/HanzipenSC.ttf");
