@@ -37,6 +37,11 @@
             <br />9、含有法律、行政法规禁止的其他内容的信息。
         </p>
     </div>
+    <!-- 按钮 -->
+    <div class="control">
+        <a-button shape="round" type="danger" size="large" style="margin-right: 10px;">丢弃</a-button>
+        <a-button shape="round" type="primary" size="large" style="width: 200px;">确定</a-button>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -147,8 +152,10 @@ const changeLabel = (index: number): void => {
     }
 }
 
+// 免责声明
 .summary {
     padding-top: 10px;
+    padding-bottom: 50px;
 
     .mzsm {
         padding-top: 5px;
@@ -157,6 +164,16 @@ const changeLabel = (index: number): void => {
     }
 }
 
+// 按钮
+.control {
+    position: fixed;
+    margin-bottom: -10px;
+    padding: @padding-20;
+    width: 100%;
+    bottom: 20px;
+    // background-color: pink;
+
+}
 
 .title {
     width: 56px;
