@@ -11,6 +11,7 @@
             </div>
             <div class="footer"></div>
         </div>
+
     </transition>
 </template>
 
@@ -36,7 +37,7 @@ const closePop = () => {
         }
 
         &-active {
-            transition: all .3s;
+            transition: linear .1s;
         }
 
         &-to {
@@ -50,7 +51,7 @@ const closePop = () => {
         }
 
         &-active {
-            transition: all .3s;
+            transition: all .2s;
         }
 
         &-to {
@@ -60,10 +61,12 @@ const closePop = () => {
 
 }
 
+
 .pop-modal {
     position: fixed;
     right: 0;
     top: 52px;
+    z-index: 1000;
     width: 360px;
     height: 100%;
     background: #e9e9ef;

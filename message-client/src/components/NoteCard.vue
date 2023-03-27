@@ -1,5 +1,5 @@
 <template>
-    <div class="node-card" :style="{ background: cardColor }">
+    <div class="node-card" :style="{ background: cardColor[note.imgurl] }">
         <div class="top">
             <p>{{ messageTime }}</p>
             <p>留言</p>
@@ -16,9 +16,10 @@
 </template>
 
 <script setup lang="ts">
+import { cardColor } from '@/mock'
 import { defineProps, computed } from 'vue';
 import moment from 'moment'
-const props = defineProps(['note', 'cardColor']);
+const props = defineProps(['note']);
 const messageTime = computed(() => {
     return moment(props.note.moment).format('YYYY.MM.DD')
 })

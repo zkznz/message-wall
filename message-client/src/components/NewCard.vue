@@ -8,8 +8,6 @@
     <!-- 留言内容 -->
     <div class="card-main" :style="{ background: cardColor1[selectedIndex] }">
         <textarea placeholder="留言..." class="message" maxlength="100"></textarea>
-
-
         <input type="text" placeholder="签名" class="name">
     </div>
     <!-- 标签 -->
