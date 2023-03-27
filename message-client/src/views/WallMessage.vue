@@ -31,8 +31,8 @@
       </PopModal>
     </div>
     <!-- 照片墙 -->
-    <div v-else>
-      <span>666</span>
+    <div class="pic" v-else>
+      <PictureCard class="pic-card" v-for="item in picture.data" :picture="item"></PictureCard>
     </div>
   </div>
 </template>
@@ -42,7 +42,8 @@ import NoteCard from '@/components/NoteCard.vue'
 import PopModal from '@/components/PopModal.vue'
 import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
-import { note } from '../mock'
+import PictureCard from '@/components/PictureCard.vue'
+import { note, picture } from '../mock'
 import { wallType, label } from '@/utils/data'
 import { ref, provide, computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -178,5 +179,17 @@ const addCard = (): void => {
   span {
     font-size: 24px;
   }
+}
+
+//照片墙
+.pic {
+  width: 88%;
+  margin: 0 auto;
+  columns: 6;
+  column-gap: @padding-4;
+}
+
+.pic-card {
+  margin-bottom: @padding-4;
 }
 </style>
