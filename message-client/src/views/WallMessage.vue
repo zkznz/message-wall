@@ -8,8 +8,8 @@
     <div class="wall-list">
       <ul>
         <li class="list-all" :class="{ select: labelIndex == -1 }" @click="handleAllLabel">全部</li>
-        <li v-for="(item, index) in label[0]" :key="index" :class="{ select: labelIndex == index }"
-          @click="handleLabel(index)">
+        <li v-for="(item, index) in label[id]" :key="index" :class="{ select: labelIndex == index }"
+          @click="handleLabel(item, index)">
           {{ item }}</li>
       </ul>
     </div>
@@ -34,7 +34,7 @@
         <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
-      <ShowView v-if="id == 1 && isPop" :cardIndex="cardIndex" :picture="picture.data"></ShowView>
+      <ShowView v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="picture.data"></ShowView>
     </div>
   </div>
 </template>
@@ -48,7 +48,7 @@ import PictureCard from '@/components/PictureCard.vue'
 import ShowView from '@/components/ShowView.vue'
 import { note, picture } from '../mock'
 import { wallType, label } from '@/utils/data'
-import { ref, provide, computed, watch } from 'vue'
+import { ref, provide, computed, watch, isShallow } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute();
@@ -62,7 +62,10 @@ let labelIndex = ref<number>(-1);
 let cardIndex = ref<number>(-1);
 //控制弹窗
 let isPop = ref<boolean>(false);
+//控制图片详情显示与隐藏
+let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
+provide('title', title.value);
 
 //点击全部标签
 const handleAllLabel = (): void => {
@@ -71,11 +74,13 @@ const handleAllLabel = (): void => {
 //关闭弹窗
 const handleClose = (): void => {
   isPop.value = !isPop.value;
+  isShow.value = false;
   cardIndex.value = -1;
 }
 
 //点击单个标签
-const handleLabel = (index: number): void => {
+const handleLabel = (label: string, index: number): void => {
+  title.value = label;
   labelIndex.value = index;
 }
 
@@ -85,6 +90,7 @@ const showPop = (index: number): void => {
   if (cardIndex.value != index) {
     cardIndex.value = index;
     isPop.value = true;
+    isShow.value = true;
   }
   else {
     cardIndex.value = -1;
@@ -94,13 +100,16 @@ const showPop = (index: number): void => {
 }
 //添加留言卡片
 const addCard = (): void => {
-  title.value = "写留言";
+  // title.value = "写留言";
   handleClose();
 }
 
 //监听全局id变化
 watch(id, () => {
   isPop.value = false;
+  isShow.value = false;
+  labelIndex.value = -1;
+  cardIndex.value = -1;
 })
 </script>
 
