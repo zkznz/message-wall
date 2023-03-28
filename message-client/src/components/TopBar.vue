@@ -37,8 +37,10 @@ const changeWall = (e: number): void => {
     align-items: center;
     justify-content: space-between;
     position: fixed;
+    box-shadow: 0px 0px 1px 0px;
     top: 0;
     padding-left: 30px;
+    z-index: 10;
     height: 52px;
     width: 100%;
     background-color: #fff;

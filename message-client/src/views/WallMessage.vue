@@ -13,12 +13,16 @@
           {{ item }}</li>
       </ul>
     </div>
-    <!-- 留言墙 -->
-    <div v-if="id == 0">
-      <!--全部留言-->
-      <div class="note-wrap">
+    <div>
+      <!-- 留言墙 -->
+      <div class="note-wrap" v-if="id == 0">
         <NoteCard v-for="(item, index) in note.data" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
           :class="{ 'selected-card': index == cardIndex }"></NoteCard>
+      </div>
+      <!-- 照片墙 -->
+      <div class="pic" v-else>
+        <PictureCard class="pic-card" v-for="(item, index) in picture.data" :key="item.id" :picture="item"
+          @click="showPop(index)"></PictureCard>
       </div>
       <!-- 添加留言按钮 -->
       <div class="add" @click="addCard">
@@ -29,10 +33,8 @@
         <NewCard :id="id" v-if="cardIndex == -1"></NewCard>
         <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
       </PopModal>
-    </div>
-    <!-- 照片墙 -->
-    <div class="pic" v-else>
-      <PictureCard class="pic-card" v-for="item in picture.data" :picture="item"></PictureCard>
+      <!-- 照片详情 -->
+      <ShowView v-if="id == 1 && isPop" :cardIndex="cardIndex" :picture="picture.data"></ShowView>
     </div>
   </div>
 </template>
@@ -43,9 +45,10 @@ import PopModal from '@/components/PopModal.vue'
 import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
 import PictureCard from '@/components/PictureCard.vue'
+import ShowView from '@/components/ShowView.vue'
 import { note, picture } from '../mock'
 import { wallType, label } from '@/utils/data'
-import { ref, provide, computed } from 'vue'
+import { ref, provide, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute();
@@ -94,6 +97,11 @@ const addCard = (): void => {
   title.value = "写留言";
   handleClose();
 }
+
+//监听全局id变化
+watch(id, () => {
+  isPop.value = false;
+})
 </script>
 
 <style lang="less" scoped>
@@ -185,6 +193,7 @@ const addCard = (): void => {
 .pic {
   width: 88%;
   margin: 0 auto;
+  margin-top: 30px;
   columns: 6;
   column-gap: @padding-4;
 }
