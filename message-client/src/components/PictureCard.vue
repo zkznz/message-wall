@@ -1,7 +1,7 @@
 <template>
     <div class="pic-card">
-        <img :src="require(`@/assets/img/${picture.imgurl}.png`)" alt="" class="pic-img">
         <div class="pic-bg"></div>
+        <img :src="require(`@/assets/img/${picture.imgurl}.png`)" alt="" class="pic-img" @click="showView">
         <!-- 图片点赞 -->
         <div class="pic-like">
             <div class="like">
@@ -20,6 +20,10 @@
 import { defineProps } from 'vue'
 const props = defineProps(['picture'])
 
+//点击图片显示详情
+const showView = (): void => {
+
+}
 </script>
 
 <style lang="less" scoped>
@@ -28,15 +32,22 @@ const props = defineProps(['picture'])
 
     .pic-img {
         width: 100%;
+
+    }
+
+    &:hover .pic-bg {
+        display: block;
     }
 
     .pic-bg {
+        display: none;
         position: absolute;
         width: 100%;
         height: 100%;
         left: 0;
         top: 0;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.3);
+
     }
 
     .pic-like {
@@ -62,8 +73,6 @@ const props = defineProps(['picture'])
 
         .icon-liuyan {
 
-            // display: inline-block;
-            // vertical-align: middle;
             &:hover {
                 color: @gray-2;
             }
