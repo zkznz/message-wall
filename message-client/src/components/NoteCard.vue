@@ -2,7 +2,7 @@
     <div class="node-card" :style="{ background: cardColor[note.imgurl] }">
         <div class="top">
             <p>{{ messageTime }}</p>
-            <p>留言</p>
+            <p>写留言</p>
         </div>
         <p class="message">{{ note.message }}</p>
         <div class="foot">
@@ -17,9 +17,11 @@
 
 <script setup lang="ts">
 import { cardColor } from '@/mock'
-import { defineProps, computed } from 'vue';
+import { defineProps, computed, inject } from 'vue';
 import moment from 'moment'
 const props = defineProps(['note']);
+const title = inject('title', '');
+console.log("title", title);
 const messageTime = computed(() => {
     return moment(props.note.moment).format('YYYY.MM.DD')
 })

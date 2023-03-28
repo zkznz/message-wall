@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="pop-modal" v-if="isPop">
             <div class="header">
-                <p class="modal-name">{{ title }}</p>
+                <p class="modal-name"></p>
                 <close-outlined class="icon-close" @click="closePop" />
             </div>
             <div class="modal-main">
@@ -22,6 +22,7 @@ const props = defineProps({
     title: String,
     isPop: Boolean
 })
+console.log("title", props.title);
 const emit = defineEmits(['close'])
 //关闭弹窗
 const closePop = () => {
