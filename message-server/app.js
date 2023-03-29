@@ -6,8 +6,8 @@ const cors = require("cors");
 const app = express();
 
 //获取静态资源
-app.use(express.static(__dirname) + '/dist');
-app.use(express.static(__dirname) + '/data');
+app.use(express.static(__dirname + '/dist'));
+app.use(express.static(__dirname + '/data'));
 //解决跨域
 app.use(cors());
 
@@ -17,9 +17,21 @@ app.set('view engine', 'html');
 
 //获取客户端发送数据
 app.use(express.json());
-app.use(express.urlencoded({ extends: false }))
+app.use(express.urlencoded({ extended: false }))
 
-app.use()
+//错误提示中间件
+app.use((req, res, next) => {
+    res.msg = (err, status = 1) => {
+        res.send({
+            status,
+            msg: err instanceof Error ? err.message : err
+        })
+    }
+    next();
+})
+//注册留言墙相关的路由
+const wallRouter = require("./router/wall");
+app.use('/api/wall', wallRouter);
 
 
 
