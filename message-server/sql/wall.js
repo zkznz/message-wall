@@ -17,3 +17,10 @@ exports.delComments = 'update comments set isdeleted=1 where id=?'
 exports.findMessagePage = 'select * from walls where type=? and label=? order by id desc limit ?,?'
 //查找留言总数
 exports.findMessageTotal = 'select count (*) as total from walls where type=? and label=?'
+//查找总反馈数
+exports.findFeedbacksTotal = 'select count (*) as total from feedbacks where wallId=? and type=?'
+//查找评论数
+exports.findCommentTotal = 'select count (*) as total from comments where wallId=?'
+//是否点赞
+exports.findIslike = 'select count (*) as total from feedbacks where wallId=? and userId=?'
+

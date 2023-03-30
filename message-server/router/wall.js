@@ -15,7 +15,7 @@ router.get("/delmessage/:id", wallHandler.delMessage);
 router.get("/delfeedbacks/:id", wallHandler.delFeedBacks);
 router.get("/delcomments/:id", wallHandler.delComments);
 
-//查找
+//查找整个留言墙卡片的数据
 router.get("/findMessagePage", wallHandler.findMessagePage);
 // router.post("/findComment",wallHandler.findComment);
 module.exports = router;
