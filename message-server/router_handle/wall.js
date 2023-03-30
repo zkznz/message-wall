@@ -1,6 +1,7 @@
 const db = require("../lib/db");
 //留言墙相关的sql语句
 const wallSql = require("../sql/wall")
+const control = require("../control/wall")
 exports.addMessage = (req, res) => {
     const msgInfo = req.body;
     db.query(wallSql.addMessage, msgInfo, (err, results) => {
@@ -83,13 +84,25 @@ exports.findMessagePage = (req, res) => {
     pagesize = parseInt(pagesize);
     //查找全部
     if (label == -1) {
-        const sql = "select * from walls where type=? order by id desc limit ?,? "
+        const sql = "select * from walls where type=? order by id DESC limit ?,?"
         db.query(sql, [currentPage, pagesize], (err, results) => {
             if (err)
                 return res.msg(err);
             if (results.length == 0)
                 return res.msg("查询失败");
-            const sql1 = "select count (*) as total from walls"
+            results.forEach(item => {
+                //查询点赞数
+                item.like = control.findFeedbacksTotal(item.id, 0);
+                //查询举报数
+                item.report = control.findFeedbacksTotal(item.id, 1);
+                //查询撤销数
+                item.revoke = control.findFeedbacksTotal(item.id, 2);
+                //是否点赞
+                item.islike = control.findIslike(item.id, item.userId);
+                //查询评论数
+                item.comtotal = control.findCommentTotal(item.id);
+            })
+            const sql1 = "select count (*) as total from walls";
             db.query(sql1, (err, among) => {
                 if (err)
                     return res.msg(err);
@@ -112,6 +125,18 @@ exports.findMessagePage = (req, res) => {
                 return res.msg(err);
             if (results.length == 0)
                 return res.msg("查询失败");
+            results.forEach(item => {
+                //查询点赞数
+                item.like = control.findFeedbacksTotal(item.id, 0);
+                //查询举报数
+                item.report = control.findFeedbacksTotal(item.id, 1);
+                //查询撤销数
+                item.revoke = control.findFeedbacksTotal(item.id, 2);
+                //是否点赞
+                item.islike = control.findIslike(item.id, item.userId);
+                //查询评论数
+                item.comtotal = control.findCommentTotal(item.id);
+            })
             db.query(wallSql.findMessageTotal, [type, label], (err, among) => {
                 if (err)
                     return res.msg(err);
