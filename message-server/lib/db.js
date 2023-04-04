@@ -8,4 +8,5 @@ const db = mysql.createPool({
     database: config.database.DATABASE
 })
 
+
 module.exports = db;
