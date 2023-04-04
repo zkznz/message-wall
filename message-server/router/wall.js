@@ -17,5 +17,6 @@ router.get("/delcomments/:id", wallHandler.delComments);
 
 //查找整个留言墙卡片的数据
 router.get("/findMessagePage", wallHandler.findMessagePage);
-// router.post("/findComment",wallHandler.findComment);
+//分页查找评论
+router.get("/findComment", wallHandler.findComment);
 module.exports = router;
