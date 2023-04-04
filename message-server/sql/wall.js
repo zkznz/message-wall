@@ -23,4 +23,6 @@ exports.findFeedbacksTotal = 'select count(*) as total from feedbacks where wall
 exports.findCommentTotal = 'select count(*) as total from comments where wallId=?'
 //是否点赞
 exports.findIslike = 'select count(*) as total from feedbacks where wallId=? and userId=?'
+//分页查找评论
+exports.findComment = 'select * from comments where wallId=? order by id desc limit ?,?'
 

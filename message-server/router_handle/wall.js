@@ -158,6 +158,25 @@ exports.findMessagePage = (req, res) => {
 
 }
 //查找评论
-exports.findComment = () => {
+exports.findComment = (req, res) => {
+    let { id, page, pagesize } = req.query;
+    const currentPage = (page - 1) * pagesize;
+    pagesize = parseInt(pagesize);
+    db.query(wallSql.findComment, [id, currentPage, pagesize], (err, results) => {
+        if (err)
+            return res.msg(err);
+        const sql = "select count(*) as total from comments where wallId=?"
+        db.query(sql, id, (err, among) => {
+            if (err)
+                return res.msg(err);
+            let total = among[0];
+            res.send({
+                status: 200,
+                msg: "查找成功",
+                data: results,
+                ...total
+            })
+        })
 
+    })
 }
