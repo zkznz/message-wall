@@ -7,8 +7,8 @@
     </div>
     <!-- 留言内容 -->
     <div class="card-main" :style="{ background: cardColor1[selectedIndex] }">
-        <textarea placeholder="留言..." class="message" maxlength="100"></textarea>
-        <input type="text" placeholder="签名" class="name">
+        <textarea placeholder="留言..." class="message" maxlength="100" v-model="wallInfo.message"></textarea>
+        <input type="text" placeholder="签名" v-model="wallInfo.name" class="name">
     </div>
     <!-- 标签 -->
     <div class="label">
@@ -38,14 +38,18 @@
     <!-- 按钮 -->
     <div class="control">
         <a-button shape="round" type="danger" size="large" style="margin-right: 10px;">丢弃</a-button>
-        <a-button shape="round" type="primary" size="large" style="width: 200px;">确定</a-button>
+        <a-button shape="round" type="primary" size="large" style="width: 200px;" @click="submit">确定</a-button>
     </div>
 </template>
 
 <script setup lang="ts">
 import { cardColor1, } from "@/mock"
-import { ref, inject } from 'vue'
+import { ref, inject, reactive } from 'vue'
 import { label } from '@/utils/data'
+import { useMainStore } from '@/store'
+import { IWall } from '@/type'
+
+const store = useMainStore();
 
 let id: number = inject('id', 0);
 
@@ -53,8 +57,18 @@ let id: number = inject('id', 0);
 let selectedIndex = ref<number>(0);
 //选中的标签
 let labelIndex = ref<number>(0);
-//留言名
-let name = ref<string>('');
+let userId: number = store.user.id;
+//留言墙信息
+let wallInfo: IWall = reactive({
+    type: id,
+    message: '',
+    name: '匿名',
+    userId,
+    moment: new Date(),
+    label: labelIndex.value,
+    color: selectedIndex.value,
+    imgurl: ''
+})
 //切换颜色
 const changeColor = (index: number): void => {
     selectedIndex.value = index;
@@ -62,6 +76,10 @@ const changeColor = (index: number): void => {
 //切换标签
 const changeLabel = (index: number): void => {
     labelIndex.value = index;
+}
+//提交留言
+const submit = () => {
+    console.log(wallInfo);
 }
 </script>
 
