@@ -1,7 +1,7 @@
 //图片墙信息
 export interface IPicture {
     id: number,
-    moment: string,
+    moment: Date,
     userId: number,
     message: string,
     name: string,
@@ -11,14 +11,32 @@ export interface IPicture {
     like: number,
     label: number
 }
-
+//留言墙信息
+export interface IWall {
+    type: number,
+    message: string,
+    name: string,
+    userId: number,
+    moment: Date,
+    label: number,
+    color: number,
+    imgurl: string
+}
 //评论信息
 export interface IComment {
     id: number,
-    moment: string,
+    moment: Date,
     time?: string
     userId: number,
     message: string,
     name: string,
     imgurl: number
+}
+//用户信息
+export interface IUser {
+    id: number
+}
+//仓库state数据
+export interface IState {
+    user: IUser
 }
