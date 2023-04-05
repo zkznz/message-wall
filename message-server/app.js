@@ -29,6 +29,9 @@ app.use((req, res, next) => {
     }
     next();
 })
+//注册用户相关的路由
+const userRouter = require("./router/user");
+app.use('/user', userRouter);
 //注册留言墙相关的路由
 const wallRouter = require("./router/wall");
 app.use('/api/wall', wallRouter);
