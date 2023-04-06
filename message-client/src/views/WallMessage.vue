@@ -145,6 +145,7 @@ watch(id, () => {
     border: 1px solid rgba(32, 32, 32, 1);
     border-radius: 14px;
     font-weight: 600;
+    width: 100px;
   }
 
   ul {
@@ -152,10 +153,9 @@ watch(id, () => {
     color: @gray-1;
 
     li {
-      width: 56px;
       height: 28px;
       line-height: 26px;
-      margin-right: 22px;
+      margin-right: 40px;
       text-align: center;
       cursor: pointer;
     }

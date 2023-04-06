@@ -1,10 +1,21 @@
 <template>
     <!-- 颜色选择 -->
-    <div class="color-list">
+    <div class="color-list" v-if="id == 0">
         <div class="color" v-for="(item, index) in cardColor1" :key="index"
             :class="{ 'color-select': index == selectedIndex }" :style="{ background: item }" @click="changeColor(index)">
         </div>
     </div>
+    <!-- 上传图片 -->
+    <a-upload v-else v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
+        :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76" :before-upload="beforeUpload"
+        @change="handleChange">
+        <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+        <div v-else>
+            <loading-outlined v-if="loading"></loading-outlined>
+            <plus-outlined v-else></plus-outlined>
+            <div class="ant-upload-text"></div>
+        </div>
+    </a-upload>
     <!-- 留言内容 -->
     <div class="card-main" :style="{ background: cardColor1[selectedIndex] }">
         <textarea placeholder="留言..." class="message" maxlength="100" v-model="wallInfo.message"></textarea>
@@ -48,9 +59,12 @@ import { ref, inject, reactive } from 'vue'
 import { label } from '@/utils/data'
 import { useMainStore } from '@/store'
 import { IWall } from '@/type'
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 
 const store = useMainStore();
-
+let fileList = reactive([]);
 let id: number = inject('id', 0);
 
 //已选中的颜色
@@ -69,6 +83,10 @@ let wallInfo: IWall = reactive({
     color: selectedIndex.value,
     imgurl: ''
 })
+//图片
+let imageUrl = ref<string>('');
+//图片加载
+let loading = ref<boolean>(false);
 //切换颜色
 const changeColor = (index: number): void => {
     selectedIndex.value = index;
