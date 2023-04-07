@@ -6,18 +6,27 @@
         </div>
     </div>
     <!-- 上传图片 -->
-    <a-upload v-else v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
-        :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76" :before-upload="beforeUpload"
-        @change="handleChange">
-        <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-        <div v-else>
+    <div class="upload" v-if="imageUrl">
+        <img class="upload-image" :src="imageUrl" alt="file" />
+        <a-button class="edit-btn" type="primary" shape="circle">
+            <template #icon>
+                <edit-outlined />
+            </template>
+        </a-button>
+    </div>
+
+    <a-upload v-if="id == 1 && !imageUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
+        class="avatar-uploader" :show-upload-list="false" action="http://127.0.0.1:3000/api/profile" @change="handleChange">
+
+        <div v-if="!imageUrl">
             <loading-outlined v-if="loading"></loading-outlined>
             <plus-outlined v-else></plus-outlined>
             <div class="ant-upload-text"></div>
         </div>
     </a-upload>
+
     <!-- 留言内容 -->
-    <div class="card-main" :style="{ background: cardColor1[selectedIndex] }">
+    <div class="card-main" :style="{ background: id == 0 ? cardColor1[selectedIndex] : '#ccc' }">
         <textarea placeholder="留言..." class="message" maxlength="100" v-model="wallInfo.message"></textarea>
         <input type="text" placeholder="签名" v-model="wallInfo.name" class="name">
     </div>
@@ -59,12 +68,12 @@ import { ref, inject, reactive } from 'vue'
 import { label } from '@/utils/data'
 import { useMainStore } from '@/store'
 import { IWall } from '@/type'
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, LoadingOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 
 const store = useMainStore();
-let fileList = reactive([]);
+let fileList = ref([]);
 let id: number = inject('id', 0);
 
 //已选中的颜色
@@ -99,6 +108,23 @@ const changeLabel = (index: number): void => {
 const submit = () => {
     console.log(wallInfo);
 }
+//上传图片
+const handleChange = (info) => {
+    const { file } = info
+    if (file.status === 'uploading') {
+        loading.value = true;
+        return;
+    }
+    if (file.status === 'done') {
+        console.log(file);
+        imageUrl.value = file.response.data.img;
+    }
+    if (info.file.status === 'error') {
+        loading.value = false;
+        message.error('图片上传失败');
+    }
+}
+
 </script>
 
 <style lang="less" scoped>
@@ -107,6 +133,32 @@ const submit = () => {
     font-family: 'HanziPenSC-W3';
     src: url("@/assets/fonts/HanzipenSC/HanzipenSC.ttf");
 }
+
+.upload {
+    position: relative;
+
+    .upload-image {
+        height: 200px;
+        padding: 3px;
+        padding-left: 0px;
+    }
+
+    margin-bottom: 15px;
+
+    .edit-btn {
+        position: absolute;
+        top: 15px;
+        left: 10px;
+        background: rgba(0, 0, 0, .4);
+        border: none;
+        // opacity: 0.8;
+    }
+}
+
+.upload-image {}
+
+
+
 
 .color-list {
     display: flex;

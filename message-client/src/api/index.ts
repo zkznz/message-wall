@@ -6,3 +6,8 @@ export const login = () => request({
     method: 'post',
 
 })
+//提交照片墙
+export const submitPic = () => request({
+    url: '/wall/profile',
+    method: 'post'
+})
