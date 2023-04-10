@@ -5,7 +5,7 @@ export interface IPicture {
     userId: number,
     message: string,
     name: string,
-    imgurl: number,
+    imageUrl: string,
     revoke: number,
     report: number,
     like: number,
@@ -20,7 +20,7 @@ export interface IWall {
     moment: Date,
     label: number,
     color: number,
-    imgurl: string
+    imageUrl: string,
 }
 //评论信息
 export interface IComment {
@@ -30,7 +30,7 @@ export interface IComment {
     userId: number,
     message: string,
     name: string,
-    imgurl: number
+    imageUrl: string
 }
 //用户信息
 export interface IUser {

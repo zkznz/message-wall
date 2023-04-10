@@ -6,8 +6,8 @@
         </div>
     </div>
     <!-- 上传图片 -->
-    <div class="upload" v-if="imageUrl">
-        <img class="upload-image" :src="imageUrl" alt="file" />
+    <div class="upload" v-if="wallInfo.imageUrl">
+        <img class="upload-image" :src="wallInfo.imageUrl" alt="file" />
         <a-button class="edit-btn" type="primary" shape="circle">
             <template #icon>
                 <edit-outlined />
@@ -15,10 +15,10 @@
         </a-button>
     </div>
 
-    <a-upload v-if="id == 1 && !imageUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
+    <a-upload v-if="id == 1 && !wallInfo.imageUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
         class="avatar-uploader" :show-upload-list="false" action="http://127.0.0.1:3000/api/profile" @change="handleChange">
 
-        <div v-if="!imageUrl">
+        <div v-if="!wallInfo.imageUrl">
             <loading-outlined v-if="loading"></loading-outlined>
             <plus-outlined v-else></plus-outlined>
             <div class="ant-upload-text"></div>
@@ -64,13 +64,13 @@
 
 <script setup lang="ts">
 import { cardColor1, } from "@/mock"
-import { ref, inject, reactive } from 'vue'
+import { ref, inject, reactive, defineEmits } from 'vue'
 import { label } from '@/utils/data'
 import { useMainStore } from '@/store'
 import { IWall } from '@/type'
 import { PlusOutlined, LoadingOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import type { UploadChangeParam } from 'ant-design-vue';
 
 const store = useMainStore();
 let fileList = ref([]);
@@ -85,17 +85,19 @@ let userId: number = store.user.id;
 let wallInfo: IWall = reactive({
     type: id,
     message: '',
-    name: '匿名',
+    name: '',
     userId,
     moment: new Date(),
     label: labelIndex.value,
     color: selectedIndex.value,
-    imgurl: ''
+    imageUrl: ''
 })
-//图片
-let imageUrl = ref<string>('');
 //图片加载
 let loading = ref<boolean>(false);
+//自定义事件
+const emits = defineEmits<{
+    (e: 'submit', wallInfo: IWall): void
+}>();
 //切换颜色
 const changeColor = (index: number): void => {
     selectedIndex.value = index;
@@ -106,18 +108,17 @@ const changeLabel = (index: number): void => {
 }
 //提交留言
 const submit = () => {
-    console.log(wallInfo);
+    emits('submit', wallInfo);
 }
 //上传图片
-const handleChange = (info) => {
+const handleChange = (info: UploadChangeParam) => {
     const { file } = info
     if (file.status === 'uploading') {
         loading.value = true;
         return;
     }
     if (file.status === 'done') {
-        console.log(file);
-        imageUrl.value = file.response.data.img;
+        wallInfo.imageUrl = file.response.data.img;
     }
     if (info.file.status === 'error') {
         loading.value = false;

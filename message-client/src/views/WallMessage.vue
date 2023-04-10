@@ -30,7 +30,7 @@
       </div>
       <!-- 弹窗 -->
       <PopModal :isPop="isPop" :title="title" @close="handleClose">
-        <NewCard :id="id" v-if="cardIndex == -1"></NewCard>
+        <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard"></NewCard>
         <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
@@ -50,6 +50,8 @@ import { note, picture } from '../mock'
 import { wallType, label } from '@/utils/data'
 import { ref, provide, computed, watch, isShallow } from 'vue'
 import { useRoute } from 'vue-router'
+import { IWall } from '@/type'
+import { addMessage } from '@/api'
 
 const route = useRoute();
 //路由id
@@ -111,6 +113,12 @@ watch(id, () => {
   labelIndex.value = -1;
   cardIndex.value = -1;
 })
+//提交留言信息给服务器，新建留言
+const submitNewCard = async (wallInfo: IWall) => {
+  console.log(wallInfo);
+  let res = await addMessage(wallInfo);
+
+}
 </script>
 
 <style lang="less" scoped>
