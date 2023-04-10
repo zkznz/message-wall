@@ -35,7 +35,9 @@ app.use('/user', userRouter);
 //注册留言墙相关的路由
 const wallRouter = require("./router/wall");
 app.use('/api/wall', wallRouter);
-
+//注册上传照片的路由
+const filesRouter = require("./router/files");
+app.use('/api', filesRouter);
 
 
 app.listen(config.port, () => {

@@ -4,16 +4,17 @@ const wallSql = require("../sql/wall")
 const control = require("../control/wall")
 exports.addMessage = (req, res) => {
     const msgInfo = req.body;
-    db.query(wallSql.addMessage, msgInfo, (err, results) => {
-        if (err)
-            return res.msg(err);
-        if (results.affectedRows < 1)
-            return res.msg('添加失败');
-        res.send({
-            status: 200,
-            msg: '添加成功！'
-        })
-    })
+    console.log(msgInfo);
+    // db.query(wallSql.addMessage, msgInfo, (err, results) => {
+    //     if (err)
+    //         return res.msg(err);
+    //     if (results.affectedRows < 1)
+    //         return res.msg('添加失败');
+    //     res.send({
+    //         status: 200,
+    //         msg: '添加成功！'
+    //     })
+    // })
 }
 exports.addFeedBacks = (req, res) => {
     db.query(wallSql.addFeedBacks, req.body, (err, results) => {
