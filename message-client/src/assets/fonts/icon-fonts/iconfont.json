@@ -6,6 +6,20 @@
   "description": "聊天墙项目",
   "glyphs": [
     {
+      "icon_id": "3660817",
+      "name": "照片",
+      "font_class": "zhaopian-",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "5166646",
+      "name": "笔记本",
+      "font_class": "bijiben_",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
       "icon_id": "10886214",
       "name": "添加",
       "font_class": "tianjia",

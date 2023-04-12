@@ -38,8 +38,9 @@ const messageTime = computed(() => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 240px;
-    width: 270px;
+    height: 280px;
+    width: 320px;
+    margin-right: 20px;
     padding: 10px 20px 16px 20px;
 
     .top {

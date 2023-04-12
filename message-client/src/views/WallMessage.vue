@@ -24,6 +24,12 @@
         <PictureCard class="pic-card" v-for="(item, index) in picture.data" :key="item.id" :picture="item"
           @click="showPop(index)"></PictureCard>
       </div>
+      <!-- 卡片状态 -->
+      <div v-if="!noteList.length" class="none-img">
+        <img :src="none[id].url" alt="">
+        <p>{{ none[id].msg }}</p>
+      </div>
+
       <!-- 添加留言按钮 -->
       <div class="add" @click="addCard">
         <span class="iconfont icon-tianjia"></span>
@@ -46,8 +52,8 @@ import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
 import PictureCard from '@/components/PictureCard.vue'
 import ShowView from '@/components/ShowView.vue'
-import { note, picture } from '../mock'
-import { wallType, label } from '@/utils/data'
+import { picture } from '../mock'
+import { wallType, label, none } from '@/utils/data'
 import { ref, provide, computed, watch, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { IWall, IMessage } from '@/type'
@@ -73,7 +79,7 @@ let flag = ref<boolean>(false);
 //总页数
 let total = ref<number>(1);
 let page = ref<number>(1);
-let pagesize = ref<number>(5);
+let pagesize = ref<number>(8);
 let wallInfo = reactive({});
 //留言墙卡片列表
 let noteList = reactive<IWall[]>([]);
@@ -180,6 +186,28 @@ onMounted(() => {
 
 }
 
+//无图片时的样式
+.none-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  margin-left: -60px;
+
+  img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-weight: 700;
+    font-size: 24px;
+    color: #9F9D9F;
+  }
+}
 
 .wall-list {
   display: flex;
@@ -211,7 +239,7 @@ onMounted(() => {
 
 .note-wrap {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
 
   .note-card {

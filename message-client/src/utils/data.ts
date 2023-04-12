@@ -30,3 +30,14 @@ export const portrait = [
     "linear-gradient(188deg,#FFDC83 0%, #F88816 100%)",
     "linear-gradient(188deg,#FFBA8D 0%, #EB6423 100%)",
 ]
+//没有留言或图片时显示的状态
+export const none = [
+    {
+        url: require('@/assets/img/card.svg'),
+        msg: '还没有留言，快贴上第一张吧'
+    },
+    {
+        url: require('@/assets/img/photo.svg'),
+        msg: '还没有照片，快贴上第一张吧'
+    }
+]
