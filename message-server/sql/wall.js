@@ -14,15 +14,15 @@ exports.delFeedbacks = 'update feedbacks set isdeleted=1 where id=?'
 exports.delComments = 'update comments set isdeleted=1 where id=?'
 
 //分页查找留言
-exports.findMessagePage = 'select * from walls where type=? and label=? order by id desc limit ?,?'
+exports.findMessagePage = 'select * from walls where type=? and label=? and isdeleted=0 order by id desc limit ?,?'
 //查找留言总数
-exports.findMessageTotal = 'select count(*) as total from walls where type=? and label=?'
+exports.findMessageTotal = 'select count(*) as total from walls where type=? and label=? and isdeleted=0'
 //查找总反馈数
-exports.findFeedbacksTotal = 'select count(*) as total from feedbacks where wallId=? and type=?'
+exports.findFeedbacksTotal = 'select count(*) as total from feedbacks where wallId=? and type=? and isdeleted=0'
 //查找评论数
-exports.findCommentTotal = 'select count(*) as total from comments where wallId=?'
+exports.findCommentTotal = 'select count(*) as total from comments where wallId=? and isdeleted=0'
 //是否点赞
-exports.findIslike = 'select count(*) as total from feedbacks where wallId=? and userId=?'
+exports.findIslike = 'select count(*) as total from feedbacks where wallId=? and userId=? and isdeleted=0'
 //分页查找评论
-exports.findComment = 'select * from comments where wallId=? order by id desc limit ?,?'
+exports.findComment = 'select * from comments where wallId=? and isdeleted=0 order by id desc limit ?,?'
 

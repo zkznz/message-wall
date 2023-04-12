@@ -84,7 +84,7 @@ exports.findMessagePage = (req, res) => {
     pagesize = parseInt(pagesize);
     //查找全部
     if (label == -1) {
-        const sql = "select * from walls where type=? order by id DESC limit ?,?"
+        const sql = "select * from walls where type=? and isdeleted=0 order by id DESC limit ?,?"
         db.query(sql, [type, currentPage, pagesize], (err, results) => {
             if (err)
                 return res.msg(err);
@@ -104,7 +104,7 @@ exports.findMessagePage = (req, res) => {
                 item.comtotal = control.findCommentTotal(item.id);
                 console.log("666");
             })
-            const sql1 = "select count (*) as total from walls";
+            const sql1 = "select count (*) as total from walls where isdeleted=0";
             db.query(sql1, (err, among) => {
                 if (err)
                     return res.msg(err);
@@ -165,7 +165,7 @@ exports.findComment = (req, res) => {
     db.query(wallSql.findComment, [id, currentPage, pagesize], (err, results) => {
         if (err)
             return res.msg(err);
-        const sql = "select count(*) as total from comments where wallId=?"
+        const sql = "select count(*) as total from comments where wallId=? and isdeleted=0"
         db.query(sql, id, (err, among) => {
             if (err)
                 return res.msg(err);
