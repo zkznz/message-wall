@@ -31,7 +31,7 @@
       <!-- 弹窗 -->
       <PopModal :isPop="isPop" :title="title" @close="handleClose">
         <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard"></NewCard>
-        <CardDetail :note="note.data[cardIndex]" v-else></CardDetail>
+        <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
       <ShowView v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="picture.data"></ShowView>
@@ -82,7 +82,6 @@ provide('title', title.value);
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
-  flag.value = false;
   loading();
 }
 //关闭弹窗
@@ -96,7 +95,6 @@ const handleClose = (): void => {
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
   labelIndex.value = index;
-  flag.value = false;
   loading();
 }
 
@@ -135,6 +133,8 @@ const submitNewCard = async (wall: IWall) => {
   if (res.status == 200) {
     noteList = res.data;
     message.success("感谢您的记录！");
+    handleClose();
+    loading();
   }
 }
 //加载留言墙
@@ -146,12 +146,12 @@ const loading = async () => {
     page: page.value,
     pagesize: pagesize.value
   }
+  flag.value = false;
   let res = await findMessage(messageData);
   if (res.status == 200) {
     noteList = res.data;
     total = res.total;
   }
-  console.log(noteList);
   flag.value = true;
 }
 //初始化加载
