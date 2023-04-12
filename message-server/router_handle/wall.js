@@ -4,17 +4,16 @@ const wallSql = require("../sql/wall")
 const control = require("../control/wall")
 exports.addMessage = (req, res) => {
     const msgInfo = req.body;
-    console.log(msgInfo);
-    // db.query(wallSql.addMessage, msgInfo, (err, results) => {
-    //     if (err)
-    //         return res.msg(err);
-    //     if (results.affectedRows < 1)
-    //         return res.msg('添加失败');
-    //     res.send({
-    //         status: 200,
-    //         msg: '添加成功！'
-    //     })
-    // })
+    db.query(wallSql.addMessage, msgInfo, (err, results) => {
+        if (err)
+            return res.msg(err);
+        if (results.affectedRows < 1)
+            return res.msg('添加失败');
+        res.send({
+            status: 200,
+            msg: '添加成功！'
+        })
+    })
 }
 exports.addFeedBacks = (req, res) => {
     db.query(wallSql.addFeedBacks, req.body, (err, results) => {
@@ -103,7 +102,6 @@ exports.findMessagePage = (req, res) => {
                 item.islike = control.findIslike(item.id, item.userId);
                 //查询评论数
                 item.comtotal = control.findCommentTotal(item.id);
-                console.log("666");
             })
             const sql1 = "select count (*) as total from walls";
             db.query(sql1, (err, among) => {
@@ -126,8 +124,15 @@ exports.findMessagePage = (req, res) => {
         db.query(wallSql.findMessagePage, [type, label, currentPage, pagesize], (err, results) => {
             if (err)
                 return res.msg(err);
-            if (results.length == 0)
-                return res.msg("查询失败");
+            if (results.length == 0) {
+                res.send({
+                    status: 200,
+                    msg: "没有该数据",
+                    data: results,
+                    total: 0
+                })
+                return;
+            }
             results.forEach(item => {
                 //查询点赞数
                 item.like = control.findFeedbacksTotal(item.id, 0);
