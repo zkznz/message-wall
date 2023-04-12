@@ -2,12 +2,12 @@
     <!-- 颜色选择 -->
     <div class="color-list" v-if="id == 0">
         <div class="color" v-for="(item, index) in cardColor1" :key="index"
-            :class="{ 'color-select': index == selectedIndex }" :style="{ background: item }" @click="changeColor(index)">
+            :class="{ 'color-select': index == wallInfo.color }" :style="{ background: item }" @click="changeColor(index)">
         </div>
     </div>
     <!-- 上传图片 -->
-    <div class="upload" v-if="wallInfo.imageUrl">
-        <img class="upload-image" :src="wallInfo.imageUrl" alt="file" />
+    <div class="upload" v-if="wallInfo.imgUrl">
+        <img class="upload-image" :src="wallInfo.imgUrl" alt="file" />
         <a-button class="edit-btn" type="primary" shape="circle">
             <template #icon>
                 <edit-outlined />
@@ -15,10 +15,10 @@
         </a-button>
     </div>
 
-    <a-upload v-if="id == 1 && !wallInfo.imageUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
+    <a-upload v-if="id == 1 && !wallInfo.imgUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
         class="avatar-uploader" :show-upload-list="false" action="http://127.0.0.1:3000/api/profile" @change="handleChange">
 
-        <div v-if="!wallInfo.imageUrl">
+        <div v-if="!wallInfo.imgUrl">
             <loading-outlined v-if="loading"></loading-outlined>
             <plus-outlined v-else></plus-outlined>
             <div class="ant-upload-text"></div>
@@ -26,7 +26,7 @@
     </a-upload>
 
     <!-- 留言内容 -->
-    <div class="card-main" :style="{ background: id == 0 ? cardColor1[selectedIndex] : '#ccc' }">
+    <div class="card-main" :style="{ background: id == 0 ? cardColor1[wallInfo.color] : '#ccc' }">
         <textarea placeholder="留言..." class="message" maxlength="100" v-model="wallInfo.message"></textarea>
         <input type="text" placeholder="签名" v-model="wallInfo.name" class="name">
     </div>
@@ -34,7 +34,7 @@
     <div class="label">
         <p class="title">选择标签</p>
         <div class="label-list">
-            <span v-for="(item, index) in label[id]" :key="index" :class="{ 'selected': labelIndex == index }"
+            <span v-for="(item, index) in label[id]" :key="index" :class="{ 'selected': wallInfo.label == index }"
                 @click="changeLabel(index)">{{ item
                 }}</span>
         </div>
@@ -76,21 +76,18 @@ const store = useMainStore();
 let fileList = ref([]);
 let id: number = inject('id', 0);
 
-//已选中的颜色
-let selectedIndex = ref<number>(0);
-//选中的标签
-let labelIndex = ref<number>(0);
 let userId: number = store.user.id;
 //留言墙信息
 let wallInfo: IWall = reactive({
+    id: 0,
     type: id,
     message: '',
     name: '',
     userId,
     moment: new Date(),
-    label: labelIndex.value,
-    color: selectedIndex.value,
-    imageUrl: ''
+    label: 0,
+    color: 0,
+    imgUrl: ''
 })
 //图片加载
 let loading = ref<boolean>(false);
@@ -100,11 +97,11 @@ const emits = defineEmits<{
 }>();
 //切换颜色
 const changeColor = (index: number): void => {
-    selectedIndex.value = index;
+    wallInfo.color = index;
 }
 //切换标签
 const changeLabel = (index: number): void => {
-    labelIndex.value = index;
+    wallInfo.label = index;
 }
 //提交留言
 const submit = () => {
@@ -118,7 +115,7 @@ const handleChange = (info: UploadChangeParam) => {
         return;
     }
     if (file.status === 'done') {
-        wallInfo.imageUrl = file.response.data.img;
+        wallInfo.imgUrl = file.response.data.img;
     }
     if (info.file.status === 'error') {
         loading.value = false;

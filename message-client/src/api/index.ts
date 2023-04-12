@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall } from '@/type'
+import { IWall, IMessage } from '@/type'
 
 //用户登录
 export const login = () => request({
@@ -17,4 +17,10 @@ export const addMessage = (wallInfo: IWall) => request({
     url: '/api/wall/addmessage',
     method: 'post',
     data: wallInfo
+})
+//查找留言信息
+export const findMessage = (data: IMessage) => request({
+    url: '/api/wall/findMessagePage',
+    method: 'get',
+    params: data
 })

@@ -5,7 +5,7 @@ export interface IPicture {
     userId: number,
     message: string,
     name: string,
-    imageUrl: string,
+    imgUrl: string,
     revoke: number,
     report: number,
     like: number,
@@ -13,6 +13,7 @@ export interface IPicture {
 }
 //留言墙信息
 export interface IWall {
+    id: number,
     type: number,
     message: string,
     name: string,
@@ -20,7 +21,7 @@ export interface IWall {
     moment: Date,
     label: number,
     color: number,
-    imageUrl: string,
+    imgUrl: string,
 }
 //评论信息
 export interface IComment {
@@ -30,11 +31,18 @@ export interface IComment {
     userId: number,
     message: string,
     name: string,
-    imageUrl: string
+    imgUrl: string
 }
 //用户信息
 export interface IUser {
     id: number
+}
+//获取留言墙数据的请求参数
+export interface IMessage {
+    page: number,
+    pagesize: number,
+    label: number,
+    type: any
 }
 //仓库state数据
 export interface IState {

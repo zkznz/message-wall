@@ -15,12 +15,12 @@
     </div>
     <div>
       <!-- 留言墙 -->
-      <div class="note-wrap" v-if="id == 0">
-        <NoteCard v-for="(item, index) in note.data" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
+      <div class="note-wrap" v-if="id === 0 && flag == true">
+        <NoteCard v-for="(item, index) in noteList" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
           :class="{ 'selected-card': index == cardIndex }"></NoteCard>
       </div>
       <!-- 照片墙 -->
-      <div class="pic" v-else>
+      <div class="pic" v-if="id === 1 && flag == true">
         <PictureCard class="pic-card" v-for="(item, index) in picture.data" :key="item.id" :picture="item"
           @click="showPop(index)"></PictureCard>
       </div>
@@ -48,14 +48,15 @@ import PictureCard from '@/components/PictureCard.vue'
 import ShowView from '@/components/ShowView.vue'
 import { note, picture } from '../mock'
 import { wallType, label } from '@/utils/data'
-import { ref, provide, computed, watch, isShallow } from 'vue'
+import { ref, provide, computed, watch, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { IWall } from '@/type'
-import { addMessage } from '@/api'
+import { IWall, IMessage } from '@/type'
+import { addMessage, findMessage } from '@/api'
+import { message } from 'ant-design-vue';
 
 const route = useRoute();
 //路由id
-let id = computed(() => route.query.id);
+let id = computed(() => Number(route.query.id));
 //留言墙与照片墙的切换id
 provide('id', id);
 //分类标签下标
@@ -67,11 +68,22 @@ let isPop = ref<boolean>(false);
 //控制图片详情显示与隐藏
 let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
+//获取留言列表请求完毕标志
+let flag = ref<boolean>(false);
+//总页数
+let total = ref<number>(1);
+let page = ref<number>(1);
+let pagesize = ref<number>(5);
+let wallInfo = reactive({});
+//留言墙卡片列表
+let noteList = reactive<IWall[]>([]);
 provide('title', title.value);
 
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
+  flag.value = false;
+  loading();
 }
 //关闭弹窗
 const handleClose = (): void => {
@@ -84,6 +96,8 @@ const handleClose = (): void => {
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
   labelIndex.value = index;
+  flag.value = false;
+  loading();
 }
 
 //点击留言卡片
@@ -110,15 +124,40 @@ const addCard = (): void => {
 watch(id, () => {
   isPop.value = false;
   isShow.value = false;
+  flag.value = false;
   labelIndex.value = -1;
   cardIndex.value = -1;
 })
 //提交留言信息给服务器，新建留言
-const submitNewCard = async (wallInfo: IWall) => {
-  console.log(wallInfo);
-  let res = await addMessage(wallInfo);
-
+const submitNewCard = async (wall: IWall) => {
+  wallInfo = wall;
+  let res = await addMessage(wall);
+  if (res.status == 200) {
+    noteList = res.data;
+    message.success("感谢您的记录！");
+  }
 }
+//加载留言墙
+const loading = async () => {
+  let messageData = {
+    type: id,
+    label: labelIndex.value,
+    total: total.value,
+    page: page.value,
+    pagesize: pagesize.value
+  }
+  let res = await findMessage(messageData);
+  if (res.status == 200) {
+    noteList = res.data;
+    total = res.total;
+  }
+  console.log(noteList);
+  flag.value = true;
+}
+//初始化加载
+onMounted(() => {
+  loading();
+})
 </script>
 
 <style lang="less" scoped>

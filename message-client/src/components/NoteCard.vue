@@ -1,5 +1,5 @@
 <template>
-    <div class="node-card" :style="{ background: cardColor[note.imgurl] }">
+    <div class="node-card" :style="{ background: cardColor[note.color] }">
         <div class="top">
             <p>{{ messageTime }}</p>
             <p>写留言</p>
