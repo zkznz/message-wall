@@ -44,6 +44,12 @@ export interface IMessage {
     label: number,
     type: any
 }
+//获取评论数据的请求参数
+export interface ICommentParams {
+    id: any,
+    page: number,
+    pagesize: number,
+}
 //仓库state数据
 export interface IState {
     user: IUser

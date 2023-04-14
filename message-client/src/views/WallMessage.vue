@@ -98,6 +98,7 @@ const handleAllLabel = (): void => {
   page.value = 1;
   noteList = [];
   loading();
+  isPop.value = false;
 }
 //关闭弹窗
 const handleClose = (): void => {
@@ -113,6 +114,7 @@ const handleLabel = (label: string, index: number): void => {
   page.value = 1;
   noteList = [];
   loading();
+  isPop.value = false;
 }
 
 //点击留言卡片

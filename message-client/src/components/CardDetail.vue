@@ -30,8 +30,7 @@
                             <span>{{ item.time }}</span>
                         </div>
 
-
-                        <div class="message">{{ item.message }}</div>
+                        <div class="message">{{ item.comment }}</div>
                     </div>
                 </div>
             </div>
@@ -40,23 +39,40 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue'
+import { defineProps, onMounted, reactive, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import NoteCard from '@/components/NoteCard.vue'
-import { comment } from '@/mock'
-import { IComment } from '@/type'
+import { IComment, ICommentParams } from '@/type'
+import { findComment } from '@/api'
 import moment from 'moment'
 //头像背景
 import { portrait } from '@/utils/data'
 //接收留言卡片详情数据
 defineProps(['note']);
+const route = useRoute();
+//路由id
+let id = computed(() => Number(route.query.id));
+//总页数
+let total = ref<number>(0);
+let commentParams = reactive<ICommentParams>({
+    id,
+    page: 1,
+    pagesize: 5
+})
 //评论详情数组
 let commentData = ref<IComment[]>([]);
-//处理时间
-const handleTime = (): void => {
-    commentData = comment.data.map((item: IComment) => {
-        item.time = moment(item.moment).format('YYYY.MM.DD hh:mm');
-        return item;
-    })
+//获取评论详情
+const handleTime = async (): Promise<void> => {
+    let res = await findComment(commentParams);
+    if (res.status == 200) {
+        //处理时间
+        commentData = res.data.map((item: IComment) => {
+            item.time = moment(item.moment).format('YYYY.MM.DD hh:mm');
+            return item;
+        })
+        total = res.total;
+    }
+
 }
 //组件创建就执行函数
 handleTime();
