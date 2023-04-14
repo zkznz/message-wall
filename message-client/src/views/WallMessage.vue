@@ -150,18 +150,18 @@ const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
   let res = await addMessage(wall);
   if (res.status == 200) {
-    noteList = res.data;
     message.success("感谢您的记录！");
+    noteList = [];
     handleClose();
     loading();
   }
 }
 //加载留言墙
-const loading = async () => {
+const loading = async (currentPage = 1) => {
   let messageData = {
     type: id,
     label: labelIndex.value,
-    page: page.value,
+    page: currentPage,
     pagesize: pagesize.value
   }
   let res = await findMessage(messageData);
@@ -186,7 +186,7 @@ const handleScroll = () => {
     else {
       isOk.value = true;
       page.value += 1;
-      setTimeout(() => loading(), 1000);
+      setTimeout(() => loading(page.value), 1000);
     }
 
   }
