@@ -84,32 +84,33 @@ exports.findMessagePage = (req, res) => {
     pagesize = parseInt(pagesize);
     //查找全部
     if (label == -1) {
-        const sql = "select * from walls where type=? order by id DESC limit ?,?"
-        db.query(sql, [type, currentPage, pagesize], (err, results) => {
+        const sql = "select * from walls where type=? and isdeleted=0 order by id DESC limit ?,?"
+        db.query(sql, [type, currentPage, pagesize], async (err, results) => {
             if (err)
                 return res.msg(err);
             if (results.length == 0)
                 return res.msg("查询失败");
-            results.forEach(item => {
+            for (let item of results) {
                 //查询点赞数
-                item.like = control.findFeedbacksTotal(item.id, 0);
-                console.log(item);
+                item.like = await control.findFeedbacksTotal(item.type, 0);
                 //查询举报数
-                item.report = control.findFeedbacksTotal(item.id, 1);
+                item.report = await control.findFeedbacksTotal(item.type, 1);
                 //查询撤销数
-                item.revoke = control.findFeedbacksTotal(item.id, 2);
+                item.revoke = await control.findFeedbacksTotal(item.type, 2);
                 //是否点赞
-                item.islike = control.findIslike(item.id, item.userId);
+                item.islike = await control.findIslike(item.type, item.userId);
                 //查询评论数
-                item.comtotal = control.findCommentTotal(item.id);
-            })
-            const sql1 = "select count (*) as total from walls";
-            db.query(sql1, (err, among) => {
+                item.comtotal = await control.findCommentTotal(item.type);
+            }
+            console.log(results);
+            const sql1 = "select count (*) as total from walls where isdeleted=0 and type=?";
+            db.query(sql1, type, (err, among) => {
                 if (err)
                     return res.msg(err);
                 if (among.length == 0)
                     return res.msg("查找总数失败");
                 let total = among[0];
+
                 res.send({
                     status: 200,
                     msg: "查找成功",
@@ -171,8 +172,7 @@ exports.findComment = (req, res) => {
     db.query(wallSql.findComment, [id, currentPage, pagesize], (err, results) => {
         if (err)
             return res.msg(err);
-        const sql = "select count(*) as total from comments where wallId=?"
-        db.query(sql, id, (err, among) => {
+        db.query(wallSql.findCommentTotal, id, (err, among) => {
             if (err)
                 return res.msg(err);
             let total = among[0];
