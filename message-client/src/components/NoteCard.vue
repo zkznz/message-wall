@@ -8,7 +8,7 @@
         <div class="foot">
             <div>
                 <span class="iconfont icon-aixin ">{{ note.like }}</span>
-                <span class="iconfont icon-liuyan liuyan">{{ note.comment }}</span>
+                <span class="iconfont icon-liuyan liuyan">{{ note.comtotal }}</span>
             </div>
             <div class="name">{{ note.name }}</div>
         </div>
@@ -21,7 +21,7 @@ import { defineProps, computed, inject } from 'vue';
 import moment from 'moment'
 const props = defineProps(['note']);
 const title = inject('title', '');
-console.log("title", title);
+console.log("comment", props.note)
 const messageTime = computed(() => {
     return moment(props.note.moment).format('YYYY.MM.DD')
 })

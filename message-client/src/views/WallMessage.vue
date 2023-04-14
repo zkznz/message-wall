@@ -29,6 +29,11 @@
         <img :src="none[id].url" alt="">
         <p>{{ none[id].msg }}</p>
       </div>
+      <!-- 加载动画 -->
+      <div class="loading">
+        <a-spin :spinning="isOk" />
+      </div>
+
 
       <!-- 添加留言按钮 -->
       <div class="add" @click="addCard">
@@ -59,7 +64,7 @@ import { useRoute } from 'vue-router'
 import { IWall, IMessage } from '@/type'
 import { addMessage, findMessage } from '@/api'
 import { message } from 'ant-design-vue';
-
+import useThrottle from '@/hooks/throttle'
 const route = useRoute();
 //路由id
 let id = computed(() => Number(route.query.id));
@@ -76,6 +81,8 @@ let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
 //获取留言列表请求完毕标志
 let flag = ref<boolean>(false);
+//是否加载
+let isOk = ref<boolean>(false);
 //总页数
 let total = ref<number>(1);
 let page = ref<number>(1);
@@ -88,6 +95,8 @@ provide('title', title.value);
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
+  page.value = 1;
+  noteList = [];
   loading();
 }
 //关闭弹窗
@@ -101,6 +110,8 @@ const handleClose = (): void => {
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
   labelIndex.value = index;
+  page.value = 1;
+  noteList = [];
   loading();
 }
 
@@ -148,21 +159,41 @@ const loading = async () => {
   let messageData = {
     type: id,
     label: labelIndex.value,
-    total: total.value,
     page: page.value,
     pagesize: pagesize.value
   }
-  flag.value = false;
   let res = await findMessage(messageData);
+  flag.value = false;
   if (res.status == 200) {
-    noteList = res.data;
-    total = res.total;
+    noteList.push(...res.data);
+    total.value = res.total;
+    isOk.value = false;
   }
   flag.value = true;
+}
+
+//滚动事件处理函数
+const handleScroll = () => {
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  let clientHeight = document.documentElement.clientHeight;
+  let scrollHeight = document.documentElement.scrollHeight;
+  if (scrollTop + clientHeight >= scrollHeight) {
+    //没有更多数据不需要发请求
+    if (total.value == noteList.length)
+      isOk.value = false;
+    else {
+      isOk.value = true;
+      page.value += 1;
+      setTimeout(() => loading(), 1000);
+    }
+
+  }
 }
 //初始化加载
 onMounted(() => {
   loading();
+  //监听页面滚动
+  window.addEventListener('scroll', useThrottle(handleScroll, 200));
 })
 </script>
 
@@ -250,6 +281,13 @@ onMounted(() => {
   .selected-card {
     border: 1px solid @primary;
   }
+}
+
+//加载动画
+.loading {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 // 添加按钮
