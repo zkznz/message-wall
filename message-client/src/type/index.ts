@@ -50,6 +50,14 @@ export interface ICommentParams {
     page: number,
     pagesize: number,
 }
+//添加点赞反馈请求参数
+export interface ILikeParams {
+    id: number,
+    wallId: number,
+    userId: number,
+    type: number,
+    moment: Date,
+}
 //仓库state数据
 export interface IState {
     user: IUser

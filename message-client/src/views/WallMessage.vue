@@ -16,8 +16,8 @@
     <div>
       <!-- 留言墙 -->
       <div class="note-wrap" v-if="id === 0 && flag == true">
-        <NoteCard v-for="(item, index) in noteList" :note="item" :key="item.id" class="note-card" @click="showPop(index)"
-          :class="{ 'selected-card': index == cardIndex }"></NoteCard>
+        <NoteCard v-for="(item, index) in noteList" :note="item" :key="item.id" class="note-card"
+          @handlePop="showPop(index)" :class="{ 'selected-card': index == cardIndex }"></NoteCard>
       </div>
       <!-- 照片墙 -->
       <div class="pic" v-if="id === 1 && flag == true">
@@ -32,6 +32,7 @@
       <!-- 加载动画 -->
       <div class="loading">
         <a-spin :spinning="isOk" />
+        <p v-if="!ismore">没有更多数据 ...</p>
       </div>
 
 
@@ -83,6 +84,8 @@ let title = ref<string>('写留言');
 let flag = ref<boolean>(false);
 //是否加载
 let isOk = ref<boolean>(false);
+//是否有更多数据
+let ismore = ref<boolean>(true);
 //总页数
 let total = ref<number>(1);
 let page = ref<number>(1);
@@ -170,6 +173,7 @@ const loading = async (currentPage = 1) => {
     noteList.push(...res.data);
     total.value = res.total;
     isOk.value = false;
+    ismore.value = true;
   }
   flag.value = true;
 }
@@ -181,8 +185,11 @@ const handleScroll = () => {
   let scrollHeight = document.documentElement.scrollHeight;
   if (scrollTop + clientHeight >= scrollHeight) {
     //没有更多数据不需要发请求
-    if (total.value == noteList.length)
+    if (total.value == noteList.length) {
       isOk.value = false;
+      ismore.value = false;
+    }
+
     else {
       isOk.value = true;
       page.value += 1;
@@ -196,6 +203,7 @@ onMounted(() => {
   loading();
   //监听页面滚动
   window.addEventListener('scroll', useThrottle(handleScroll, 200));
+  console.log(noteList);
 })
 </script>
 
@@ -290,6 +298,10 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   margin-top: 40px;
+
+  p {
+    color: @gray-2
+  }
 }
 
 // 添加按钮

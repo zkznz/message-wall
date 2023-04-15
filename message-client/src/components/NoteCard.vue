@@ -2,12 +2,14 @@
     <div class="node-card" :style="{ background: cardColor[note.color] }">
         <div class="top">
             <p>{{ messageTime }}</p>
-            <p>写留言</p>
+            <p>{{ labelName }}</p>
         </div>
-        <p class="message">{{ note.message }}</p>
+        <p class="message" @click="showPop">{{ note.message }}</p>
         <div class="foot">
             <div>
-                <span class="iconfont icon-aixin ">{{ note.like }}</span>
+                <span class="iconfont icon-aixin " :class="[note.islike > 0 ? 'aixin-active' : 'icon-aixin']"
+                    @click="addLike">{{
+                        note.like }}</span>
                 <span class="iconfont icon-liuyan liuyan">{{ note.comtotal }}</span>
             </div>
             <div class="name">{{ note.name }}</div>
@@ -17,14 +19,47 @@
 
 <script setup lang="ts">
 import { cardColor } from '@/mock'
-import { defineProps, computed, inject } from 'vue';
+import { label } from '@/utils/data'
+import { defineProps, computed, inject, defineEmits } from 'vue';
+import { addLikeFeedback, delLikeFeedback } from '@/api'
 import moment from 'moment'
 const props = defineProps(['note']);
+const emits = defineEmits(['handlePop']);
 const title = inject('title', '');
-console.log("comment", props.note)
 const messageTime = computed(() => {
     return moment(props.note.moment).format('YYYY.MM.DD')
 })
+const labelName = computed(() => {
+    return label[props.note.type][props.note.label]
+})
+const showPop = () => {
+    emits('handlePop');
+}
+//点赞
+const addLike = async () => {
+    //点过赞就取消
+    if (props.note.islike > 0) {
+        let res = await delLikeFeedback(props.note.id, props.note.type);
+        if (res.status == 200) {
+            props.note.like--;
+            props.note.islike--;
+        }
+    }
+    else {
+        let data = {
+            id: props.note.id,
+            wallId: props.note.type,
+            userId: props.note.userId,
+            type: 0,
+            moment: new Date()
+        }
+        let res = await addLikeFeedback(data);
+        if (res.status == 200) {
+            props.note.like++;
+            props.note.islike++;
+        }
+    }
+}
 </script>
 
 <style lang="less" scoped>
@@ -74,6 +109,10 @@ const messageTime = computed(() => {
             &:hover {
                 color: @warning;
             }
+        }
+
+        .aixin-active {
+            color: @warning
         }
 
         .liuyan {
