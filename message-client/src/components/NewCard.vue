@@ -109,7 +109,7 @@ const submit = () => {
 }
 //上传图片
 const handleChange = (info: UploadChangeParam) => {
-    const { file } = info
+    const { file } = info;
     if (file.status === 'uploading') {
         loading.value = true;
         return;

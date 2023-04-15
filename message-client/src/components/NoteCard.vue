@@ -1,18 +1,18 @@
 <template>
-    <div class="node-card" :style="{ background: cardColor[note.color] }">
+    <div class="node-card" :style="{ background: cardColor[noteItem.color] }">
         <div class="top">
             <p>{{ messageTime }}</p>
             <p>{{ labelName }}</p>
         </div>
-        <p class="message" @click="showPop">{{ note.message }}</p>
+        <p class="message" @click="showPop">{{ noteItem.message }}</p>
         <div class="foot">
             <div>
-                <span class="iconfont icon-aixin " :class="[note.islike > 0 ? 'aixin-active' : 'icon-aixin']"
+                <span class="iconfont icon-aixin " :class="[noteItem.islike > 0 ? 'aixin-active' : 'icon-aixin']"
                     @click="addLike">{{
-                        note.like }}</span>
-                <span class="iconfont icon-liuyan liuyan">{{ note.comtotal }}</span>
+                        noteItem.like }}</span>
+                <span class="iconfont icon-liuyan liuyan">{{ noteItem.comtotal }}</span>
             </div>
-            <div class="name">{{ note.name }}</div>
+            <div class="name">{{ noteItem.name }}</div>
         </div>
     </div>
 </template>
@@ -20,17 +20,18 @@
 <script setup lang="ts">
 import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
-import { defineProps, computed, inject, defineEmits } from 'vue';
+import { defineProps, computed, inject, defineEmits, toRefs, PropType, reactive } from 'vue';
 import { addLikeFeedback, delLikeFeedback } from '@/api'
 import moment from 'moment'
 const props = defineProps(['note']);
-const emits = defineEmits(['handlePop']);
+let noteItem = reactive(props.note);
+const emits = defineEmits(['handlePop', 'loading']);
 const title = inject('title', '');
 const messageTime = computed(() => {
-    return moment(props.note.moment).format('YYYY.MM.DD')
+    return moment(noteItem.moment).format('YYYY.MM.DD')
 })
 const labelName = computed(() => {
-    return label[props.note.type][props.note.label]
+    return label[noteItem.type][noteItem.label]
 })
 const showPop = () => {
     emits('handlePop');
@@ -38,25 +39,25 @@ const showPop = () => {
 //点赞
 const addLike = async () => {
     //点过赞就取消
-    if (props.note.islike > 0) {
-        let res = await delLikeFeedback(props.note.id, props.note.type);
+    if (noteItem.islike > 0) {
+        let res = await delLikeFeedback(noteItem.id, noteItem.type);
         if (res.status == 200) {
-            props.note.like--;
-            props.note.islike--;
+            noteItem.like--;
+            noteItem.islike--;
         }
     }
     else {
         let data = {
-            id: props.note.id,
-            wallId: props.note.type,
-            userId: props.note.userId,
+            id: noteItem.id,
+            wallId: noteItem.type,
+            userId: noteItem.userId,
             type: 0,
             moment: new Date()
         }
         let res = await addLikeFeedback(data);
         if (res.status == 200) {
-            props.note.like++;
-            props.note.islike++;
+            noteItem.like++;
+            noteItem.islike++;
         }
     }
 }

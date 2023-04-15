@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, reactive, ref, computed } from 'vue'
+import { defineProps, reactive, ref, computed, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'

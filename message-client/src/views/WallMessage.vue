@@ -17,7 +17,8 @@
       <!-- 留言墙 -->
       <div class="note-wrap" v-if="id === 0 && flag == true">
         <NoteCard v-for="(item, index) in noteList" :note="item" :key="item.id" class="note-card"
-          @handlePop="showPop(index)" :class="{ 'selected-card': index == cardIndex }"></NoteCard>
+          @handlePop="showPop(index)" :class="{ 'selected-card': index == cardIndex }">
+        </NoteCard>
       </div>
       <!-- 照片墙 -->
       <div class="pic" v-if="id === 1 && flag == true">
@@ -98,6 +99,7 @@ provide('title', title.value);
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
+  cardIndex.value = -1;
   page.value = 1;
   noteList = [];
   loading();
@@ -114,6 +116,7 @@ const handleClose = (): void => {
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
   labelIndex.value = index;
+  cardIndex.value = -1;
   page.value = 1;
   noteList = [];
   loading();
@@ -183,7 +186,7 @@ const handleScroll = () => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   let clientHeight = document.documentElement.clientHeight;
   let scrollHeight = document.documentElement.scrollHeight;
-  if (scrollTop + clientHeight >= scrollHeight) {
+  if (scrollTop + clientHeight > scrollHeight) {
     //没有更多数据不需要发请求
     if (total.value == noteList.length) {
       isOk.value = false;
@@ -203,7 +206,6 @@ onMounted(() => {
   loading();
   //监听页面滚动
   window.addEventListener('scroll', useThrottle(handleScroll, 200));
-  console.log(noteList);
 })
 </script>
 
