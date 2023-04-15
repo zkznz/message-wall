@@ -77,7 +77,7 @@ exports.delMessage = (req, res) => {
 }
 
 exports.delFeedBacks = (req, res) => {
-    db.query(wallSql.delFeedbacks, req.params.id, (err, results) => {
+    db.query(wallSql.delFeedbacks, [req.params.id, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);
         if (results.affectedRows < 1)
@@ -125,7 +125,6 @@ exports.findMessagePage = (req, res) => {
                 //查询评论数
                 item.comtotal = await control.findCommentTotal(item.id, item.type);
             }
-            console.log(results);
             const sql1 = "select count (*) as total from walls where isdeleted=0 and type=?";
             db.query(sql1, type, (err, among) => {
                 if (err)
@@ -145,7 +144,7 @@ exports.findMessagePage = (req, res) => {
     }
     //查找对应标签的留言
     else {
-        db.query(wallSql.findMessagePage, [type, label, currentPage, pagesize], (err, results) => {
+        db.query(wallSql.findMessagePage, [type, label, currentPage, pagesize], async (err, results) => {
             if (err)
                 return res.msg(err);
             if (results.length == 0) {
@@ -157,18 +156,19 @@ exports.findMessagePage = (req, res) => {
                 })
                 return;
             }
-            results.forEach(item => {
+            for (let item of results) {
                 //查询点赞数
-                item.like = control.findFeedbacksTotal(item.id, 0);
+                item.like = await control.findFeedbacksTotal(item.type, item.id, 0);
                 //查询举报数
-                item.report = control.findFeedbacksTotal(item.id, 1);
+                item.report = await control.findFeedbacksTotal(item.type, item.id, 1);
                 //查询撤销数
-                item.revoke = control.findFeedbacksTotal(item.id, 2);
+                item.revoke = await control.findFeedbacksTotal(item.type, item.id, 2);
                 //是否点赞
-                item.islike = control.findIslike(item.id, item.userId);
+                item.islike = await control.findIslike(item.type, item.id, item.userId);
                 //查询评论数
-                item.comtotal = control.findCommentTotal(item.id);
-            })
+                item.comtotal = await control.findCommentTotal(item.id, item.type);
+            }
+            console.log(results);
             db.query(wallSql.findMessageTotal, [type, label], (err, among) => {
                 if (err)
                     return res.msg(err);
