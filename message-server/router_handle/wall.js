@@ -16,16 +16,39 @@ exports.addMessage = (req, res) => {
     })
 }
 exports.addFeedBacks = (req, res) => {
-    db.query(wallSql.addFeedBacks, req.body, (err, results) => {
+    const { id, type } = req.body;
+    db.query(wallSql.findFeedbacksById, [id, type], (err, results) => {
         if (err)
             return res.msg(err);
-        if (results.affectedRows < 1)
-            return res.msg("添加失败");
-        res.send({
-            status: 200,
-            msg: '添加成功！'
-        })
+        //如果数据库存在该数据
+        if (results.length > 0) {
+            const sql = "update feedbacks set isdeleted=0 where id=? and type=?";
+            db.query(sql, [id, type], (err, results) => {
+                if (err)
+                    return res.msg(err);
+                if (results.affectedRows < 1)
+                    return res.msg("添加失败");
+                res.send({
+                    status: 200,
+                    msg: '添加成功！'
+                })
+            })
+        }
+        //数据库不存在数据，添加行
+        else {
+            db.query(wallSql.addFeedBacks, req.body, (err, results) => {
+                if (err)
+                    return res.msg(err);
+                if (results.affectedRows < 1)
+                    return res.msg("添加失败");
+                res.send({
+                    status: 200,
+                    msg: '添加成功！'
+                })
+            })
+        }
     })
+
 }
 exports.addComment = (req, res) => {
     db.query(wallSql.addComment, req.body, (err, results) => {
@@ -66,7 +89,7 @@ exports.delFeedBacks = (req, res) => {
     })
 }
 exports.delComments = (req, res) => {
-    db.query(wallSql.delComments, req.params.id, (err, results) => {
+    db.query(wallSql.delComments, [req.params.id, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);
         if (results.affectedRows < 1)
@@ -92,15 +115,15 @@ exports.findMessagePage = (req, res) => {
                 return res.msg("查询失败");
             for (let item of results) {
                 //查询点赞数
-                item.like = await control.findFeedbacksTotal(item.type, 0);
+                item.like = await control.findFeedbacksTotal(item.type, item.id, 0);
                 //查询举报数
-                item.report = await control.findFeedbacksTotal(item.type, 1);
+                item.report = await control.findFeedbacksTotal(item.type, item.id, 1);
                 //查询撤销数
-                item.revoke = await control.findFeedbacksTotal(item.type, 2);
+                item.revoke = await control.findFeedbacksTotal(item.type, item.id, 2);
                 //是否点赞
-                item.islike = await control.findIslike(item.type, item.userId);
+                item.islike = await control.findIslike(item.type, item.id, item.userId);
                 //查询评论数
-                item.comtotal = await control.findCommentTotal(item.type);
+                item.comtotal = await control.findCommentTotal(item.id, item.type);
             }
             console.log(results);
             const sql1 = "select count (*) as total from walls where isdeleted=0 and type=?";

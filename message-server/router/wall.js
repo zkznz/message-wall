@@ -12,7 +12,7 @@ router.post("/addcomment", wallHandler.addComment);
 
 //删除
 router.get("/delmessage/:id", wallHandler.delMessage);
-router.get("/delfeedbacks/:id", wallHandler.delFeedBacks);
+router.get("/delfeedbacks/:id/:type", wallHandler.delFeedBacks);
 router.get("/delcomments/:id", wallHandler.delComments);
 
 //查找整个留言墙卡片的数据
