@@ -13,7 +13,6 @@ export interface IPicture {
 }
 //留言墙信息
 export interface IWall {
-    id: number,
     type: number,
     message: string,
     name: string,

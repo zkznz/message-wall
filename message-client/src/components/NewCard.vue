@@ -79,7 +79,6 @@ let id: number = inject('id', 0);
 let userId: number = store.user.id;
 //留言墙信息
 let wallInfo: IWall = reactive({
-    id: 0,
     type: id,
     message: '',
     name: '',

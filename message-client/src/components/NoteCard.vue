@@ -23,8 +23,9 @@ import { label } from '@/utils/data'
 import { defineProps, computed, inject, defineEmits, toRefs, reactive, PropType } from 'vue';
 import { addLikeFeedback, delLikeFeedback } from '@/api'
 import moment from 'moment'
+import { useMainStore } from '@/store'
+const store = useMainStore();
 const props = defineProps(['note']);
-// let noteItem = toRefs(props.note);
 let noteItem = reactive(props.note);
 const emits = defineEmits(['handlePop', 'loading']);
 const title = inject('title', '');
@@ -50,7 +51,7 @@ const addLike = async () => {
     else {
         let data = {
             wallId: noteItem.id,
-            userId: noteItem.userId,
+            userId: store.user.id,
             type: 0,
             moment: new Date()
         }

@@ -79,7 +79,7 @@ const handleTime = async (): Promise<void> => {
             item.time = moment(item.moment).format('YYYY.MM.DD hh:mm');
             return item;
         }))
-        total = res.total;
+        total.value = res.total;
     }
     if (commentData.value.length != total.value)
         commentParams.page++;
@@ -99,9 +99,8 @@ const submitComment = async () => {
     }
     let res = await addComment(data);
     if (res.status == 200) {
-        commentParams.page = 1;
-        commentData.value = [];
-        handleTime();
+        total.value++;
+        commentData.value.unshift(data);
     }
 }
 
@@ -172,7 +171,7 @@ const submitComment = async () => {
         .content {
             display: flex;
             flex-wrap: wrap;
-            padding-bottom: 36px;
+            padding-bottom: 22px;
 
 
             .name {
