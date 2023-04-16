@@ -189,13 +189,13 @@ exports.findMessagePage = (req, res) => {
 }
 //查找评论
 exports.findComment = (req, res) => {
-    let { id, page, pagesize } = req.query;
+    let { wallId, id, page, pagesize } = req.query;
     const currentPage = (page - 1) * pagesize;
     pagesize = parseInt(pagesize);
-    db.query(wallSql.findComment, [id, currentPage, pagesize], (err, results) => {
+    db.query(wallSql.findComment, [wallId, id, currentPage, pagesize], (err, results) => {
         if (err)
             return res.msg(err);
-        db.query(wallSql.findCommentTotal, id, (err, among) => {
+        db.query(wallSql.findCommentTotal, [id, wallId], (err, among) => {
             if (err)
                 return res.msg(err);
             let total = among[0];
