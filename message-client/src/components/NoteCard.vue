@@ -22,7 +22,6 @@ import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
 import { defineProps, computed, inject, defineEmits, toRefs, reactive, PropType } from 'vue';
 import { addLikeFeedback, delLikeFeedback } from '@/api'
-import { IWall } from '@/type';
 import moment from 'moment'
 const props = defineProps(['note']);
 // let noteItem = toRefs(props.note);
@@ -45,7 +44,7 @@ const addLike = async () => {
         let res = await delLikeFeedback(noteItem.id, noteItem.userId, noteItem.type);
         if (res.status == 200) {
             noteItem.like--;
-            noteItem.islike--;
+            noteItem.islike = 0;
         }
     }
     else {

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams } from '@/type'
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment } from '@/type'
 
 //用户登录
 export const login = () => request({
@@ -25,10 +25,10 @@ export const findMessage = (data: IMessage) => request({
     params: data
 })
 //添加评论
-export const addComment = (data: ICommentParams) => request({
+export const addComment = (data: IComment) => request({
     url: '/api/wall/addComment',
-    method: 'get',
-    params: data
+    method: 'post',
+    data
 })
 //查找评论
 export const findComment = (data: ICommentParams) => request({

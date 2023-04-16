@@ -8,10 +8,11 @@
         <!-- 评论区 -->
         <div class="comment">
             <div class="comment-content">
-                <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }" v-model="message"></a-textarea>
+                <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }"
+                    v-model:value="message"></a-textarea>
                 <div class="comment-input">
-                    <a-input v-model="name"></a-input>
-                    <a-button shape="round" @click="addComment">评论</a-button>
+                    <a-input v-model:value="name"></a-input>
+                    <a-button shape="round" @click="submitComment">评论</a-button>
                 </div>
             </div>
             <div class="comment-list">
@@ -22,13 +23,16 @@
                 <div class="comment">
                     <div class="content" v-for="item in commentData">
 
-                        <div class="user" :style="{ 'background-image': portrait[item.imgurl] }"></div>
+                        <div class="user" :style="{ 'background-image': portrait[item.imgUrl] }"></div>
                         <div class="name">
                             <p>{{ item.name }}</p>
                             <span>{{ item.time }}</span>
                         </div>
 
                         <div class="message">{{ item.comment }}</div>
+                    </div>
+                    <div class="more" v-if="total != commentData.length" @click="handleTime">
+                        加载更多
                     </div>
                 </div>
             </div>
@@ -39,22 +43,26 @@
 <script setup lang="ts">
 import { defineProps, reactive, ref, computed, toRefs, inject } from 'vue'
 import { useRoute } from 'vue-router'
+import { } from 'pinia'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'
-import { findComment } from '@/api'
+import { findComment, addComment } from '@/api'
 import moment from 'moment'
 //头像背景
 import { portrait } from '@/utils/data'
+import { useMainStore } from '@/store'
 //接收留言卡片详情数据
 const props = defineProps(['note']);
 let noteItem = reactive(props.note);
+//获取仓库
+const mainStore = useMainStore();
 const route = useRoute();
 //评论数
 let total = ref<number>(0);
 let commentParams = reactive<ICommentParams>({
     wallId: noteItem.id,
     page: 1,
-    pagesize: 5
+    pagesize: 2
 })
 //评论名字
 let name = ref<string>('匿名');
@@ -67,26 +75,41 @@ const handleTime = async (): Promise<void> => {
     let res = await findComment(commentParams);
     if (res.status == 200) {
         //处理时间
-        commentData.value = res.data.map((item: IComment) => {
+        commentData.value.push(...res.data.map((item: IComment) => {
             item.time = moment(item.moment).format('YYYY.MM.DD hh:mm');
             return item;
-        })
+        }))
         total = res.total;
     }
+    if (commentData.value.length != total.value)
+        commentParams.page++;
 
 }
 //组件创建就执行函数
 handleTime();
 //添加评论
-const addComment = () => {
-
+const submitComment = async () => {
+    let data: IComment = {
+        wallId: noteItem.id,
+        userId: mainStore.user.id,
+        imgUrl: String(Math.floor(Math.random() * 14)),
+        comment: message.value,
+        name: name.value,
+        moment: new Date()
+    }
+    let res = await addComment(data);
+    if (res.status == 200) {
+        commentParams.page = 1;
+        commentData.value = [];
+        handleTime();
+    }
 }
 
 </script>
 
 <style lang="less" scoped>
 .card {
-    height: 100%;
+    height: 100vh;
 
     .card-header {
         display: flex;
@@ -149,13 +172,14 @@ const addComment = () => {
         .content {
             display: flex;
             flex-wrap: wrap;
-            padding-bottom: 32px;
+            padding-bottom: 36px;
 
 
             .name {
                 display: flex;
 
                 p {
+                    width: 100px;
                     font-size: 14px;
                     font-weight: 600;
                     margin-right: 5px;
@@ -179,8 +203,16 @@ const addComment = () => {
             }
 
             .message {
+                width: 100%;
                 padding-left: 37px;
             }
+        }
+
+        .more {
+            color: @gray-1;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
         }
     }
 
