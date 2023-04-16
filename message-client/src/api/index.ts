@@ -24,6 +24,12 @@ export const findMessage = (data: IMessage) => request({
     method: 'get',
     params: data
 })
+//添加评论
+export const addComment = (data: ICommentParams) => request({
+    url: '/api/wall/addComment',
+    method: 'get',
+    params: data
+})
 //查找评论
 export const findComment = (data: ICommentParams) => request({
     url: '/api/wall/findComment',
@@ -37,7 +43,7 @@ export const addLikeFeedback = (data: ILikeParams) => request({
     data
 })
 //删除点赞反馈
-export const delLikeFeedback = (id: number, type: number) => request({
-    url: `api/wall/delfeedbacks/${id}/${type}`,
+export const delLikeFeedback = (id: number, userId: number, type: number) => request({
+    url: `api/wall/delfeedbacks/${id}/${userId}/${type}`,
     method: 'get'
 })

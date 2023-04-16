@@ -42,7 +42,7 @@ const showPop = () => {
 const addLike = async () => {
     //点过赞就取消
     if (noteItem.islike > 0) {
-        let res = await delLikeFeedback(noteItem.id, noteItem.type);
+        let res = await delLikeFeedback(noteItem.id, noteItem.userId, noteItem.type);
         if (res.status == 200) {
             noteItem.like--;
             noteItem.islike--;
@@ -50,8 +50,7 @@ const addLike = async () => {
     }
     else {
         let data = {
-            id: noteItem.id,
-            wallId: noteItem.type,
+            wallId: noteItem.id,
             userId: noteItem.userId,
             type: 0,
             moment: new Date()

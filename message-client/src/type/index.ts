@@ -47,13 +47,11 @@ export interface IMessage {
 //获取评论数据的请求参数
 export interface ICommentParams {
     wallId: number,
-    id: number,
     page: number,
     pagesize: number,
 }
 //添加点赞反馈请求参数
 export interface ILikeParams {
-    id: number,
     wallId: number,
     userId: number,
     type: number,

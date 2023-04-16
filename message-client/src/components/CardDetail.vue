@@ -8,16 +8,16 @@
         <!-- 评论区 -->
         <div class="comment">
             <div class="comment-content">
-                <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }"></a-textarea>
+                <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }" v-model="message"></a-textarea>
                 <div class="comment-input">
-                    <a-input></a-input>
-                    <a-button shape="round">评论</a-button>
+                    <a-input v-model="name"></a-input>
+                    <a-button shape="round" @click="addComment">评论</a-button>
                 </div>
             </div>
             <div class="comment-list">
                 <div class="comment-number">
                     <span>评论</span>
-                    <span>{{ noteItem.comment }}</span>
+                    <span>{{ total }}</span>
                 </div>
                 <div class="comment">
                     <div class="content" v-for="item in commentData">
@@ -49,14 +49,17 @@ import { portrait } from '@/utils/data'
 const props = defineProps(['note']);
 let noteItem = reactive(props.note);
 const route = useRoute();
-//总页数
+//评论数
 let total = ref<number>(0);
 let commentParams = reactive<ICommentParams>({
-    wallId: noteItem.type,
-    id: noteItem.id,
+    wallId: noteItem.id,
     page: 1,
     pagesize: 5
 })
+//评论名字
+let name = ref<string>('匿名');
+//评论内容
+let message = ref<string>('');
 //评论详情数组
 let commentData = ref<IComment[]>([]);
 //获取评论详情
@@ -74,6 +77,10 @@ const handleTime = async (): Promise<void> => {
 }
 //组件创建就执行函数
 handleTime();
+//添加评论
+const addComment = () => {
+
+}
 
 </script>
 
