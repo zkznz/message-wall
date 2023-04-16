@@ -16,14 +16,14 @@ exports.addMessage = (req, res) => {
     })
 }
 exports.addFeedBacks = (req, res) => {
-    const { id, type } = req.body;
-    db.query(wallSql.findFeedbacksById, [id, type], (err, results) => {
+    const { wallId, userId, type } = req.body;
+    db.query(wallSql.findFeedbacksById, [wallId, userId, type], (err, results) => {
         if (err)
             return res.msg(err);
         //如果数据库存在该数据
         if (results.length > 0) {
-            const sql = "update feedbacks set isdeleted=0 where id=? and type=?";
-            db.query(sql, [id, type], (err, results) => {
+            const sql = "update feedbacks set isdeleted=0 where wallId=? and userId=? and type=?";
+            db.query(sql, [wallId, userId, type], (err, results) => {
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -77,7 +77,7 @@ exports.delMessage = (req, res) => {
 }
 
 exports.delFeedBacks = (req, res) => {
-    db.query(wallSql.delFeedbacks, [req.params.id, req.params.type], (err, results) => {
+    db.query(wallSql.delFeedbacks, [req.params.id, req.params.userId, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);
         if (results.affectedRows < 1)
@@ -115,16 +115,17 @@ exports.findMessagePage = (req, res) => {
                 return res.msg("查询失败");
             for (let item of results) {
                 //查询点赞数
-                item.like = await control.findFeedbacksTotal(item.type, item.id, 0);
+                item.like = await control.findFeedbacksTotal(item.id, 0);
                 //查询举报数
-                item.report = await control.findFeedbacksTotal(item.type, item.id, 1);
+                item.report = await control.findFeedbacksTotal(item.id, 1);
                 //查询撤销数
-                item.revoke = await control.findFeedbacksTotal(item.type, item.id, 2);
+                item.revoke = await control.findFeedbacksTotal(item.id, 2);
                 //是否点赞
-                item.islike = await control.findIslike(item.type, item.id, item.userId);
+                item.islike = await control.findIslike(item.id, item.userId);
                 //查询评论数
-                item.comtotal = await control.findCommentTotal(item.id, item.type);
+                item.comtotal = await control.findCommentTotal(item.id);
             }
+            console.log(results);
             const sql1 = "select count (*) as total from walls where isdeleted=0 and type=?";
             db.query(sql1, type, (err, among) => {
                 if (err)
@@ -158,15 +159,15 @@ exports.findMessagePage = (req, res) => {
             }
             for (let item of results) {
                 //查询点赞数
-                item.like = await control.findFeedbacksTotal(item.type, item.id, 0);
+                item.like = await control.findFeedbacksTotal(item.id, 0);
                 //查询举报数
-                item.report = await control.findFeedbacksTotal(item.type, item.id, 1);
+                item.report = await control.findFeedbacksTotal(item.id, 1);
                 //查询撤销数
-                item.revoke = await control.findFeedbacksTotal(item.type, item.id, 2);
+                item.revoke = await control.findFeedbacksTotal(item.id, 2);
                 //是否点赞
-                item.islike = await control.findIslike(item.type, item.id, item.userId);
+                item.islike = await control.findIslike(item.id, item.userId);
                 //查询评论数
-                item.comtotal = await control.findCommentTotal(item.id, item.type);
+                item.comtotal = await control.findCommentTotal(item.id);
             }
             console.log(results);
             db.query(wallSql.findMessageTotal, [type, label], (err, among) => {
@@ -189,13 +190,13 @@ exports.findMessagePage = (req, res) => {
 }
 //查找评论
 exports.findComment = (req, res) => {
-    let { wallId, id, page, pagesize } = req.query;
+    let { wallId, page, pagesize } = req.query;
     const currentPage = (page - 1) * pagesize;
     pagesize = parseInt(pagesize);
-    db.query(wallSql.findComment, [wallId, id, currentPage, pagesize], (err, results) => {
+    db.query(wallSql.findComment, [wallId, currentPage, pagesize], (err, results) => {
         if (err)
             return res.msg(err);
-        db.query(wallSql.findCommentTotal, [id, wallId], (err, among) => {
+        db.query(wallSql.findCommentTotal, wallId, (err, among) => {
             if (err)
                 return res.msg(err);
             let total = among[0];
