@@ -94,8 +94,6 @@ let pagesize = ref<number>(8);
 let wallInfo = reactive({});
 //留言墙卡片列表
 let noteList = reactive<IWall[]>([]);
-provide('title', title.value);
-
 //点击全部标签
 const handleAllLabel = (): void => {
   labelIndex.value = -1;
@@ -127,9 +125,17 @@ const handleLabel = (label: string, index: number): void => {
 const showPop = (index: number): void => {
   title.value = "";
   if (cardIndex.value != index) {
-    cardIndex.value = index;
-    isPop.value = true;
-    isShow.value = true;
+    //如果是弹窗状态关闭弹窗
+    if (isPop.value == true) {
+      cardIndex.value = -1;
+      isPop.value = false;
+    }
+    else {
+      cardIndex.value = index;
+      isPop.value = true;
+      isShow.value = true;
+    }
+
   }
   else {
     cardIndex.value = -1;

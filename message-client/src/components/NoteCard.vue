@@ -20,10 +20,12 @@
 <script setup lang="ts">
 import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
-import { defineProps, computed, inject, defineEmits, toRefs, PropType, reactive } from 'vue';
+import { defineProps, computed, inject, defineEmits, toRefs, reactive, PropType } from 'vue';
 import { addLikeFeedback, delLikeFeedback } from '@/api'
+import { IWall } from '@/type';
 import moment from 'moment'
 const props = defineProps(['note']);
+// let noteItem = toRefs(props.note);
 let noteItem = reactive(props.note);
 const emits = defineEmits(['handlePop', 'loading']);
 const title = inject('title', '');

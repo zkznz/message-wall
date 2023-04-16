@@ -46,7 +46,8 @@ export interface IMessage {
 }
 //获取评论数据的请求参数
 export interface ICommentParams {
-    id: any,
+    wallId: number,
+    id: number,
     page: number,
     pagesize: number,
 }

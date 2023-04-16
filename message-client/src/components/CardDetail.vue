@@ -4,7 +4,7 @@
             <p class="contact">联系墙主撕掉该标签</p>
             <span class="report">举报</span>
         </div>
-        <NoteCard :note="note" style="margin-top: 10px;width: 100%;"></NoteCard>
+        <NoteCard :note="noteItem" style="margin-top: 10px;width: 100%;"></NoteCard>
         <!-- 评论区 -->
         <div class="comment">
             <div class="comment-content">
@@ -13,13 +13,11 @@
                     <a-input></a-input>
                     <a-button shape="round">评论</a-button>
                 </div>
-
-
             </div>
             <div class="comment-list">
                 <div class="comment-number">
                     <span>评论</span>
-                    <span>{{ note.comment }}</span>
+                    <span>{{ noteItem.comment }}</span>
                 </div>
                 <div class="comment">
                     <div class="content" v-for="item in commentData">
@@ -39,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, reactive, ref, computed, watchEffect } from 'vue'
+import { defineProps, reactive, ref, computed, toRefs, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'
@@ -48,14 +46,14 @@ import moment from 'moment'
 //头像背景
 import { portrait } from '@/utils/data'
 //接收留言卡片详情数据
-defineProps(['note']);
+const props = defineProps(['note']);
+let noteItem = reactive(props.note);
 const route = useRoute();
-//路由id
-let id = computed(() => Number(route.query.id));
 //总页数
 let total = ref<number>(0);
 let commentParams = reactive<ICommentParams>({
-    id,
+    wallId: noteItem.type,
+    id: noteItem.id,
     page: 1,
     pagesize: 5
 })
@@ -66,7 +64,7 @@ const handleTime = async (): Promise<void> => {
     let res = await findComment(commentParams);
     if (res.status == 200) {
         //处理时间
-        commentData = res.data.map((item: IComment) => {
+        commentData.value = res.data.map((item: IComment) => {
             item.time = moment(item.moment).format('YYYY.MM.DD hh:mm');
             return item;
         })
@@ -76,7 +74,6 @@ const handleTime = async (): Promise<void> => {
 }
 //组件创建就执行函数
 handleTime();
-
 
 </script>
 
