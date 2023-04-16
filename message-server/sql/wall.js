@@ -24,8 +24,10 @@ exports.findCommentTotal = 'select count(*) as total from comments where wallId=
 //是否点赞
 exports.findIslike = 'select count(*) as total from feedbacks where wallId=? and userId=? and isdeleted=0'
 //分页查找评论
-exports.findComment = 'select * from comments where wallId=? and isdeleted=0 order by id limit ?,?'
+exports.findComment = 'select * from comments where wallId=? and isdeleted=0 order by id desc limit ?,?'
 
 //通过id查找反馈
-exports.findFeedbacksById = 'select * from feedbacks where wallId=? and userId=? and type=?'
+exports.findFeedbacksById = 'select * from feedbacks where wallId=? and userId=? and type=? and isdeleted=1'
+//通过id查找评论
+exports.findCommentsById = 'select * from comments where wallId=? and userId=? and isdeleted=1'
 

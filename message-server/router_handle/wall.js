@@ -51,16 +51,39 @@ exports.addFeedBacks = (req, res) => {
 
 }
 exports.addComment = (req, res) => {
-    db.query(wallSql.addComment, req.body, (err, results) => {
+    const { wallId, userId } = req.body;
+    db.query(wallSql.findCommentsById, [wallId, userId], (err, results) => {
         if (err)
             return res.msg(err);
-        if (results.affectedRows < 1)
-            return res.msg("添加失败");
-        res.send({
-            status: 200,
-            msg: '添加成功！'
-        })
+        //如果数据库存在该数据
+        if (results.length > 0) {
+            const sql = "update comments set isdeleted=0 where wallId=? and userId=?";
+            db.query(sql, [wallId, userId], (err, results) => {
+                if (err)
+                    return res.msg(err);
+                if (results.affectedRows < 1)
+                    return res.msg("添加失败");
+                res.send({
+                    status: 200,
+                    msg: '添加成功！'
+                })
+            })
+        }
+        //数据库不存在数据，添加行
+        else {
+            db.query(wallSql.addComment, req.body, (err, results) => {
+                if (err)
+                    return res.msg(err);
+                if (results.affectedRows < 1)
+                    return res.msg("添加失败");
+                res.send({
+                    status: 200,
+                    msg: '添加成功！'
+                })
+            })
+        }
     })
+
 }
 //删除
 exports.delMessage = (req, res) => {
@@ -116,16 +139,17 @@ exports.findMessagePage = (req, res) => {
             for (let item of results) {
                 //查询点赞数
                 item.like = await control.findFeedbacksTotal(item.id, 0);
+                console.log('like', item.like);
                 //查询举报数
                 item.report = await control.findFeedbacksTotal(item.id, 1);
                 //查询撤销数
                 item.revoke = await control.findFeedbacksTotal(item.id, 2);
                 //是否点赞
                 item.islike = await control.findIslike(item.id, item.userId);
+                console.log('islike', item.islike);
                 //查询评论数
                 item.comtotal = await control.findCommentTotal(item.id);
             }
-            console.log(results);
             const sql1 = "select count (*) as total from walls where isdeleted=0 and type=?";
             db.query(sql1, type, (err, among) => {
                 if (err)
