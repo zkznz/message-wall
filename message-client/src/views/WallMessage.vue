@@ -63,7 +63,7 @@ import { picture } from '../mock'
 import { wallType, label, none } from '@/utils/data'
 import { ref, provide, computed, watch, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { IWall, IMessage } from '@/type'
+import { IWall } from '@/type'
 import { addMessage, findMessage } from '@/api'
 import { message } from 'ant-design-vue';
 import useThrottle from '@/hooks/throttle'
@@ -153,10 +153,9 @@ const addCard = (): void => {
 watch(id, () => {
   isPop.value = false;
   isShow.value = false;
-  flag.value = false;
   labelIndex.value = -1;
   cardIndex.value = -1;
-})
+}, { immediate: true })
 //提交留言信息给服务器，新建留言
 const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
