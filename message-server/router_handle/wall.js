@@ -134,8 +134,15 @@ exports.findMessagePage = (req, res) => {
         db.query(sql, [type, currentPage, pagesize], async (err, results) => {
             if (err)
                 return res.msg(err);
-            if (results.length == 0)
-                return res.msg("查询失败");
+            if (results.length == 0) {
+                res.send({
+                    status: 200,
+                    msg: "没有该数据",
+                    data: results,
+                    total: 0
+                })
+                return;
+            }
             for (let item of results) {
                 //查询点赞数
                 item.like = await control.findFeedbacksTotal(item.id, 0);

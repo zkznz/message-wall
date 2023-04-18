@@ -2,6 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+//生成随机数
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
 const storage = multer.diskStorage({
     //保存路径
     destination: function (req, file, cb) {
@@ -10,7 +14,7 @@ const storage = multer.diskStorage({
     },
     //保存在 destination 中的文件名
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now());
+        cb(null, file.fieldname + '-' + Date.now() + random(1, 100));
     }
 })
 const upload = multer({ storage: storage })
