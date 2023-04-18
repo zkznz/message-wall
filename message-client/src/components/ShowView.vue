@@ -2,7 +2,7 @@
     <div class="view-main">
         <div class="pic-bg"></div>
         <div class="pic">
-            <img :src="require(`@/assets/img/${picInfo.imgurl}.png`)" alt="">
+            <img :src="picture.imgUrl" alt="">
         </div>
 
         <a-button type="primary" class="left" shape="circle" @click="back" :disabled="picIndex == 0">
@@ -27,8 +27,6 @@ let pictureList = reactive({
 let picIndex = ref<number>(-1);
 pictureList.picture = props.picture;
 picIndex.value = props.cardIndex;
-//计算图片地址
-const picInfo = computed(() => pictureList.picture[picIndex.value]);
 //计算图片数组长度
 const picLength: number = computed(() => pictureList.picture.length).value;
 

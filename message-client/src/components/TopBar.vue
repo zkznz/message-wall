@@ -25,7 +25,7 @@ const changeWall = (e: number): void => {
     router.push({
         query: {
             id: e
-        }
+        },
     })
 }
 

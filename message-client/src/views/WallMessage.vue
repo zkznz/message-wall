@@ -1,8 +1,8 @@
 <template>
   <div style="padding:0 56px;">
     <div class="wall-message">
-      <p class="wall-title">{{ wallType[0].name }}</p>
-      <p class="wall-slogan">{{ wallType[0].slogan }}</p>
+      <p class="wall-title">{{ wallType[id].name }}</p>
+      <p class="wall-slogan">{{ wallType[id].slogan }}</p>
     </div>
     <!-- 标签列表 -->
     <div class="wall-list">
@@ -22,11 +22,11 @@
       </div>
       <!-- 照片墙 -->
       <div class="pic" v-if="id === 1 && flag == true">
-        <PictureCard class="pic-card" v-for="(item, index) in picture.data" :key="item.id" :picture="item"
+        <PictureCard class="pic-card" v-for="(item, index) in noteList" :key="item.id" :picture="item"
           @click="showPop(index)"></PictureCard>
       </div>
       <!-- 卡片状态 -->
-      <div v-if="!noteList.length" class="none-img">
+      <div v-if="noteList.length === 0 && flag == true" class="none-img">
         <img :src="none[id].url" alt="">
         <p>{{ none[id].msg }}</p>
       </div>
@@ -47,7 +47,7 @@
         <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
-      <ShowView v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="picture.data"></ShowView>
+      <ShowView v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="noteList[cardIndex]"></ShowView>
     </div>
   </div>
 </template>
@@ -70,6 +70,7 @@ import useThrottle from '@/hooks/throttle'
 const route = useRoute();
 //路由id
 let id = computed(() => Number(route.query.id));
+
 //留言墙与照片墙的切换id
 provide('id', id);
 //分类标签下标
@@ -109,7 +110,6 @@ const handleClose = (): void => {
   isShow.value = false;
   cardIndex.value = -1;
 }
-
 //点击单个标签
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
@@ -148,29 +148,10 @@ const addCard = (): void => {
   // title.value = "写留言";
   handleClose();
 }
-
-//监听全局id变化
-watch(id, () => {
-  isPop.value = false;
-  isShow.value = false;
-  labelIndex.value = -1;
-  cardIndex.value = -1;
-}, { immediate: true })
-//提交留言信息给服务器，新建留言
-const submitNewCard = async (wall: IWall) => {
-  wallInfo = wall;
-  let res = await addMessage(wall);
-  if (res.status == 200) {
-    message.success("感谢您的记录！");
-    noteList = [];
-    handleClose();
-    loading();
-  }
-}
 //加载留言墙
 const loading = async (currentPage = 1) => {
   let messageData = {
-    type: id,
+    type: id.value,
     label: labelIndex.value,
     page: currentPage,
     pagesize: pagesize.value
@@ -183,7 +164,28 @@ const loading = async (currentPage = 1) => {
     isOk.value = false;
     ismore.value = true;
   }
+  console.log("note", noteList);
   flag.value = true;
+}
+//监听全局id变化
+watch(id, () => {
+  isPop.value = false;
+  isShow.value = false;
+  labelIndex.value = -1;
+  cardIndex.value = -1;
+  noteList = [];
+  loading();
+});
+//提交留言信息给服务器，新建留言
+const submitNewCard = async (wall: IWall) => {
+  wallInfo = wall;
+  let res = await addMessage(wall);
+  if (res.status == 200) {
+    message.success("感谢您的记录！");
+    noteList = [];
+    handleClose();
+    loading();
+  }
 }
 
 //滚动事件处理函数

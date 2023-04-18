@@ -1,7 +1,7 @@
 <template>
     <div class="pic-card">
         <div class="pic-bg"></div>
-        <img :src="require(`@/assets/img/${picture.imgurl}.png`)" alt="" class="pic-img" @click="showView">
+        <img :src="picture.imgUrl" alt="" class="pic-img" @click="showView">
         <!-- 图片点赞 -->
         <div class="pic-like">
             <div class="like">

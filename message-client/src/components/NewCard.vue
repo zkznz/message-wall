@@ -102,8 +102,11 @@ const changeColor = (index: number): void => {
 const changeLabel = (index: number): void => {
     wallInfo.label = index;
 }
-//提交留言
+//提交
 const submit = () => {
+    if (id == 1)
+        wallInfo.color = 5;
+    //提交图片
     emits('submit', wallInfo);
 }
 //上传图片
@@ -136,6 +139,7 @@ const handleChange = (info: UploadChangeParam) => {
 
     .upload-image {
         height: 200px;
+        width: 100%;
         padding: 3px;
         padding-left: 0px;
     }
