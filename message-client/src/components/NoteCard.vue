@@ -52,7 +52,7 @@ const addLike = async () => {
         let data = {
             wallId: noteItem.value.id,
             userId: store.user.id,
-            type: 0,
+            type: noteItem.value.type,
             moment: new Date()
         }
         let res = await addLikeFeedback(data);

@@ -22,7 +22,6 @@ const props = defineProps({
     title: String,
     isPop: Boolean
 })
-console.log("title", props.title);
 const emit = defineEmits(['close'])
 //关闭弹窗
 const closePop = () => {

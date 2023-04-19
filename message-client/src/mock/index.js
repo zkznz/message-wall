@@ -64,7 +64,7 @@ export const cardColor = [
     'rgba(146,230,245,0.30)',
     'rgba(168,237,138,0.30)',
     'rgba(202,167,247,0.30)',
-    'rgba(212,212,212,0.30)'
+    'rgba(212,212,212,0.50)'
 ]
 //卡片颜色选择
 export const cardColor1 = [

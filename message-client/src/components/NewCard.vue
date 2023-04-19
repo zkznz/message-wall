@@ -26,7 +26,7 @@
     </a-upload>
 
     <!-- 留言内容 -->
-    <div class="card-main" :style="{ background: id == 0 ? cardColor1[wallInfo.color] : '#ccc' }">
+    <div class="card-main" :style="{ background: id == 0 ? cardColor[wallInfo.color] : cardColor[5] }">
         <textarea placeholder="留言..." class="message" maxlength="100" v-model="wallInfo.message"></textarea>
         <input type="text" placeholder="签名" v-model="wallInfo.name" class="name">
     </div>
@@ -57,14 +57,15 @@
     </div>
     <!-- 按钮 -->
     <div class="control">
-        <a-button shape="round" type="danger" size="large" style="margin-right: 10px;">丢弃</a-button>
-        <a-button shape="round" type="primary" size="large" style="width: 200px;" @click="submit">确定</a-button>
+        <a-button shape="round" type="danger" size="large" style="margin-right: 10px;" @click="abandon">丢弃</a-button>
+        <a-button shape="round" type="primary" size="large" style="width: 200px;" @click="submit"
+            :disabled="disabled">确定</a-button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { cardColor1, } from "@/mock"
-import { ref, inject, reactive, defineEmits } from 'vue'
+import { cardColor1, cardColor } from "@/mock"
+import { ref, inject, reactive, defineEmits, computed } from 'vue'
 import { label } from '@/utils/data'
 import { useMainStore } from '@/store'
 import { IWall } from '@/type'
@@ -74,12 +75,11 @@ import type { UploadChangeParam } from 'ant-design-vue';
 
 const store = useMainStore();
 let fileList = ref([]);
-let id: number = inject('id', 0);
-
+let id = ref<number>(inject('id', 0));
 let userId: number = store.user.id;
 //留言墙信息
 let wallInfo: IWall = reactive({
-    type: id,
+    type: id.value,
     message: '',
     name: '',
     userId,
@@ -88,11 +88,20 @@ let wallInfo: IWall = reactive({
     color: 0,
     imgUrl: ''
 })
+//按钮禁用
+let disabled = computed(() => {
+    if (id.value == 1)
+        return wallInfo.imgUrl === "" || wallInfo.message.trim() === "" || wallInfo.name.trim() === "";
+    else
+        return wallInfo.message.trim() === "" || wallInfo.name.trim() === "";
+}
+);
 //图片加载
 let loading = ref<boolean>(false);
 //自定义事件
 const emits = defineEmits<{
-    (e: 'submit', wallInfo: IWall): void
+    (e: 'submit', wallInfo: IWall): void,
+    (e: 'abandon'): void
 }>();
 //切换颜色
 const changeColor = (index: number): void => {
@@ -106,8 +115,17 @@ const changeLabel = (index: number): void => {
 const submit = () => {
     if (wallInfo.type === 1)
         wallInfo.color = 5;
+    wallInfo.message = wallInfo.message.trim();
+    wallInfo.name = wallInfo.name.trim();
     //提交图片
     emits('submit', wallInfo);
+}
+//丢弃
+const abandon = () => {
+    wallInfo.name = "";
+    wallInfo.message = "";
+    wallInfo.imgUrl = "";
+    emits('abandon');
 }
 //上传图片
 const handleChange = (info: UploadChangeParam) => {

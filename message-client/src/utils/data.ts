@@ -5,7 +5,7 @@ export const wallType = [
     },
     {
         name: '照片墙',
-        slogan: '很多事情值得记录，当然也值得回味。'
+        slogan: '光与影，定格当下。'
     }
 ];
 //分类标签

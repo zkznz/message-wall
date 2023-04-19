@@ -23,7 +23,7 @@
       <!-- 照片墙 -->
       <div class="pic" v-if="id === 1 && flag == true">
         <PictureCard class="pic-card" v-for="(item, index) in noteList" :key="item.id" :picture="item"
-          @click="showPop(index)"></PictureCard>
+          @handle="showPop(index)"></PictureCard>
       </div>
       <!-- 卡片状态 -->
       <div v-if="noteList.length === 0 && flag == true" class="none-img">
@@ -43,11 +43,11 @@
       </div>
       <!-- 弹窗 -->
       <PopModal :isPop="isPop" :title="title" @close="handleClose">
-        <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard"></NewCard>
+        <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard" @abandon="handleClose"></NewCard>
         <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
-      <ShowView @back="handleBack" @next="handleNext" v-if="id == 1 && isPop" :cardIndex="cardIndex" :picture="noteList">
+      <ShowView @back="handleBack" @next="handleNext" v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="noteList">
       </ShowView>
     </div>
   </div>
@@ -79,6 +79,8 @@ let labelIndex = ref<number>(-1);
 let cardIndex = ref<number>(-1);
 //控制弹窗
 let isPop = ref<boolean>(false);
+//控制图片详情显示
+let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
 //获取留言列表请求完毕标志
 let flag = ref<boolean>(false);
@@ -105,6 +107,7 @@ const handleAllLabel = (): void => {
 //关闭弹窗
 const handleClose = (): void => {
   isPop.value = !isPop.value;
+  isShow.value = false;
   cardIndex.value = -1;
 }
 //点击单个标签
@@ -130,10 +133,12 @@ const showPop = (index: number): void => {
   if (cardIndex.value != index) {
     cardIndex.value = index;
     isPop.value = true;
+    isShow.value = true;
   }
   else {
     cardIndex.value = -1;
     isPop.value = false;
+    isShow.value = false;
   }
 
 }
@@ -164,6 +169,7 @@ const loading = async (currentPage = 1) => {
 //监听全局id变化
 watch(id, () => {
   isPop.value = false;
+  isShow.value = false;
   labelIndex.value = -1;
   cardIndex.value = -1;
   noteList = [];
@@ -181,7 +187,6 @@ const submitNewCard = async (wall: IWall) => {
     loading();
   }
 }
-
 //滚动事件处理函数
 const handleScroll = () => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;

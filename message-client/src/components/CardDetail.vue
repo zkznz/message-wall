@@ -11,8 +11,9 @@
                 <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }"
                     v-model:value="message"></a-textarea>
                 <div class="comment-input">
-                    <a-input v-model:value="name"></a-input>
-                    <a-button shape="round" @click="submitComment">评论</a-button>
+                    <a-input v-model:value="name" placeholder="签名"></a-input>
+                    <a-button shape="round" :style="{ 'background-color': disabled ? '#ccc' : 'black' }"
+                        @click="submitComment" :disabled="disabled">评论</a-button>
                 </div>
             </div>
             <div class="comment-list">
@@ -62,9 +63,11 @@ let commentParams = reactive<ICommentParams>({
     pagesize: 2
 })
 //评论名字
-let name = ref<string>('匿名');
+let name = ref<string>('');
 //评论内容
 let message = ref<string>('');
+//按钮禁用
+let disabled = computed(() => message.value.trim() === "" || name.value.trim() === "");
 //评论详情数组
 let commentData = ref<IComment[]>([]);
 //获取评论详情

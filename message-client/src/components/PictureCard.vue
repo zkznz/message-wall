@@ -1,11 +1,12 @@
 <template>
     <div class="pic-card">
-        <div class="pic-bg"></div>
-        <img :src="picture.imgUrl" alt="" class="pic-img" @click="showView">
+        <div class="pic-bg" @click="showView"></div>
+        <img :src="picture.imgUrl" alt="" class="pic-img">
         <!-- 图片点赞 -->
         <div class="pic-like">
             <div class="like">
-                <span class="iconfont icon-aixin"></span>
+                <span class="iconfont icon-aixin" :class="[picture.islike > 0 ? 'aixin-active' : 'icon-aixin']"
+                    @click="addLike"></span>
                 <span class="like-data">{{ picture.like }}</span>
             </div>
             <div class="total">
@@ -17,12 +18,39 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
+import { delLikeFeedback, addLikeFeedback } from '@/api'
+import { useMainStore } from '@/store'
 const props = defineProps(['picture'])
-
-//点击图片显示详情
-const showView = (): void => {
-
+const store = useMainStore();
+const emits = defineEmits(['handle'])
+//点赞
+const addLike = async () => {
+    //点过赞就取消
+    if (props.picture.islike > 0) {
+        let res = await delLikeFeedback(props.picture.id, props.picture.userId, props.picture.type);
+        console.log(res);
+        if (res.status == 200) {
+            props.picture.like--;
+            props.picture.islike = 0;
+        }
+    }
+    else {
+        let data = {
+            wallId: props.picture.id,
+            userId: store.user.id,
+            type: props.picture.type,
+            moment: new Date()
+        }
+        let res = await addLikeFeedback(data);
+        if (res.status == 200) {
+            props.picture.like++;
+            props.picture.islike++;
+        }
+    }
+}
+const showView = () => {
+    emits('handle');
 }
 </script>
 
@@ -37,6 +65,7 @@ const showView = (): void => {
 
     &:hover .pic-bg {
         display: block;
+        cursor: pointer;
     }
 
     .pic-bg {
@@ -69,6 +98,10 @@ const showView = (): void => {
 
             cursor: pointer;
             margin-right: 3px;
+        }
+
+        .aixin-active {
+            color: @warning
         }
 
         .icon-liuyan {
