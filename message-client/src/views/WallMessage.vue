@@ -47,7 +47,8 @@
         <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
-      <ShowView v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="noteList[cardIndex]"></ShowView>
+      <ShowView @back="handleBack" @next="handleNext" v-if="id == 1 && isPop" :cardIndex="cardIndex" :picture="noteList">
+      </ShowView>
     </div>
   </div>
 </template>
@@ -59,7 +60,6 @@ import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
 import PictureCard from '@/components/PictureCard.vue'
 import ShowView from '@/components/ShowView.vue'
-import { picture } from '../mock'
 import { wallType, label, none } from '@/utils/data'
 import { ref, provide, computed, watch, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -79,8 +79,6 @@ let labelIndex = ref<number>(-1);
 let cardIndex = ref<number>(-1);
 //控制弹窗
 let isPop = ref<boolean>(false);
-//控制图片详情显示与隐藏
-let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
 //获取留言列表请求完毕标志
 let flag = ref<boolean>(false);
@@ -107,7 +105,6 @@ const handleAllLabel = (): void => {
 //关闭弹窗
 const handleClose = (): void => {
   isPop.value = !isPop.value;
-  isShow.value = false;
   cardIndex.value = -1;
 }
 //点击单个标签
@@ -120,22 +117,19 @@ const handleLabel = (label: string, index: number): void => {
   loading();
   isPop.value = false;
 }
-
+//上一张图片
+const handleBack = () => {
+  cardIndex.value--;
+}
+const handleNext = () => {
+  cardIndex.value++;
+}
 //点击留言卡片
 const showPop = (index: number): void => {
   title.value = "";
   if (cardIndex.value != index) {
-    //如果是弹窗状态关闭弹窗
-    if (isPop.value == true) {
-      cardIndex.value = -1;
-      isPop.value = false;
-    }
-    else {
-      cardIndex.value = index;
-      isPop.value = true;
-      isShow.value = true;
-    }
-
+    cardIndex.value = index;
+    isPop.value = true;
   }
   else {
     cardIndex.value = -1;
@@ -170,7 +164,6 @@ const loading = async (currentPage = 1) => {
 //监听全局id变化
 watch(id, () => {
   isPop.value = false;
-  isShow.value = false;
   labelIndex.value = -1;
   cardIndex.value = -1;
   noteList = [];
@@ -179,6 +172,7 @@ watch(id, () => {
 //提交留言信息给服务器，新建留言
 const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
+  console.log(wallInfo);
   let res = await addMessage(wall);
   if (res.status == 200) {
     message.success("感谢您的记录！");

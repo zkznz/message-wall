@@ -104,7 +104,7 @@ const changeLabel = (index: number): void => {
 }
 //提交
 const submit = () => {
-    if (id == 1)
+    if (wallInfo.type === 1)
         wallInfo.color = 5;
     //提交图片
     emits('submit', wallInfo);

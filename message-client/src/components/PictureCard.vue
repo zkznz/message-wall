@@ -10,7 +10,7 @@
             </div>
             <div class="total">
                 <span class="iconfont icon-liuyan"></span>
-                <span class="total-data">{{ picture.comment }}</span>
+                <span class="total-data">{{ picture.comtotal }}</span>
             </div>
         </div>
     </div>
@@ -73,11 +73,10 @@ const showView = (): void => {
 
         .icon-liuyan {
 
-            &:hover {
-                color: @gray-2;
-            }
+            // &:hover {
+            //     color: @gray-2;
+            // }
 
-            cursor: pointer;
             margin-left: 10px;
             margin-right: 3px;
         }

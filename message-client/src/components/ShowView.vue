@@ -2,7 +2,7 @@
     <div class="view-main">
         <div class="pic-bg"></div>
         <div class="pic">
-            <img :src="picture.imgUrl" alt="">
+            <img :src="picUrl" alt="">
         </div>
 
         <a-button type="primary" class="left" shape="circle" @click="back" :disabled="picIndex == 0">
@@ -16,31 +16,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, toRef, reactive, ref } from 'vue'
+import { computed, defineProps, reactive, ref, watch } from 'vue'
 import { IPicture } from '@/type'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue';
 
 const props = defineProps(['cardIndex', 'picture']);
-let pictureList = reactive({
-    picture: [] as IPicture[]
-})
-let picIndex = ref<number>(-1);
-pictureList.picture = props.picture;
-picIndex.value = props.cardIndex;
+const emits = defineEmits(['back', 'next']);
+let picIndex = ref(props.cardIndex);
+const pictureList: IPicture[] = reactive(props.picture)
+//图片url
+const picUrl = computed(() => pictureList[picIndex.value].imgUrl);
 //计算图片数组长度
-const picLength: number = computed(() => pictureList.picture.length).value;
-
-//上一张图片
-const back = (): void => {
-    if (picIndex.value > 0)
-        picIndex.value--;
-    console.log(picIndex.value);
+const picLength: number = computed(() => pictureList.length).value;
+//上一张
+const back = () => {
+    picIndex.value--;
+    emits('back');
 }
-//下一张图片
-const next = (): void => {
-    if (picIndex.value < picLength - 1)
-        picIndex.value++;
-    console.log(picIndex.value);
+//下一张
+const next = () => {
+    picIndex.value++;
+    emits('next');
 }
 </script>
 

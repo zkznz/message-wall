@@ -42,8 +42,6 @@
 
 <script setup lang="ts">
 import { defineProps, reactive, ref, computed, toRefs, inject } from 'vue'
-import { useRoute } from 'vue-router'
-import { } from 'pinia'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'
 import { findComment, addComment } from '@/api'
@@ -53,14 +51,13 @@ import { portrait } from '@/utils/data'
 import { useMainStore } from '@/store'
 //接收留言卡片详情数据
 const props = defineProps(['note']);
-let noteItem = reactive(props.note);
+const noteItem = computed(() => reactive(props.note));
 //获取仓库
 const mainStore = useMainStore();
-const route = useRoute();
 //评论数
 let total = ref<number>(0);
 let commentParams = reactive<ICommentParams>({
-    wallId: noteItem.id,
+    wallId: noteItem.value.id,
     page: 1,
     pagesize: 2
 })
@@ -90,7 +87,7 @@ handleTime();
 //添加评论
 const submitComment = async () => {
     let data: IComment = {
-        wallId: noteItem.id,
+        wallId: noteItem.value.id,
         userId: mainStore.user.id,
         imgUrl: String(Math.floor(Math.random() * 14)),
         comment: message.value,

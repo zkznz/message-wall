@@ -26,14 +26,14 @@ import moment from 'moment'
 import { useMainStore } from '@/store'
 const store = useMainStore();
 const props = defineProps(['note']);
-let noteItem = reactive(props.note);
+const noteItem = computed(() => reactive(props.note));
 const emits = defineEmits(['handlePop', 'loading']);
 const title = inject('title', '');
 const messageTime = computed(() => {
-    return moment(noteItem.moment).format('YYYY.MM.DD')
+    return moment(noteItem.value.moment).format('YYYY.MM.DD')
 })
 const labelName = computed(() => {
-    return label[noteItem.type][noteItem.label]
+    return label[noteItem.value.type][noteItem.value.label]
 })
 const showPop = () => {
     emits('handlePop');
@@ -41,24 +41,24 @@ const showPop = () => {
 //点赞
 const addLike = async () => {
     //点过赞就取消
-    if (noteItem.islike > 0) {
-        let res = await delLikeFeedback(noteItem.id, noteItem.userId, noteItem.type);
+    if (noteItem.value.islike > 0) {
+        let res = await delLikeFeedback(noteItem.value.id, noteItem.value.userId, noteItem.value.type);
         if (res.status == 200) {
-            noteItem.like--;
-            noteItem.islike = 0;
+            noteItem.value.like--;
+            noteItem.value.islike = 0;
         }
     }
     else {
         let data = {
-            wallId: noteItem.id,
+            wallId: noteItem.value.id,
             userId: store.user.id,
             type: 0,
             moment: new Date()
         }
         let res = await addLikeFeedback(data);
         if (res.status == 200) {
-            noteItem.like++;
-            noteItem.islike++;
+            noteItem.value.like++;
+            noteItem.value.islike++;
         }
     }
 }
