@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="pop-modal" v-if="isPop">
             <div class="header">
-                <p class="modal-name"></p>
+                <div class="modal-name">{{ title }}</div>
                 <close-outlined class="icon-close" @click="closePop" />
             </div>
             <div class="modal-main">

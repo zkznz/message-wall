@@ -139,7 +139,7 @@ const showPop = (index: number): void => {
 }
 //添加留言卡片
 const addCard = (): void => {
-  // title.value = "写留言";
+  title.value = "写留言";
   handleClose();
 }
 //加载留言墙
