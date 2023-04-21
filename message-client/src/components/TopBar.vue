@@ -11,12 +11,36 @@
         <div class="right">
             <div class="user"></div>
         </div>
+        <div class="login">
+            <a-card bodyStyle="{padding-top:'0'}">
+                <div class="close">
+                    <i><close-outlined /></i>
+                </div>
+                <div class="user-info">
+
+                    <p>欢迎登录</p>
+                    <h2>留言墙</h2>
+                    <a-input style="height: 36px" placeholder="用户" v-model:value="userInfo.name"></a-input>
+                    <a-input-password class="pwd" v-model:value="userInfo.password" placeholder="密码" />
+                    <a-button :style="{ 'background-color': disabled ? '#ccc' : 'black' }" @click="login"
+                        :disabled="disabled">登录</a-button>
+                </div>
+                <!-- 忘记密码和注册操作 -->
+                <div class="control">
+                    <span class="forget">忘记密码？</span>
+                    <span class="register">注册</span>
+                </div>
+
+            </a-card>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
-import { computed } from "vue"
+import { computed, reactive, ref } from "vue"
+import { IUser } from "@/type";
+import { CloseOutlined } from "@ant-design/icons-vue";
 const route = useRoute();
 const router = useRouter();
 let id = computed(() => route.query.id);
@@ -28,7 +52,15 @@ const changeWall = (e: number): void => {
         },
     })
 }
+let disabled = ref<boolean>(true);
+let userInfo = reactive<IUser>({
+    name: '',
+    password: ''
+});
+//用户登录
+const login = () => {
 
+}
 </script>
 
 <style lang="less" scoped>
@@ -39,7 +71,7 @@ const changeWall = (e: number): void => {
     position: fixed;
     box-shadow: 0px 0px 1px 0px;
     top: 0;
-    padding-left: 30px;
+    padding: 0 30px;
     z-index: 10;
     height: 52px;
     width: 100%;
@@ -83,6 +115,88 @@ const changeWall = (e: number): void => {
             height: 36px;
             width: 36px;
             background-image: linear-gradient(180deg, #7BE7FF 2%, #1EB5E2);
+        }
+    }
+
+    .login {
+        position: fixed;
+        right: 20px;
+        top: 65px;
+
+
+        /deep/ .ant-card-body {
+            padding-top: 10px;
+        }
+
+        .ant-card {
+
+            width: 280px;
+            height: 320px;
+
+            border-right: 1px solid #ccc;
+
+            .close {
+                width: 24px;
+                height: 24px;
+
+
+                i {
+                    position: absolute;
+                    width: 24px;
+                    height: 24px;
+                    right: 10px;
+                    font-size: 16px;
+                }
+            }
+
+
+
+            .user-info {
+                display: flex;
+
+                flex-direction: column;
+                align-items: center;
+
+
+
+                p {
+                    color: @primary;
+                    font-weight: 600;
+                }
+
+                h2 {
+                    font-weight: 700;
+                    font-size: @size-24;
+                }
+
+                .pwd {
+                    height: 36px;
+                    margin: 10px 0;
+                }
+
+                .ant-btn {
+                    width: 100%;
+                    height: 36px;
+                    margin-top: 15px;
+                }
+            }
+
+            .control {
+                display: flex;
+                justify-content: space-between;
+                margin: 15px 0;
+                width: 100%;
+
+                .forget {
+                    color: @gray-2;
+                    cursor: pointer;
+                }
+
+                .register {
+                    color: @link;
+                    cursor: pointer;
+                }
+            }
         }
     }
 }

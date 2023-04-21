@@ -96,6 +96,7 @@ const addLike = async () => {
         margin-bottom: 22px;
         font-family: HanziPenSC-W3;
         color: @gray-0;
+        cursor: pointer;
     }
 
     .foot {

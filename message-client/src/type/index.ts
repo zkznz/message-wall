@@ -34,7 +34,8 @@ export interface IComment {
 }
 //用户信息
 export interface IUser {
-    id: number
+    name: String,
+    password: String
 }
 //获取留言墙数据的请求参数
 export interface IMessage {

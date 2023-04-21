@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { IState } from '@/type'
 import { login } from '@/api'
 export const useMainStore = defineStore('main', {
-    state: (): IState => {
+    state: () => {
         return {
             user: {
                 id: 0
