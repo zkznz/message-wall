@@ -9,57 +9,78 @@
             <a-button shape="round" :class="{ 'active': id == 1 }" middle @click="changeWall(1)">照片墙</a-button>
         </div>
         <div class="right">
-            <div class="user"></div>
+            <div class="user" @click="handleLogin"></div>
         </div>
-        <div class="login">
-            <a-card bodyStyle="{padding-top:'0'}">
-                <div class="close">
-                    <i><close-outlined /></i>
-                </div>
-                <div class="user-info">
+        <transition name="modal">
+            <div class="login" v-if="isShow">
+                <a-card bodyStyle="{padding-top:'0'}">
+                    <div class="close" @click="handleLogin">
+                        <i><close-outlined /></i>
+                    </div>
+                    <div class="user-info">
 
-                    <p>欢迎登录</p>
-                    <h2>留言墙</h2>
-                    <a-input style="height: 36px" placeholder="用户" v-model:value="userInfo.name"></a-input>
-                    <a-input-password class="pwd" v-model:value="userInfo.password" placeholder="密码" />
-                    <a-button :style="{ 'background-color': disabled ? '#ccc' : 'black' }" @click="login"
-                        :disabled="disabled">登录</a-button>
-                </div>
-                <!-- 忘记密码和注册操作 -->
-                <div class="control">
-                    <span class="forget">忘记密码？</span>
-                    <span class="register">注册</span>
-                </div>
+                        <p>欢迎登录</p>
+                        <h2>留言墙</h2>
+                        <a-input style="height: 36px" placeholder="用户" v-model:value="userInfo.name"></a-input>
+                        <a-input-password class="pwd" v-model:value="userInfo.password" placeholder="密码" />
+                        <a-button :style="{ 'background-color': disabled ? '#ccc' : 'black' }" @click="login"
+                            :disabled="disabled">登录</a-button>
+                    </div>
+                    <!-- 忘记密码和注册操作 -->
+                    <div class="control">
+                        <span class="forget">忘记密码？</span>
+                        <span class="register" @click="register">注册</span>
+                    </div>
 
-            </a-card>
-        </div>
+                </a-card>
+            </div>
+        </transition>
+
     </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
-import { computed, reactive, ref } from "vue"
+import { computed, reactive, ref, watch } from "vue"
 import { IUser } from "@/type";
 import { CloseOutlined } from "@ant-design/icons-vue";
 const route = useRoute();
 const router = useRouter();
 let id = computed(() => route.query.id);
+let disabled = computed((): boolean => {
+    if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
+        return false;
+    else
+        return true
+})
+let userInfo = reactive<IUser>({
+    name: '',
+    password: ''
+});
+let isShow = ref<boolean>(false);
+//点击用户头像
+const handleLogin = () => {
+    isShow.value = !isShow.value
+}
 //跳转留言墙或照片墙
 const changeWall = (e: number): void => {
+    isShow.value = false
+    userInfo.name = '';
+    userInfo.password = '';
     router.push({
         query: {
             id: e
         },
     })
 }
-let disabled = ref<boolean>(true);
-let userInfo = reactive<IUser>({
-    name: '',
-    password: ''
-});
 //用户登录
 const login = () => {
 
+}
+//用户注册
+const register = () => {
+    isShow.value = false
+    router.push("/register");
 }
 </script>
 
@@ -115,6 +136,35 @@ const login = () => {
             height: 36px;
             width: 36px;
             background-image: linear-gradient(180deg, #7BE7FF 2%, #1EB5E2);
+            cursor: pointer;
+        }
+    }
+
+    .modal-enter {
+        &-from {
+            transform: translateY(-20px);
+        }
+
+        &-active {
+            transition: linear .2s;
+        }
+
+        &-to {
+            transform: translateY(0px);
+        }
+    }
+
+    .modal-leave {
+        &-from {
+            transform: translateY(0px);
+        }
+
+        &-active {
+            transition: linear .2s;
+        }
+
+        &-to {
+            transform: translateY(-20px);
         }
     }
 
@@ -122,7 +172,7 @@ const login = () => {
         position: fixed;
         right: 20px;
         top: 65px;
-
+        transition: all .3;
 
         /deep/ .ant-card-body {
             padding-top: 10px;
@@ -138,7 +188,7 @@ const login = () => {
             .close {
                 width: 24px;
                 height: 24px;
-
+                cursor: pointer;
 
                 i {
                     position: absolute;
@@ -178,6 +228,7 @@ const login = () => {
                     width: 100%;
                     height: 36px;
                     margin-top: 15px;
+                    color: #fff;
                 }
             }
 
