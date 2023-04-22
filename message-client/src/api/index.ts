@@ -23,6 +23,11 @@ export const userLogin = (data: IUser) => request({
     method: 'post',
     data
 })
+//获取用户信息
+export const getUserInfo = () => request({
+    url: '/auth/getUserInfo',
+    method: 'get'
+})
 //提交照片
 export const submitPic = () => request({
     url: '/wall/profile',

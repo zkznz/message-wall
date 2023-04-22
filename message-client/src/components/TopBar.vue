@@ -76,7 +76,7 @@ const changeWall = (e: number): void => {
     })
 }
 //用户登录
-const login = async () => {
+const login = () => {
     userInfo.name = userInfo.name.trim();
     userInfo.password = userInfo.password.trim();
     //通知仓库发请求登录
