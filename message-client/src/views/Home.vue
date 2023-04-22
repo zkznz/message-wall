@@ -12,7 +12,7 @@ import TopBar from '@/components/TopBar.vue';
 import { useMainStore } from '@/store'
 const store = useMainStore();
 //进入页面获取用户ip
-store.userLogin();
+store.initUser();
 </script>
 <style lang="less" scoped>
 .bg {

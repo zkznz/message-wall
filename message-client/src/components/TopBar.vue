@@ -41,11 +41,13 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
-import { computed, reactive, ref, watch } from "vue"
+import { computed, reactive, ref } from "vue"
 import { IUser } from "@/type";
+import { useMainStore } from "@/store";
 import { CloseOutlined } from "@ant-design/icons-vue";
 const route = useRoute();
 const router = useRouter();
+const store = useMainStore();
 let id = computed(() => route.query.id);
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
@@ -74,8 +76,11 @@ const changeWall = (e: number): void => {
     })
 }
 //用户登录
-const login = () => {
-
+const login = async () => {
+    userInfo.name = userInfo.name.trim();
+    userInfo.password = userInfo.password.trim();
+    //通知仓库发请求登录
+    store.login(userInfo);
 }
 //用户注册
 const register = () => {

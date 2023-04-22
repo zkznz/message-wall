@@ -1,16 +1,27 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm } from '@/type'
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser } from '@/type'
 //用户注册
 export const register = (data: IRegForm) => request({
     url: "/user/register",
     method: 'post',
     data
 })
+//检验用户名称
+export const checkName = (name: string) => request({
+    url: "/user/checkName",
+    method: 'get',
+    params: { name }
+})
+export const getUserId = () => request({
+    url: '/user/getId',
+    method: 'get',
+
+})
 //用户登录
-export const login = () => request({
+export const userLogin = (data: IUser) => request({
     url: '/user/login',
     method: 'post',
-
+    data
 })
 //提交照片
 export const submitPic = () => request({
