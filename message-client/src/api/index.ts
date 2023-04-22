@@ -1,6 +1,11 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment } from '@/type'
-
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm } from '@/type'
+//用户注册
+export const register = (data: IRegForm) => request({
+    url: "/user/register",
+    method: 'post',
+    data
+})
 //用户登录
 export const login = () => request({
     url: '/user/login',

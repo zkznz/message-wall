@@ -37,6 +37,12 @@ export interface IUser {
     name: String,
     password: String
 }
+//用户注册表单
+export interface IRegForm {
+    name: String,
+    password: String,
+    email: String
+}
 //获取留言墙数据的请求参数
 export interface IMessage {
     page: number,
