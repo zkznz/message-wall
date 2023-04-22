@@ -5,6 +5,7 @@ const config = {
         USER: 'root',
         PASSWORD: 'lzyqp123',
         DATABASE: 'wall'
-    }
+    },
+    secretKey: "Bruce"
 }
 module.exports = config;
