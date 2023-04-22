@@ -7,5 +7,5 @@ router.get("/getId", router_handler.getId);
 router.get("/checkname", router_handler.checkUser);
 router.post("/register", router_handler.register);
 //用户登录
-router.post("/login", router_handler.userLogin)
+router.post("/login", router_handler.userLogin);
 module.exports = router

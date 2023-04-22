@@ -3,6 +3,7 @@ const config = require('./config/default')
 const ejs = require("ejs")
 const path = require("path");
 const cors = require("cors");
+const expressJwt = require("express-jwt");
 const app = express();
 
 //获取静态资源
@@ -29,9 +30,22 @@ app.use((req, res, next) => {
     }
     next();
 })
+//验证token中间件
+app.use(expressJwt.expressjwt({ secret: config.secretKey, algorithms: ["HS256"] }).unless({ path: [{ url: /^\/user\// }, { url: /^\/api\/.*/, methods: ['GET'] }, '/api/wall/addfeedbacks'] }));
+//token校验错误中间件
+app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+        return res.send(401, {
+            msg: '请先登录',
+        })
+    }
+})
 //注册用户相关的路由
 const userRouter = require("./router/user");
 app.use('/user', userRouter);
+//注册权限相关的路由
+const authRouter = require("./router/auth");
+app.use('/auth', authRouter);
 //注册留言墙相关的路由
 const wallRouter = require("./router/wall");
 app.use('/api/wall', wallRouter);
