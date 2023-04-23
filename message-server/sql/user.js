@@ -4,3 +4,5 @@ exports.addUser = "insert into auth set ?";
 exports.findUser = "select * from auth where name=? and isdeleted=0";
 //用户信息校验
 exports.findAuth = "select * from auth where name=? and password=? and isdeleted=0";
+//修改用户信息
+exports.updateUser = "update auth set name=?,email=?,avatar=?,brief=?,sex=?,birthday=? where id=?"
