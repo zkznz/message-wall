@@ -35,7 +35,7 @@ app.use(expressJwt.expressjwt({ secret: config.secretKey, algorithms: ["HS256"] 
 //token校验错误中间件
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        return res.send(401, {
+        return res.status(401).send({
             msg: '请先登录',
         })
     }

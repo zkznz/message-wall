@@ -73,7 +73,6 @@ exports.userLogin = (req, res) => {
             let userInfo = { name }
             //加密用户信息生成token并返回
             const token = jwt.sign(userInfo, config.secretKey, {
-                // algorithm: 'HS256',
                 expiresIn: '2h'
             });
             res.send({
