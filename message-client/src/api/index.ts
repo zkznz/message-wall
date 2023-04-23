@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser } from '@/type'
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm } from '@/type'
 //用户注册
 export const register = (data: IRegForm) => request({
     url: "/user/register",
@@ -27,6 +27,12 @@ export const userLogin = (data: IUser) => request({
 export const getUserInfo = () => request({
     url: '/auth/getUserInfo',
     method: 'get'
+})
+//更改用户信息
+export const updateUserInfo = (data: InfoForm) => request({
+    url: '/auth/updateUserInfo',
+    method: 'post',
+    data
 })
 //提交照片
 export const submitPic = () => request({

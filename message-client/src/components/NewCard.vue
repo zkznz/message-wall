@@ -16,7 +16,8 @@
     </div>
 
     <a-upload v-if="id == 1 && !wallInfo.imgUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
-        class="avatar-uploader" :show-upload-list="false" :action="uploadAPI" :headers=headers @change="handleChange">
+        class="avatar-uploader" :show-upload-list="false" :action="uploadAPI" :headers="headers"
+        :before-upload="beforeUpload" @change="handleChange">
 
         <div v-if="!wallInfo.imgUrl">
             <loading-outlined v-if="loading"></loading-outlined>
@@ -132,6 +133,18 @@ const abandon = () => {
     wallInfo.imgUrl = "";
     emits('abandon');
 }
+//限制文件格式
+const beforeUpload = (file: any) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+        message.error('请上传图片!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+        message.error('图片大小需要小于2MB');
+    }
+    return isJpgOrPng && isLt2M;
+};
 //上传图片
 const handleChange = (info: UploadChangeParam) => {
     const { file } = info;
@@ -143,9 +156,9 @@ const handleChange = (info: UploadChangeParam) => {
         wallInfo.imgUrl = file.response.data.img;
     }
     if (info.file.status === 'error') {
-        if (!store.token) {
+        if (info.file.response) {
             loading.value = false;
-            message.error('请先登录');
+            message.error(info.file.response.msg);
         }
         else {
             loading.value = false;

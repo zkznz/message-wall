@@ -48,6 +48,8 @@ import { CloseOutlined } from "@ant-design/icons-vue";
 const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
+//控制登录页面和用户详情页
+let type = ref<number>(0);
 let id = computed(() => route.query.id);
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
@@ -62,7 +64,11 @@ let userInfo = reactive<IUser>({
 let isShow = ref<boolean>(false);
 //点击用户头像
 const handleLogin = () => {
-    isShow.value = !isShow.value
+    if (type.value == 0)
+        isShow.value = !isShow.value;
+    else {
+        router.push("/personal");
+    }
 }
 //跳转留言墙或照片墙
 const changeWall = (e: number): void => {
@@ -81,6 +87,8 @@ const login = () => {
     userInfo.password = userInfo.password.trim();
     //通知仓库发请求登录
     store.login(userInfo);
+    isShow.value = false;
+    type.value = 1;
 }
 //用户注册
 const register = () => {

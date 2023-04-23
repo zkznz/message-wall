@@ -45,6 +45,9 @@ export interface IRegForm {
 }
 //用户信息
 export interface InfoForm {
+    id: number,
+    userId: number,
+    role: string,
     name: string,
     email: string,
     avatar: string,

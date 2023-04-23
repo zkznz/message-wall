@@ -163,7 +163,6 @@ const loading = async (currentPage = 1) => {
     isOk.value = false;
     ismore.value = true;
   }
-  console.log("note", noteList);
   flag.value = true;
 }
 //监听全局id变化
@@ -178,7 +177,6 @@ watch(id, () => {
 //提交留言信息给服务器，新建留言
 const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
-  console.log(wallInfo);
   let res = await addMessage(wall);
   if (res.status == 200) {
     message.success("感谢您的记录！");
