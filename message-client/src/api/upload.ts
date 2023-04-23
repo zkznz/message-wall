@@ -1,0 +1,1 @@
+export const uploadAPI = process.env.VUE_APP_API_BASE_URL + '/api/profile'

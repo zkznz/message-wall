@@ -67,4 +67,4 @@ export const addLikeFeedback = (data: ILikeParams) => request({
 export const delLikeFeedback = (id: number, userId: number, type: number) => request({
     url: `api/wall/delfeedbacks/${id}/${userId}/${type}`,
     method: 'get'
-})
+}) 

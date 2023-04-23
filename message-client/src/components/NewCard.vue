@@ -16,7 +16,7 @@
     </div>
 
     <a-upload v-if="id == 1 && !wallInfo.imgUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
-        class="avatar-uploader" :show-upload-list="false" action="http://127.0.0.1:3000/api/profile" @change="handleChange">
+        class="avatar-uploader" :show-upload-list="false" :action="uploadAPI" :headers=headers @change="handleChange">
 
         <div v-if="!wallInfo.imgUrl">
             <loading-outlined v-if="loading"></loading-outlined>
@@ -69,11 +69,16 @@ import { ref, inject, reactive, defineEmits, computed } from 'vue'
 import { label } from '@/utils/data'
 import { useMainStore } from '@/store'
 import { IWall } from '@/type'
+import { uploadAPI } from '@/api/upload'
 import { PlusOutlined, LoadingOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 
 const store = useMainStore();
+//请求头
+const headers = {
+    authorization: store.token
+}
 let fileList = ref([]);
 let id = ref<number>(inject('id', 0));
 let userId: number = store.user.id;
@@ -138,8 +143,14 @@ const handleChange = (info: UploadChangeParam) => {
         wallInfo.imgUrl = file.response.data.img;
     }
     if (info.file.status === 'error') {
-        loading.value = false;
-        message.error('图片上传失败');
+        if (!store.token) {
+            loading.value = false;
+            message.error('请先登录');
+        }
+        else {
+            loading.value = false;
+            message.error('图片上传失败');
+        }
     }
 }
 

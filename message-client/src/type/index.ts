@@ -32,16 +32,25 @@ export interface IComment {
     name: string,
     imgUrl: string
 }
-//用户信息
+//用户登录
 export interface IUser {
-    name: String,
-    password: String
+    name: string,
+    password: string
 }
 //用户注册表单
 export interface IRegForm {
-    name: String,
-    password: String,
-    email: String
+    name: string,
+    password: string,
+    email: string
+}
+//用户信息
+export interface InfoForm {
+    name: string,
+    email: string,
+    avatar: string,
+    brief: string,
+    sex: number,
+    birthday: string
 }
 //获取留言墙数据的请求参数
 export interface IMessage {
