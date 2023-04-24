@@ -69,6 +69,11 @@ export const addLikeFeedback = (data: ILikeParams) => request({
     method: 'post',
     data
 })
+//删除留言
+export const delMessage = (id: number) => request({
+    url: `api/wall/delmessage/${id}`,
+    method: 'get'
+})
 //删除点赞反馈
 export const delLikeFeedback = (id: number, userId: number, type: number) => request({
     url: `api/wall/delfeedbacks/${id}/${userId}/${type}`,

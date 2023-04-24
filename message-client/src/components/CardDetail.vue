@@ -3,7 +3,7 @@
         <div class="card-header" v-if="mainStore.user.role === 'admin'">
             <p class="contact">联系墙主撕掉该标签 {{ noteItem.revoke }}</p>
             <span class="report">举报 {{ noteItem.report }}</span>
-            <span class="delcard">删除</span>
+            <span class="delcard" @click="deleteCard">删除</span>
         </div>
         <div class="card-header" v-else>
             <p class="contact">联系墙主撕掉该标签</p>
@@ -90,7 +90,6 @@ const handleTime = async (): Promise<void> => {
     }
     if (commentData.value.length != total.value)
         commentParams.page++;
-
 }
 //组件创建就执行函数
 handleTime();
@@ -109,6 +108,10 @@ const submitComment = async () => {
         total.value++;
         commentData.value.unshift(data);
     }
+}
+//删除留言
+const deleteCard = () => {
+
 }
 
 </script>

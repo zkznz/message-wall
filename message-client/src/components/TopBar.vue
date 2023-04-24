@@ -67,8 +67,8 @@ const store = useMainStore();
 let { type } = storeToRefs(store);
 let id = computed(() => route.query.id);
 //用户头像
-const user = JSON.parse(localStorage.getItem("userInfo") as string);
-const img = user.avatar;
+const user = JSON.parse(localStorage.getItem("userInfo") as string) || {};
+const img = user.avatar || "";
 
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
@@ -92,7 +92,6 @@ const handleLogin = () => {
         router.push("/personal");
     }
 }
-//token过期后发请求后还是会处于登录状态
 //跳转留言墙或照片墙
 const changeWall = (e: number): void => {
     isShow.value = false
