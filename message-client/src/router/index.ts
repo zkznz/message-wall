@@ -24,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/personal',
     name: 'personal',
     component: () => import('../views/Personal.vue')
+  },
+  {
+    path: '/repsw',
+    name: 'repsw',
+    component: () => import('../views/Repsw.vue')
   }
 ]
 
@@ -41,7 +46,7 @@ router.beforeEach((to, from, next) => {
       next();
   }
   else {
-    if (to.name === 'register')
+    if (to.name === 'register' || to.name === 'repsw')
       router.push("/");
     else
       next();

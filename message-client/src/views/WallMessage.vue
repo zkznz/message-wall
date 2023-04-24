@@ -133,7 +133,7 @@ const handleNext = () => {
 }
 //点击留言卡片
 const showPop = (index: number): void => {
-  title.value = "";
+  title.value = "详情";
   if (cardIndex.value != index) {
     cardIndex.value = index;
     isPop.value = true;

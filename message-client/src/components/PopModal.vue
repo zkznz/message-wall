@@ -20,7 +20,7 @@ const props = defineProps({
     title: String,
     isPop: Boolean
 })
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
 //关闭弹窗
 const closePop = () => {
     emit('close');

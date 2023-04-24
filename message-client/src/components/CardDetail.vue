@@ -1,10 +1,15 @@
 <template>
     <div class="card">
-        <div class="card-header">
+        <div class="card-header" v-if="mainStore.user.role === 'admin'">
+            <p class="contact">联系墙主撕掉该标签 {{ noteItem.revoke }}</p>
+            <span class="report">举报 {{ noteItem.report }}</span>
+            <span class="delcard">删除</span>
+        </div>
+        <div class="card-header" v-else>
             <p class="contact">联系墙主撕掉该标签</p>
             <span class="report">举报</span>
         </div>
-        <NoteCard :note="noteItem" style="margin-top: 10px;width: 100%;"></NoteCard>
+        <NoteCard :note="noteItem" style="margin-top: 35px;width: 100%;"></NoteCard>
         <!-- 评论区 -->
         <div class="comment">
             <div class="comment-content">
@@ -55,8 +60,10 @@ const props = defineProps(['note']);
 const noteItem = computed(() => reactive(props.note));
 //获取仓库
 const mainStore = useMainStore();
+console.log("role", mainStore.user.role);
 //评论数
 let total = ref<number>(0);
+
 let commentParams = reactive<ICommentParams>({
     wallId: noteItem.value.id,
     page: 1,
@@ -112,9 +119,10 @@ const submitComment = async () => {
 
     .card-header {
         display: flex;
+        align-items: center;
         position: fixed;
         padding: 20px 20px 20px 0;
-        top: 50px;
+        top: 90px;
 
         .contact {
             margin-right: 30px;
@@ -125,8 +133,15 @@ const submitComment = async () => {
 
         .report {
             cursor: pointer;
+            margin-right: 50px;
             font-size: 16px;
             color: @warning;
+        }
+
+        .delcard {
+            cursor: pointer;
+            font-size: 16px;
+            color: @error
         }
     }
 

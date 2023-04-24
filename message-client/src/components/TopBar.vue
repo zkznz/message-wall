@@ -41,7 +41,7 @@
                     </div>
                     <!-- 忘记密码和注册操作 -->
                     <div class="control">
-                        <span class="forget">忘记密码？</span>
+                        <span class="forget" @click="forgetPwd">忘记密码？</span>
                         <span class="register" @click="register">注册</span>
                     </div>
 
@@ -124,6 +124,10 @@ const userLogOut = () => {
     userInfo.name = "";
     userInfo.password = "";
     type.value = 0;
+}
+//忘记密码
+const forgetPwd = () => {
+    router.push("/repsw");
 }
 </script>
 
