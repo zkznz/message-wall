@@ -1,3 +1,4 @@
+import { message } from 'ant-design-vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
@@ -26,9 +27,25 @@ const routes: Array<RouteRecordRaw> = [
   }
 ]
 
+
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (!localStorage.getItem('token')) {
+    if (to.name === 'personal')
+      router.push("/")
+    else
+      next();
+  }
+  else {
+    if (to.name === 'register')
+      router.push("/");
+    else
+      next();
+  }
 })
 
 export default router

@@ -15,26 +15,26 @@
                 <div class="info">
                     <a-row>
                         <a-col :span="14">
-                            <a-form :model="infoForm" ref="formRef" :rules="rules">
+                            <a-form :model="data.infoForm" ref="formRef" :rules="rules">
                                 <a-form-item style="margin-left: -12px;" name="name" label="昵称">
-                                    <a-input style="height: 45px;" v-model:value="infoForm.name"></a-input>
+                                    <a-input style="height: 45px;" v-model:value="data.infoForm.name"></a-input>
                                 </a-form-item>
                                 <a-form-item style="margin-left: -12px;" label="邮箱" name="email">
-                                    <a-input style="height: 45px;" v-model:value="infoForm.email"></a-input>
+                                    <a-input style="height: 45px;" v-model:value="data.infoForm.email"></a-input>
                                 </a-form-item>
                                 <a-form-item label="简介">
-                                    <a-textarea v-model:value="infoForm.brief"
+                                    <a-textarea v-model:value="data.infoForm.brief"
                                         style="height: 80px;resize:none;"></a-textarea>
                                 </a-form-item>
                                 <a-form-item label="性别">
-                                    <a-radio-group v-model:value="infoForm.sex">
+                                    <a-radio-group v-model:value="data.infoForm.sex">
                                         <a-radio :value="1">男</a-radio>
                                         <a-radio :value="2">女</a-radio>
                                         <a-radio :value="3">保密</a-radio>
                                     </a-radio-group>
                                 </a-form-item>
                                 <a-form-item label="生日">
-                                    <a-date-picker :locale="locale" v-model:value="infoForm.birthday"
+                                    <a-date-picker :locale="locale" v-model:value="data.infoForm.birthday"
                                         value-format="YYYY-MM-DD" />
                                 </a-form-item>
                                 <a-form-item style="padding-left: 42px;">
@@ -45,7 +45,7 @@
                         </a-col>
                         <a-col :span="10">
                             <div class="user-img">
-                                <a-avatar shape="square" :src="infoForm.avatar" :size="160">
+                                <a-avatar shape="square" :src="data.infoForm.avatar" :size="160">
                                     <template #icon>
                                         <UserOutlined />
                                     </template>
@@ -72,16 +72,20 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
-import { reactive, ref } from "vue"
+import { onMounted, reactive, ref } from "vue"
 import { uploadAPI } from "@/api/upload"
-import { checkName } from '@/api';
+import { checkName, getUserInfo } from '@/api';
 import { UserOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { useMainStore } from "@/store"
+import { InfoForm } from "@/type"
 import type { UploadChangeParam, FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { useRouter, useRoute } from "vue-router"
 import loadsh from "lodash"
+interface IData {
+    infoForm: InfoForm
+}
 //设置中文日期
 dayjs.locale('zh-cn');
 const store = useMainStore();
@@ -90,8 +94,19 @@ const router = useRouter();
 const userInfo = JSON.parse(localStorage.getItem("userInfo") as string)
 //保存原来的用户信息
 const user = loadsh.cloneDeep(userInfo);
-let infoForm = reactive(userInfo);
-
+let data = reactive<IData>({
+    infoForm: {
+        id: store.user.id,
+        userId: 0,
+        role: '',
+        name: '',
+        email: '',
+        avatar: '',
+        brief: '',
+        sex: 1,
+        birthday: ''
+    }
+})
 let validateName = async (rule: Rule, value: string) => {
     if (!value)
         return Promise.reject("名称不能为空");
@@ -99,6 +114,7 @@ let validateName = async (rule: Rule, value: string) => {
     if (value !== user.name && res)
         return Promise.reject('名称已被占用，请换个名称');
 }
+onMounted(() => getInfo());
 //校验邮箱
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
@@ -129,6 +145,12 @@ const beforeUpload = (file: any) => {
     }
     return isJpgOrPng && isLt2M;
 };
+//获取用户信息
+const getInfo = async () => {
+    let res = await getUserInfo();
+    data.infoForm = reactive(res.data);
+}
+
 //上传图片
 const handleChange = (info: UploadChangeParam) => {
     const { file } = info;
@@ -136,7 +158,7 @@ const handleChange = (info: UploadChangeParam) => {
         return;
     }
     if (file.status === 'done') {
-        infoForm.avatar = file.response.data.img;
+        data.infoForm.avatar = file.response.data.img;
         message.success("修改成功");
     }
     if (info.file.status === 'error') {
@@ -151,7 +173,7 @@ const handleChange = (info: UploadChangeParam) => {
 //提交用户信息修改
 const submit = () => {
     formRef.value?.validate().then(async (res: any) => {
-        store.submitInfo(infoForm);
+        store.submitInfo(data.infoForm);
         router.push("/");
     }).catch(() => {
         return;
@@ -160,7 +182,7 @@ const submit = () => {
 //取消修改
 const cancel = () => {
     formRef.value?.resetFields();
-    infoForm = user;
+    data.infoForm = user;
     router.push("/");
 }
 </script>

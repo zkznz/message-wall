@@ -16,7 +16,7 @@ export const useMainStore = defineStore('main', {
                 sex: 3,
                 birthday: ''
             },
-            token: localStorage.getItem('token') || ''
+            token: localStorage.getItem('token') || '',
         }
     },
     actions: {
@@ -52,9 +52,14 @@ export const useMainStore = defineStore('main', {
             this.user = userInfo;
             localStorage.setItem('userInfo', JSON.stringify(this.user));
             message.success(res.msg);
+        },
+        //退出登录
+        logOut() {
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('token');
         }
     },
     getters: {
 
-    }
+    },
 })

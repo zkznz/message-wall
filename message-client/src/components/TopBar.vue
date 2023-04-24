@@ -9,7 +9,20 @@
             <a-button shape="round" :class="{ 'active': id == 1 }" middle @click="changeWall(1)">照片墙</a-button>
         </div>
         <div class="right">
-            <div class="user" @click="handleLogin"></div>
+            <!-- 登录状态 -->
+            <a-popover placement="bottom" v-if="type == 1">
+                <template #content>
+                    <div style="cursor: pointer;" @click="userLogOut">退出登录</div>
+                </template>
+                <!-- <div class="user" @click="handleLogin"></div> -->
+                <a-avatar size="large" :src="img" @click="handleLogin">
+                    <template #icon>
+                        <UserOutlined />
+                    </template>
+                </a-avatar>
+            </a-popover>
+            <!-- 未登录状态 -->
+            <div class="user" v-else @click="handleLogin"></div>
         </div>
         <transition name="modal">
             <div class="login" v-if="isShow">
@@ -44,19 +57,24 @@ import { useRoute, useRouter } from "vue-router"
 import { computed, reactive, ref } from "vue"
 import { IUser } from "@/type";
 import { useMainStore } from "@/store";
-import { CloseOutlined } from "@ant-design/icons-vue";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons-vue";
 const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 //控制登录页面和用户详情页
-let type = ref<number>(0);
+let type = ref<number>();
 let id = computed(() => route.query.id);
+//用户头像
+const user = JSON.parse(localStorage.getItem("userInfo") as string);
+const img = user.avatar;
+console.log("avatar:", store.user.avatar);
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
         return false;
     else
         return true
 })
+type.value = localStorage.getItem("token") ? 1 : 0;
 let userInfo = reactive<IUser>({
     name: '',
     password: ''
@@ -94,6 +112,13 @@ const login = () => {
 const register = () => {
     isShow.value = false
     router.push("/register");
+}
+//用户退出登录
+const userLogOut = () => {
+    store.logOut();
+    userInfo.name = "";
+    userInfo.password = "";
+    type.value = 0;
 }
 </script>
 
@@ -146,8 +171,8 @@ const register = () => {
 
         .user {
             border-radius: 50%;
-            height: 36px;
-            width: 36px;
+            height: 40px;
+            width: 40px;
             background-image: linear-gradient(180deg, #7BE7FF 2%, #1EB5E2);
             cursor: pointer;
         }
