@@ -67,10 +67,14 @@ import { IWall } from '@/type'
 import { addMessage, findMessage } from '@/api'
 import { message } from 'ant-design-vue';
 import useThrottle from '@/hooks/throttle'
+import { useMainStore } from '@/store'
+import { storeToRefs } from 'pinia'
+
+const store = useMainStore();
 const route = useRoute();
 //路由id
 let id = computed(() => Number(route.query.id));
-
+let { type } = storeToRefs(store);
 //留言墙与照片墙的切换id
 provide('id', id);
 //分类标签下标
@@ -177,13 +181,20 @@ watch(id, () => {
 //提交留言信息给服务器，新建留言
 const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
-  let res = await addMessage(wall);
-  if (res.status == 200) {
-    message.success("感谢您的记录！");
-    noteList = [];
+  try {
+    let res = await addMessage(wall);
+    if (res.status == 200) {
+      message.success("感谢您的记录！");
+      noteList = [];
+      handleClose();
+      loading();
+    }
+  } catch (error) {
     handleClose();
-    loading();
+    type.value = 0;
   }
+
+
 }
 //滚动事件处理函数
 const handleScroll = () => {

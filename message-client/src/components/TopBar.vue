@@ -54,32 +54,36 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
-import { computed, reactive, ref } from "vue"
+import { computed, reactive, ref, onMounted } from "vue"
+import { getUserInfo } from "@/api"
 import { IUser } from "@/type";
 import { useMainStore } from "@/store";
 import { CloseOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { storeToRefs } from "pinia"
 const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 //控制登录页面和用户详情页
-let type = ref<number>();
+let { type } = storeToRefs(store);
 let id = computed(() => route.query.id);
 //用户头像
 const user = JSON.parse(localStorage.getItem("userInfo") as string);
 const img = user.avatar;
-console.log("avatar:", store.user.avatar);
+
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
         return false;
     else
-        return true
+        return true;
 })
+
 type.value = localStorage.getItem("token") ? 1 : 0;
 let userInfo = reactive<IUser>({
     name: '',
     password: ''
 });
 let isShow = ref<boolean>(false);
+
 //点击用户头像
 const handleLogin = () => {
     if (type.value == 0)
@@ -88,6 +92,7 @@ const handleLogin = () => {
         router.push("/personal");
     }
 }
+//token过期后发请求后还是会处于登录状态
 //跳转留言墙或照片墙
 const changeWall = (e: number): void => {
     isShow.value = false

@@ -7,11 +7,9 @@
             </div>
             <div class="modal-main">
                 <slot></slot>
-
             </div>
             <div class="footer"></div>
         </div>
-
     </transition>
 </template>
 
@@ -66,7 +64,7 @@ const closePop = () => {
     position: fixed;
     right: 0;
     top: 52px;
-    z-index: 1000;
+    z-index: 5;
     width: 360px;
     height: 100%;
     background: #e9e9ef;

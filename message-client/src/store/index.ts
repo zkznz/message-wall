@@ -17,6 +17,8 @@ export const useMainStore = defineStore('main', {
                 birthday: ''
             },
             token: localStorage.getItem('token') || '',
+            //控制用户是登录状态还是未登录
+            type: 0
         }
     },
     actions: {

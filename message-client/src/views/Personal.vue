@@ -81,7 +81,7 @@ import { useMainStore } from "@/store"
 import { InfoForm } from "@/type"
 import type { UploadChangeParam, FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { useRouter, useRoute } from "vue-router"
+import { useRouter } from "vue-router"
 import loadsh from "lodash"
 interface IData {
     infoForm: InfoForm
