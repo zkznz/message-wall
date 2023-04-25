@@ -31,7 +31,7 @@ app.use((req, res, next) => {
     next();
 })
 //验证token中间件
-app.use(expressJwt.expressjwt({ secret: config.secretKey, algorithms: ["HS256"] }).unless({ path: [{ url: /^\/user\// }, { url: /^\/api\/.*/, methods: ['GET'] }, '/api/wall/addfeedbacks'] }));
+app.use(expressJwt.expressjwt({ secret: config.secretKey, algorithms: ["HS256"] }).unless({ path: [{ url: /^\/user\// }, { url: /^\/api\/.*/, methods: ['GET'] }, '/api/wall/addfeedbacks', { url: /^\/email\// }] }));
 //token校验错误中间件
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
@@ -52,6 +52,9 @@ app.use('/api/wall', wallRouter);
 //注册上传照片的路由
 const filesRouter = require("./router/files");
 app.use('/api', filesRouter);
+//发送邮箱中间件
+const emailRouter = require("./router/email");
+app.use('/email', emailRouter);
 
 
 app.listen(config.port, () => {
