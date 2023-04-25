@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm } from '@/type'
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm, IEmail } from '@/type'
 //用户注册
 export const register = (data: IRegForm) => request({
     url: "/user/register",
@@ -78,4 +78,16 @@ export const delMessage = (id: number) => request({
 export const delLikeFeedback = (id: number, userId: number, type: number) => request({
     url: `api/wall/delfeedbacks/${id}/${userId}/${type}`,
     method: 'get'
-}) 
+})
+//发送邮件
+export const getCode = (data: IEmail) => request({
+    url: '/email/send',
+    method: 'post',
+    data
+})
+//验证认证码
+export const verifyCode = (data: IEmail) => request({
+    url: '/email/checkcode',
+    method: 'post',
+    data
+})

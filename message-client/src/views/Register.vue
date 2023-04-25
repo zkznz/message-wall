@@ -49,7 +49,7 @@ const formRef = ref<FormInstance>();
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
         return Promise.reject("邮箱不能为空！");
-    let reg = /^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$/
+    let reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
     if (!reg.test(value))
         return Promise.reject('请输入正确的邮箱');
 }

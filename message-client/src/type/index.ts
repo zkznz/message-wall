@@ -79,3 +79,8 @@ export interface ILikeParams {
 export interface IState {
     user: IUser
 }
+//发送邮箱请求参数
+export interface IEmail {
+    email: string,
+    code?: string
+}

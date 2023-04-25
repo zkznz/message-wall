@@ -12,19 +12,20 @@
                 </div>
                 <div class="info">
                     <a-form layout="vertical" :model="formData" ref="formRef">
-                        <a-form-item label="邮箱" name="email">
-                            <a-input size="large" placeholder="用户邮箱" />
+                        <a-form-item label="邮箱" name="email" :rules="emailRules">
+                            <a-input size="large" placeholder="用户邮箱" v-model:value="formData.email" />
                         </a-form-item>
-                        <a-form-item label="验证码" name="password">
+                        <a-form-item label="验证码" name="code" :rules="codeRules" validateTrigger="submit">
                             <a-row :gutter="24">
-                                <a-col :span="10"><a-input size="large" /></a-col>
-                                <a-col :span="14"><a-button size="large" shape="round"
-                                        class="send-btn">发送验证码</a-button></a-col>
+                                <a-col :span="10"><a-input size="large" :validate-event="false"
+                                        v-model:value="formData.code" /></a-col>
+                                <a-col :span="14"><a-button size="large" shape="round" class="send-btn"
+                                        @click="sendCode">发送验证码</a-button></a-col>
                             </a-row>
 
                         </a-form-item>
-                        <a-form-item label="密码" name="password">
-                            <a-input-password size="large" placeholder="不小于6位数" />
+                        <a-form-item label="密码" name="password" :rules="pwdRules">
+                            <a-input-password v-model:value="formData.password" size="large" placeholder="不小于6位数" />
                         </a-form-item>
                         <a-form-item>
                             <a-button type="primary" shape="round" class="btn" @click="submitForm">修改</a-button>
@@ -40,14 +41,51 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue"
-
+import { reactive, ref } from "vue"
+import { getCode, verifyCode } from "@/api"
+import type { Rule, FormInstance } from 'ant-design-vue/es/form';
 let formData = reactive({
-
+    email: '',
+    code: '',
+    password: ''
 })
-
+//校验邮箱
+let checkEmail = async (rule: Rule, value: string) => {
+    if (value.length === 0)
+        return Promise.reject("邮箱不能为空！");
+    let reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+    if (!reg.test(value))
+        return Promise.reject('请输入正确的邮箱');
+}
+//校验验证码
+let validCode = async (rule: Rule, value: string) => {
+    if (value.length === 0)
+        return Promise.reject("请填入验证码！");
+    let data = {
+        email: formData.email,
+        code: formData.code
+    }
+    let res = await verifyCode(data);
+    console.log("res", res);
+    if (!res.check)
+        return Promise.reject('验证码错误！');
+}
+const emailRules: Rule[] = [{ required: true, validator: checkEmail, trigger: 'change' }];
+const codeRules: Rule[] = [{ validator: validCode }];
+const pwdRules: Rule[] = [{ required: true, min: 6, trigger: 'change' }];
+const formRef = ref<FormInstance>();
 const submitForm = () => {
+    formRef.value?.validate().then((res) => {
 
+    }).catch(() => {
+        return;
+    })
+}
+//发送验证码
+const sendCode = async () => {
+    let data = { email: formData.email }
+    let res = await getCode(data);
+    console.log('res', res);
 }
 </script>
 
