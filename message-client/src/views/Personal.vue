@@ -15,7 +15,7 @@
                 <div class="info">
                     <a-row>
                         <a-col :span="14">
-                            <a-form :model="data.infoForm" ref="formRef" :rules="rules">
+                            <a-form :model="data.infoForm" ref="formRef" :rules="rules" validateTrigger="submit">
                                 <a-form-item style="margin-left: -12px;" name="name" label="昵称">
                                     <a-input style="height: 45px;" v-model:value="data.infoForm.name"></a-input>
                                 </a-form-item>
@@ -78,6 +78,7 @@ import { checkName, getUserInfo } from '@/api';
 import { UserOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { useMainStore } from "@/store"
+import { storeToRefs } from "pinia"
 import { InfoForm } from "@/type"
 import type { UploadChangeParam, FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
@@ -90,6 +91,8 @@ interface IData {
 dayjs.locale('zh-cn');
 const store = useMainStore();
 const router = useRouter();
+//检测邮箱是否被注册
+let { isExist } = storeToRefs(store);
 //表单信息
 const userInfo = JSON.parse(localStorage.getItem("userInfo") as string)
 //保存原来的用户信息
@@ -118,14 +121,18 @@ onMounted(() => getInfo());
 //校验邮箱
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
-        return Promise.reject("邮箱不能为空！");
+        return Promise.reject("邮箱不能为空");
     let reg = /^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$/
     if (!reg.test(value))
         return Promise.reject('请输入正确的邮箱');
+    //检验邮箱是否注册
+    await store.isRegister({ email: value });
+    if (isExist.value && value !== user.email)
+        return Promise.reject("该邮箱已被注册");
 }
 const rules: Record<string, Rule[]> = {
-    name: [{ required: true, validator: validateName, trigger: 'change' }],
-    email: [{ required: true, validator: checkEmail, trigger: 'change' }],
+    name: [{ required: true, validator: validateName }],
+    email: [{ required: true, validator: checkEmail }],
 };
 //请求头
 const headers = {
@@ -172,7 +179,7 @@ const handleChange = (info: UploadChangeParam) => {
 }
 //提交用户信息修改
 const submit = () => {
-    formRef.value?.validate().then(async (res: any) => {
+    formRef.value?.validate().then(async () => {
         store.submitInfo(data.infoForm);
         router.push("/");
     }).catch(() => {

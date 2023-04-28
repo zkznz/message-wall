@@ -15,7 +15,7 @@
                     <div style="cursor: pointer;" @click="userLogOut">退出登录</div>
                 </template>
                 <!-- <div class="user" @click="handleLogin"></div> -->
-                <a-avatar size="large" :src="img" @click="handleLogin">
+                <a-avatar size="large" style="cursor: pointer;" :src="img" @click="handleLogin">
                     <template #icon>
                         <UserOutlined />
                     </template>

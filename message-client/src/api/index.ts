@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm, IEmail } from '@/type'
+import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm, IEmail, IPwd } from '@/type'
 //用户注册
 export const register = (data: IRegForm) => request({
     url: "/user/register",
@@ -11,6 +11,12 @@ export const checkName = (name: string) => request({
     url: "/user/checkName",
     method: 'get',
     params: { name }
+})
+//检验用户邮箱是否注册
+export const checkCount = (data: IEmail) => request({
+    url: "/user/checkCount",
+    method: "post",
+    data
 })
 export const getUserId = () => request({
     url: '/user/getId',
@@ -32,6 +38,12 @@ export const getUserInfo = () => request({
 export const updateUserInfo = (data: InfoForm) => request({
     url: '/auth/updateUserInfo',
     method: 'post',
+    data
+})
+//更改密码
+export const changePwd = (data: IPwd) => request({
+    url: "/user/updatePwd",
+    method: "post",
     data
 })
 //提交照片

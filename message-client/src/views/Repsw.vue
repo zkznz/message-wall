@@ -12,7 +12,7 @@
                 </div>
                 <div class="info">
                     <a-form layout="vertical" :model="formData" ref="formRef">
-                        <a-form-item label="邮箱" name="email" :rules="emailRules">
+                        <a-form-item label="邮箱" name="email" :rules="emailRules" validateTrigger="submit">
                             <a-input size="large" placeholder="用户邮箱" v-model:value="formData.email" />
                         </a-form-item>
                         <a-form-item label="验证码" name="code" :rules="codeRules" validateTrigger="submit">
@@ -42,8 +42,15 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue"
-import { getCode, verifyCode } from "@/api"
+import { getCode, verifyCode, changePwd } from "@/api"
+import { useMainStore } from "@/store";
+import { storeToRefs } from "pinia"
 import type { Rule, FormInstance } from 'ant-design-vue/es/form';
+import { message } from "ant-design-vue";
+import router from "@/router";
+
+const store = useMainStore();
+let { isExist } = storeToRefs(store);
 let formData = reactive({
     email: '',
     code: '',
@@ -55,7 +62,11 @@ let checkEmail = async (rule: Rule, value: string) => {
         return Promise.reject("邮箱不能为空");
     let reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
     if (!reg.test(value))
-        return Promise.reject('请输入正确的邮箱');
+        return Promise.reject("请输入正确的邮箱");
+    //检验邮箱是否注册
+    await store.isRegister({ email: value });
+    if (!isExist.value)
+        return Promise.reject("该邮箱未注册账号");
 }
 //校验验证码
 let validCode = async (rule: Rule, value: string) => {
@@ -76,13 +87,19 @@ let checkPwd = async (rule: Rule, value: string) => {
     if (value.length < 6)
         return Promise.reject("密码不能小于六位");
 }
-const emailRules: Rule[] = [{ required: true, validator: checkEmail, trigger: 'change' }];
+const emailRules: Rule[] = [{ required: true, validator: checkEmail }];
 const codeRules: Rule[] = [{ validator: validCode }];
 const pwdRules: Rule[] = [{ required: true, validator: checkPwd, trigger: 'change' }];
 const formRef = ref<FormInstance>();
 const submitForm = () => {
-    formRef.value?.validate().then((res) => {
-
+    formRef.value?.validate().then(async (res: any) => {
+        let result = await changePwd(res);
+        if (result.status === 200) {
+            //修改密码，重新登录
+            store.logOut();
+            message.success(result.msg);
+            router.push("/");
+        }
     }).catch(() => {
         return;
     })

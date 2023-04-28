@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { IUser, InfoForm } from '@/type'
-import { getUserId, userLogin, getUserInfo, updateUserInfo } from '@/api'
+import { IUser, InfoForm, IEmail } from '@/type'
+import { getUserId, userLogin, getUserInfo, updateUserInfo, checkCount } from '@/api'
 import { message } from 'ant-design-vue'
 export const useMainStore = defineStore('main', {
     state: () => {
@@ -18,7 +18,9 @@ export const useMainStore = defineStore('main', {
             },
             token: localStorage.getItem('token') || '',
             //控制用户是登录状态还是未登录
-            type: 0
+            type: 0,
+            //检测邮箱是否被注册
+            isExist: false,
         }
     },
     actions: {
@@ -51,9 +53,16 @@ export const useMainStore = defineStore('main', {
         },
         async submitInfo(userInfo: InfoForm) {
             let res = await updateUserInfo(userInfo);
-            this.user = userInfo;
-            localStorage.setItem('userInfo', JSON.stringify(this.user));
-            message.success(res.msg);
+            if (res.status === 200) {
+                this.user = userInfo;
+                localStorage.setItem('userInfo', JSON.stringify(this.user));
+                message.success(res.msg);
+            }
+        },
+        //检验用户邮箱是否注册
+        async isRegister(data: IEmail) {
+            this.isExist = await checkCount(data);
+            console.log("isExist", this.isExist);
         },
         //退出登录
         logOut() {

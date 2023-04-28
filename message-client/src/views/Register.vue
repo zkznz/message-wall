@@ -37,10 +37,8 @@
 import type { Rule, FormInstance } from 'ant-design-vue/es/form';
 import { IRegForm } from '@/type'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router';
 import { register, checkName } from '@/api'
 import { message } from 'ant-design-vue';
-const router = useRouter();
 const formData = reactive<IRegForm>({
     name: '',
     password: '',

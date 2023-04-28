@@ -37,6 +37,12 @@ export interface IUser {
     name: string,
     password: string
 }
+//用户修改密码表单
+export interface IPwd {
+    email: string,
+    code: string,
+    password: string
+}
 //用户注册表单
 export interface IRegForm {
     name: string,
