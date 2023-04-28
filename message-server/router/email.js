@@ -8,6 +8,4 @@ router.post("/send", (req, res) => {
 });
 //验证认证码是否正确
 router.post("/checkcode", router_handler.checkCode);
-//提交表单
-router.post("/submitInfo", router_handler.submitInfo);
 module.exports = router;

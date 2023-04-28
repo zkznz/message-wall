@@ -45,44 +45,57 @@ exports.emailSignup = (email, res) => {
         //对数据库操作保存邮件信息和验证码
         const db = require("../lib/db");
         const emailSql = require("../sql/email");
-        db.query(emailSql.findEmail, email, (err, results) => {
+        const userSql = require("../sql/user");
+        //判断邮箱是否注册
+        db.query(userSql.findUserByEmail, email, (err, results) => {
             if (err)
                 return res.msg(err);
-            //如果数据库存在该数据,直接更新验证码
-            if (results.length > 0) {
-                db.query(emailSql.updateCode, [code, email], (err, results) => {
-                    if (err) {
-                        return res.msg(err);
-                    }
-
-                    if (results.affectedRows > 0) {
-                        console.log("验证码修改成功");
-                    }
-                })
+            //邮箱未注册不操作数据库
+            if (results.length === 0) {
+                return;
             }
-            //没有该数据，插入记录
             else {
-                db.query(emailSql.addEmail, { email, code }, (err, results) => {
-                    if (err) {
+                db.query(emailSql.findEmail, email, (err, results) => {
+                    if (err)
                         return res.msg(err);
-                    }
+                    //如果数据库存在该数据,直接更新验证码
+                    if (results.length > 0) {
+                        db.query(emailSql.updateCode, [code, email], (err, results) => {
+                            if (err) {
+                                return res.msg(err);
+                            }
 
-                    if (results.affectedRows > 0) {
-                        console.log("验证码插入成功");
+                            if (results.affectedRows > 0) {
+                                console.log("验证码修改成功");
+                            }
+                        })
                     }
-                })
+                    //没有该数据，插入记录
+                    else {
+                        db.query(emailSql.addEmail, { email, code }, (err, results) => {
+                            if (err) {
+                                return res.msg(err);
+                            }
+
+                            if (results.affectedRows > 0) {
+                                console.log("验证码插入成功");
+                            }
+                        })
+                    }
+                });
+                //设置定时器两分钟后更改验证码
+                setTimeout(() => {
+                    db.query(emailSql.updateCode, ['0', email], (err, results) => {
+                        if (err)
+                            console.log(err);
+                        if (results.affectedRows > 0) {
+                            console.log("验证码已重置");
+                        }
+                    })
+                }, 30 * 1000);
             }
-        });
-        //设置定时器两分钟后更改验证码
-        setTimeout(() => {
-            db.query(emailSql.updateCode, ['0', email], (err, results) => {
-                if (err)
-                    console.log(err);
-                if (results.affectedRows > 0) {
-                    console.log("验证码已重置");
-                }
-            })
-        }, 30 * 1000);
+        })
+
     }
     else {
         res.send({

@@ -17,6 +17,3 @@ exports.checkCode = (req, res) => {
         }
     })
 }
-exports.submitInfo = (req, res) => {
-
-}

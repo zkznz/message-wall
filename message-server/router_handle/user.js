@@ -27,6 +27,21 @@ exports.checkCount = (req, res) => {
             res.send(false);
     })
 }
+//修改密码
+exports.updatePwd = (req, res) => {
+    const info = req.body;
+    const password = bcrypt.hashSync(info.password, 10);
+    db.query(userSql.updatePwd, [password, info.email], (err, results) => {
+        if (err)
+            return res.msg(err);
+        if (results.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "修改成功,请重新登录"
+            })
+        }
+    })
+}
 exports.register = (req, res) => {
     let userInfo = req.body;
     db.query(userSql.findUserByEmail, userInfo.email, (err, results) => {

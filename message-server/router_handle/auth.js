@@ -35,8 +35,10 @@ exports.updateUserInfo = (req, res) => {
             return res.msg(err);
         if (results.affectedRows > 0) {
             res.send({
+                status: 200,
                 msg: "保存成功！"
             })
         }
     })
+
 }
