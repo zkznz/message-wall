@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const userSql = require('../sql/user');
 const jwt = require('jsonwebtoken');
 const config = require('../config/default')
-//检验用户是否存在
+//检验名称是否重复
 exports.checkUser = (req, res) => {
     let { name } = req.query;
     db.query(userSql.findUser, name, (err, results) => {
@@ -15,35 +15,60 @@ exports.checkUser = (req, res) => {
             res.send(false);
     })
 }
-exports.register = (req, res) => {
-    let userInfo = req.body;
-    let sql = "select * from auth where name=? and isdeleted=1";
-    db.query(sql, userInfo.name, (err, results) => {
+//检验账号是否存在
+exports.checkCount = (req, res) => {
+    let { email } = req.body;
+    db.query(userSql.findUserByEmail, email, (err, results) => {
         if (err)
             return res.msg(err);
-        //数据库存在该字段
+        if (results.length > 0)
+            res.send(true);
+        else
+            res.send(false);
+    })
+}
+exports.register = (req, res) => {
+    let userInfo = req.body;
+    db.query(userSql.findUserByEmail, userInfo.email, (err, results) => {
+        if (err)
+            return res.msg(err);
+        //用户已存在
         if (results.length > 0) {
-            let sql1 = "update auth set isdeleted=0 where name=?"
-            db.query(sql1, userInfo.name, (err, results) => {
-                if (err)
-                    return res.msg(err);
-                if (results.affectedRows > 0) {
-                    res.send({
-                        msg: '注册成功'
-                    })
-                }
+            return res.send({
+                status: 441,
+                exist: true
             })
         }
-        //不存在该字段
         else {
-            //密码加密并插入数据库
-            userInfo.password = bcrypt.hashSync(userInfo.password, 10)
-            db.query(userSql.addUser, userInfo, (err, results) => {
+            let sql = "select * from auth where name=? and isdeleted=1";
+            db.query(sql, userInfo.email, (err, results) => {
                 if (err)
                     return res.msg(err);
-                if (results.affectedRows > 0) {
-                    res.send({
-                        msg: '注册成功'
+                //数据库存在该字段
+                if (results.length > 0) {
+                    let sql1 = "update auth set isdeleted=0 where name=?"
+                    db.query(sql1, userInfo.name, (err, results) => {
+                        if (err)
+                            return res.msg(err);
+                        if (results.affectedRows > 0) {
+                            res.send({
+                                msg: '注册成功'
+                            })
+                        }
+                    })
+                }
+                //不存在该字段
+                else {
+                    //密码加密并插入数据库
+                    userInfo.password = bcrypt.hashSync(userInfo.password, 10)
+                    db.query(userSql.addUser, userInfo, (err, results) => {
+                        if (err)
+                            return res.msg(err);
+                        if (results.affectedRows > 0) {
+                            res.send({
+                                msg: '注册成功'
+                            })
+                        }
                     })
                 }
             })
