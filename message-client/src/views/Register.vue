@@ -18,9 +18,11 @@
                         <a-form-item label="密码" name="password">
                             <a-input-password size="large" v-model:value.trim="formData.password" placeholder="不小于6位数" />
                         </a-form-item>
-                        <a-form-item>
+                        <a-form-item style="height: 120px;">
                             <a-button type="primary" class="btn" @click="submitForm">注册</a-button>
+                            <p v-show="isExist" class="exist">邮箱已被注册,请直接登录</p>
                         </a-form-item>
+
                     </a-form>
 
                 </div>
@@ -45,6 +47,7 @@ const formData = reactive<IRegForm>({
     email: ''
 })
 const formRef = ref<FormInstance>();
+let isExist = ref<boolean>(false);
 //校验邮箱
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
@@ -70,9 +73,15 @@ const rules: Record<string, Rule[]> = {
 const submitForm = () => {
     formRef.value?.validate().then(async (res: any) => {
         let result = await register(res);
-        message.success(result.msg);
-        formRef.value?.resetFields();
-        router.push("/");
+        //用户已存在
+        if (result.status === 441) {
+            isExist.value = result.exist;
+        }
+        else {
+            isExist.value = false;
+            message.success(result.msg);
+            formRef.value?.resetFields();
+        }
     }).catch(() => {
         return;
     });
@@ -126,6 +135,13 @@ body {
                 margin-top: 20px;
             }
         }
+    }
+
+    .exist {
+        text-align: center;
+        margin-top: 5px;
+        color: #ff4d4f;
+        font-size: 14px;
     }
 
     .footer {

@@ -60,7 +60,6 @@ const props = defineProps(['note']);
 const noteItem = computed(() => reactive(props.note));
 //获取仓库
 const mainStore = useMainStore();
-console.log("role", mainStore.user.role);
 //评论数
 let total = ref<number>(0);
 

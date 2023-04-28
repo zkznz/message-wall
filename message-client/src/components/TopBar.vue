@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
-import { computed, reactive, ref, onMounted } from "vue"
+import { computed, reactive, ref } from "vue"
 import { getUserInfo } from "@/api"
 import { IUser } from "@/type";
 import { useMainStore } from "@/store";
@@ -115,7 +115,11 @@ const login = () => {
 //用户注册
 const register = () => {
     isShow.value = false
-    router.push("/register");
+    //打开新标签页
+    let routeUrl = router.resolve({
+        path: "/register",
+    });
+    window.open(routeUrl.href, '_blank');
 }
 //用户退出登录
 const userLogOut = () => {
@@ -124,9 +128,14 @@ const userLogOut = () => {
     userInfo.password = "";
     type.value = 0;
 }
+
 //忘记密码
 const forgetPwd = () => {
-    router.push("/repsw");
+    //打开新标签页
+    let routeUrl = router.resolve({
+        path: "/repsw",
+    });
+    window.open(routeUrl.href, '_blank');
 }
 </script>
 

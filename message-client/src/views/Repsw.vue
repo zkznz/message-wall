@@ -24,7 +24,7 @@
                             </a-row>
 
                         </a-form-item>
-                        <a-form-item label="密码" name="password" :rules="pwdRules">
+                        <a-form-item label="新密码" name="password" :rules="pwdRules">
                             <a-input-password v-model:value="formData.password" size="large" placeholder="不小于6位数" />
                         </a-form-item>
                         <a-form-item>
@@ -52,7 +52,7 @@ let formData = reactive({
 //校验邮箱
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
-        return Promise.reject("邮箱不能为空！");
+        return Promise.reject("邮箱不能为空");
     let reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
     if (!reg.test(value))
         return Promise.reject('请输入正确的邮箱');
@@ -60,19 +60,25 @@ let checkEmail = async (rule: Rule, value: string) => {
 //校验验证码
 let validCode = async (rule: Rule, value: string) => {
     if (value.length === 0)
-        return Promise.reject("请填入验证码！");
+        return Promise.reject("请填入验证码");
     let data = {
         email: formData.email,
         code: formData.code
     }
     let res = await verifyCode(data);
-    console.log("res", res);
-    if (!res.check)
-        return Promise.reject('验证码错误！');
+    if (!res.check || value.length < 6)
+        return Promise.reject('验证码错误');
+}
+//校验密码
+let checkPwd = async (rule: Rule, value: string) => {
+    if (value.length === 0)
+        return Promise.reject("密码不能为空");
+    if (value.length < 6)
+        return Promise.reject("密码不能小于六位");
 }
 const emailRules: Rule[] = [{ required: true, validator: checkEmail, trigger: 'change' }];
 const codeRules: Rule[] = [{ validator: validCode }];
-const pwdRules: Rule[] = [{ required: true, min: 6, trigger: 'change' }];
+const pwdRules: Rule[] = [{ required: true, validator: checkPwd, trigger: 'change' }];
 const formRef = ref<FormInstance>();
 const submitForm = () => {
     formRef.value?.validate().then((res) => {
