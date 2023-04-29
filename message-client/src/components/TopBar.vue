@@ -15,7 +15,7 @@
                     <div style="cursor: pointer;" @click="userLogOut">退出登录</div>
                 </template>
                 <!-- <div class="user" @click="handleLogin"></div> -->
-                <a-avatar size="large" style="cursor: pointer;" :src="img" @click="handleLogin">
+                <a-avatar size="large" style="cursor: pointer;" :src="userData.avatar" @click="handleLogin">
                     <template #icon>
                         <UserOutlined />
                     </template>
@@ -64,11 +64,10 @@ const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 //控制登录页面和用户详情页
-let { type } = storeToRefs(store);
+let { type, user } = storeToRefs(store);
 let id = computed(() => route.query.id);
-//用户头像
-const user = JSON.parse(localStorage.getItem("userInfo") as string) || {};
-const img = user.avatar || "";
+//用户信息
+const userData = JSON.parse(localStorage.getItem("userInfo") as string) || user;
 
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
@@ -104,11 +103,11 @@ const changeWall = (e: number): void => {
     })
 }
 //用户登录
-const login = () => {
+const login = async () => {
     userInfo.name = userInfo.name.trim();
     userInfo.password = userInfo.password.trim();
     //通知仓库发请求登录
-    store.login(userInfo);
+    await store.login(userInfo);
     isShow.value = false;
     type.value = 1;
 }

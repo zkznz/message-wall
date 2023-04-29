@@ -48,7 +48,7 @@ export const useMainStore = defineStore('main', {
         async login(data: IUser) {
             let res = await userLogin(data);
             localStorage.setItem('token', res.token);
-            this.getInfo();
+            await this.getInfo();
             message.success(res.msg);
         },
         async submitInfo(userInfo: InfoForm) {
@@ -62,7 +62,6 @@ export const useMainStore = defineStore('main', {
         //检验用户邮箱是否注册
         async isRegister(data: IEmail) {
             this.isExist = await checkCount(data);
-            console.log("isExist", this.isExist);
         },
         //退出登录
         logOut() {
