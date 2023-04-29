@@ -36,7 +36,7 @@ app.use(expressJwt.expressjwt({ secret: config.secretKey, algorithms: ["HS256"] 
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
         return res.status(401).send({
-            msg: '请先登录'
+            msg: '请先点击头像进行登录'
         })
     }
 })

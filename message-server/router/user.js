@@ -7,6 +7,8 @@ router.get("/getId", router_handler.getId);
 router.get("/checkname", router_handler.checkUser);
 //检验账号是否存在
 router.post("/checkCount", router_handler.checkCount);
+//更改密码
+router.post("/updatePwd", router_handler.updatePwd);
 router.post("/register", router_handler.register);
 //用户登录
 router.post("/login", router_handler.userLogin);

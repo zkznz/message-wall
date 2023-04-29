@@ -83,7 +83,7 @@ exports.emailSignup = (email, res) => {
                         })
                     }
                 });
-                //设置定时器两分钟后更改验证码
+                //设置定时器一分钟后更改验证码
                 setTimeout(() => {
                     db.query(emailSql.updateCode, ['0', email], (err, results) => {
                         if (err)
@@ -92,7 +92,7 @@ exports.emailSignup = (email, res) => {
                             console.log("验证码已重置");
                         }
                     })
-                }, 30 * 1000);
+                }, 60 * 1000);
             }
         })
 
