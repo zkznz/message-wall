@@ -42,3 +42,17 @@ exports.updateUserInfo = (req, res) => {
     })
 
 }
+//注销账号
+exports.delUser = (req, res) => {
+    let { email } = req.body;
+    db.query(userSql.delUser, email, (err, results) => {
+        if (err)
+            return res.msg(err);
+        if (results.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "注销成功"
+            })
+        }
+    })
+}

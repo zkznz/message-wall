@@ -56,14 +56,16 @@ exports.register = (req, res) => {
             })
         }
         else {
-            let sql = "select * from auth where name=? and isdeleted=1";
+            //密码加密
+            userInfo.password = bcrypt.hashSync(userInfo.password, 10);
+            let sql = "select * from auth where email=? and isdeleted=1";
             db.query(sql, userInfo.email, (err, results) => {
                 if (err)
                     return res.msg(err);
                 //数据库存在该字段
                 if (results.length > 0) {
-                    let sql1 = "update auth set isdeleted=0 where name=?"
-                    db.query(sql1, userInfo.name, (err, results) => {
+                    let sql1 = "update auth set isdeleted=0,password=?,name=? where email=?"
+                    db.query(sql1, [userInfo.password, userInfo.name, userInfo.email], (err, results) => {
                         if (err)
                             return res.msg(err);
                         if (results.affectedRows > 0) {
@@ -75,8 +77,6 @@ exports.register = (req, res) => {
                 }
                 //不存在该字段
                 else {
-                    //密码加密并插入数据库
-                    userInfo.password = bcrypt.hashSync(userInfo.password, 10)
                     db.query(userSql.addUser, userInfo, (err, results) => {
                         if (err)
                             return res.msg(err);

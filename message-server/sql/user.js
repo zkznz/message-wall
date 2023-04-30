@@ -10,3 +10,5 @@ exports.findAuth = "select * from auth where name=? and password=? and isdeleted
 exports.updateUser = "update auth set name=?,email=?,avatar=?,brief=?,sex=?,birthday=? where id=?";
 //更改密码
 exports.updatePwd = "update auth set password=? where email=? and isdeleted=0";
+//删除账号
+exports.delUser = "update auth set isdeleted=1 where email=?"
