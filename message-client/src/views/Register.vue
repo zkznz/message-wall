@@ -39,6 +39,9 @@ import { IRegForm } from '@/type'
 import { reactive, ref } from 'vue'
 import { register, checkName } from '@/api'
 import { message } from 'ant-design-vue';
+import { useRouter } from "vue-router"
+
+const router = useRouter();
 const formData = reactive<IRegForm>({
     name: '',
     password: '',
@@ -78,7 +81,7 @@ const submitForm = () => {
         else {
             isExist.value = false;
             message.success(result.msg);
-            formRef.value?.resetFields();
+            router.push("/");
         }
     }).catch(() => {
         return;

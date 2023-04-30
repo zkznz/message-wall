@@ -46,6 +46,12 @@ export const changePwd = (data: IPwd) => request({
     method: "post",
     data
 })
+//删除账号
+export const cancelUser = (data: IEmail) => request({
+    url: "/auth/delUser",
+    method: "post",
+    data
+})
 //提交照片
 export const submitPic = () => request({
     url: '/wall/profile',

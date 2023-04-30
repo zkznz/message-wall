@@ -48,7 +48,7 @@ export const useMainStore = defineStore('main', {
         async login(data: IUser) {
             let res = await userLogin(data);
             localStorage.setItem('token', res.token);
-            await this.getInfo();
+            this.getInfo();
             message.success(res.msg);
         },
         async submitInfo(userInfo: InfoForm) {

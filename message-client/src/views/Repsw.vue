@@ -93,9 +93,7 @@ const pwdRules: Rule[] = [{ required: true, validator: checkPwd, trigger: 'chang
 const formRef = ref<FormInstance>();
 const submitForm = () => {
     formRef.value?.validate().then(async (res: any) => {
-        console.log("res", res);
         let result = await changePwd(res);
-        console.log(result);
         if (result.status === 200) {
             //修改密码，重新登录
             store.logOut();

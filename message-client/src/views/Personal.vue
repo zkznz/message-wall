@@ -60,7 +60,7 @@
                             </div>
                         </a-col>
                     </a-row>
-                    <a-button type="danger" shape="round" style="float: right;">注销账号</a-button>
+                    <a-button type="danger" shape="round" style="float: right;" @click="delCount">注销账号</a-button>
                 </div>
 
             </a-card>
@@ -72,11 +72,11 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
-import { onMounted, reactive, ref } from "vue"
+import { onMounted, reactive, ref, createVNode } from "vue"
 import { uploadAPI } from "@/api/upload"
-import { checkName, getUserInfo } from '@/api';
-import { UserOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
+import { checkName, getUserInfo, cancelUser } from '@/api';
+import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { message, Modal } from 'ant-design-vue';
 import { useMainStore } from "@/store"
 import { storeToRefs } from "pinia"
 import { InfoForm } from "@/type"
@@ -191,6 +191,37 @@ const cancel = () => {
     formRef.value?.resetFields();
     data.infoForm = user;
     router.push("/");
+}
+//销毁账号
+const delCount = () => {
+    Modal.confirm({
+        title: '是否注销账号?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '轻语留言随时欢迎你，感谢你来过',
+        okText: '注销',
+        cancelText: '取消',
+        onOk() {
+            try {
+                return new Promise((resolve, reject) => {
+                    setTimeout(async () => {
+                        //发请求注销账号
+                        let res = await cancelUser({ email: data.infoForm.email });
+                        if (res.status === 200) {
+                            store.logOut();
+                            message.info("账号已注销");
+                            router.push("/");
+                            return resolve();
+                        }
+
+                        else
+                            return reject;
+                    }, 1000);
+                });
+            } catch {
+                return console.log('errors!');
+            }
+        },
+    });
 }
 </script>
 

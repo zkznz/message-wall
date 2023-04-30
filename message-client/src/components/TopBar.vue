@@ -55,7 +55,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router"
 import { computed, reactive, ref } from "vue"
-import { getUserInfo } from "@/api"
 import { IUser } from "@/type";
 import { useMainStore } from "@/store";
 import { CloseOutlined, UserOutlined } from "@ant-design/icons-vue";
@@ -114,11 +113,7 @@ const login = async () => {
 //用户注册
 const register = () => {
     isShow.value = false
-    //打开新标签页
-    let routeUrl = router.resolve({
-        path: "/register",
-    });
-    window.open(routeUrl.href, '_blank');
+    router.push("/register");
 }
 //用户退出登录
 const userLogOut = () => {
