@@ -44,7 +44,7 @@
       <!-- 弹窗 -->
       <PopModal :isPop="isPop" :title="title" @close="handleClose">
         <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard" @abandon="handleClose"></NewCard>
-        <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
+        <CardDetail ref="childRef" :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
       <ShowView @back="handleBack" @next="handleNext" v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="noteList">
@@ -71,7 +71,12 @@ import { useMainStore } from '@/store'
 import { storeToRefs } from 'pinia'
 
 const store = useMainStore();
+const childRef = ref<any>();
 const route = useRoute();
+//触发子组件事件
+const getChild = () => {
+  childRef.value.handleLoading();
+}
 //路由id
 let id = computed(() => Number(route.query.id));
 let { type } = storeToRefs(store);

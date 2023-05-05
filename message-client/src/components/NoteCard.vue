@@ -37,6 +37,7 @@ const labelName = computed(() => {
 })
 const showPop = () => {
     emits('handlePop');
+    emits('loading');
 }
 //点赞
 const addLike = async () => {

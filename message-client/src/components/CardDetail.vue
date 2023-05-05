@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header" v-if="mainStore.user.role === 'admin'">
+        <div class="card-header" v-if="userInfo.role === 'admin'">
             <p class="contact">联系墙主撕掉该标签 {{ noteItem.revoke }}</p>
             <span class="report">举报 {{ noteItem.report }}</span>
             <span class="delcard" @click="deleteCard">删除</span>
@@ -29,7 +29,10 @@
                 <div class="comment">
                     <div class="content" v-for="item in commentData">
 
-                        <div class="user" :style="{ 'background-image': portrait[item.imgUrl] }"></div>
+                        <div v-if="item.imgUrl.length !== 1 && item.imgUrl.length !== 2">
+                            <img class="user" :src="item.imgUrl" alt="">
+                        </div>
+                        <div class="user" v-else :style="{ 'background-image': portrait[item.imgUrl] }"></div>
                         <div class="name">
                             <p>{{ item.name }}</p>
                             <span>{{ item.time }}</span>
@@ -47,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, reactive, ref, computed, toRefs, inject } from 'vue'
+import { defineProps, reactive, ref, computed, watch } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'
 import { findComment, addComment } from '@/api'
@@ -62,12 +65,6 @@ const noteItem = computed(() => reactive(props.note));
 const mainStore = useMainStore();
 //评论数
 let total = ref<number>(0);
-
-let commentParams = reactive<ICommentParams>({
-    wallId: noteItem.value.id,
-    page: 1,
-    pagesize: 2
-})
 //评论名字
 let name = ref<string>('');
 //评论内容
@@ -76,8 +73,10 @@ let message = ref<string>('');
 let disabled = computed(() => message.value.trim() === "" || name.value.trim() === "");
 //评论详情数组
 let commentData = ref<IComment[]>([]);
+//用户信息
+const userInfo = JSON.parse(localStorage.getItem("userInfo") as string);
 //获取评论详情
-const handleTime = async (): Promise<void> => {
+const handleTime = async (commentParams: ICommentParams): Promise<void> => {
     let res = await findComment(commentParams);
     if (res.status == 200) {
         //处理时间
@@ -90,23 +89,34 @@ const handleTime = async (): Promise<void> => {
     if (commentData.value.length != total.value)
         commentParams.page++;
 }
-//组件创建就执行函数
-handleTime();
+//重新获取评论
+const handleLoading = () => {
+    commentData.value = [];
+    let commentParams = {
+        wallId: noteItem.value.id,
+        page: 1,
+        pagesize: 2
+    }
+    handleTime(commentParams);
+}
+watch(noteItem, () => handleLoading());
 //添加评论
 const submitComment = async () => {
     let data: IComment = {
         wallId: noteItem.value.id,
         userId: mainStore.user.id,
-        imgUrl: String(Math.floor(Math.random() * 14)),
+        imgUrl: userInfo.avatar || String(Math.floor(Math.random() * 14)),
         comment: message.value,
         name: name.value,
         moment: new Date()
     }
     let res = await addComment(data);
-    if (res.status == 200) {
+    if (res.status === 200) {
         total.value++;
         commentData.value.unshift(data);
     }
+    name.value = "";
+    message.value = "";
 }
 //删除留言
 const deleteCard = () => {
