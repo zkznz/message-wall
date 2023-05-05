@@ -25,7 +25,7 @@ router.post('/profile', upload.single('file'), function (req, res, next) {
         status: 200,
         msg: '上传成功',
         data: {
-            img: `http://127.0.0.1:3000/photo/${req.file.filename}`
+            img: `http://47.120.4.121:3000/photo/${req.file.filename}`
         }
 
     })

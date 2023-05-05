@@ -30,7 +30,6 @@ exports.checkCount = (req, res) => {
 //修改密码
 exports.updatePwd = (req, res) => {
     const info = req.body;
-    console.log("info", info);
     const password = bcrypt.hashSync(info.password, 10);
     db.query(userSql.updatePwd, [password, info.email], (err, results) => {
         if (err)
@@ -129,7 +128,7 @@ exports.getId = (req, res) => {
     res.send({
         status: 200,
         data: {
-            ip: req.ip
+            ip: req.ip.split(':')[3]
         }
     })
 }
