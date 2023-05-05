@@ -107,6 +107,8 @@ const login = async () => {
     userInfo.password = userInfo.password.trim();
     //通知仓库发请求登录
     await store.login(userInfo);
+    userInfo.name = '';
+    userInfo.password = '';
     isShow.value = false;
     type.value = 1;
 }

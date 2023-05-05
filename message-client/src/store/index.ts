@@ -67,6 +67,7 @@ export const useMainStore = defineStore('main', {
         logOut() {
             localStorage.removeItem('userInfo');
             localStorage.removeItem('token');
+            this.type = 0;
         }
     },
     getters: {

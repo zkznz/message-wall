@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header" v-if="userInfo.role === 'admin'">
+        <div class="card-header" v-if="userInfo && userInfo.role === 'admin'">
             <p class="contact">联系墙主撕掉该标签 {{ noteItem.revoke }}</p>
             <span class="report">举报 {{ noteItem.report }}</span>
             <span class="delcard" @click="deleteCard">删除</span>

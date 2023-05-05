@@ -1,7 +1,7 @@
 import axios from "axios"
 import { message } from 'ant-design-vue';
+import { useMainStore } from '@/store'
 import router from "@/router";
-
 const service = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL,
     timeout: 5000
@@ -26,8 +26,10 @@ service.interceptors.response.use(res => {
 }, err => {
     message.error(err.response.data.msg);
     if (err.response.status === 401) {
-        localStorage.removeItem("userInfo");
-        localStorage.removeItem("token");
+        // localStorage.removeItem("userInfo");
+        // localStorage.removeItem("token");
+        const store = useMainStore();
+        store.logOut();
         router.push("/");
     }
     return Promise.reject(err);
