@@ -4,7 +4,13 @@ module.exports = defineConfig({
   lintOnSave: false,
   //配置代理
   devServer: {
-
+    // port: 8088,
+    // proxy: {
+    //   '/': {
+    //     target: process.env.VUE_APP_API_BASE_URL,
+    //     changeOrigin: true,
+    //   }
+    // }
   },
   //CSS样式
   css: {

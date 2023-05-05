@@ -12,7 +12,6 @@ import "@/assets/fonts/icon-fonts/iconfont.css"
 //创建pinia实例
 const pinia = createPinia();
 const app = createApp(App);
-
 app.use(Antd);
 app.use(pinia);
 app.use(router);

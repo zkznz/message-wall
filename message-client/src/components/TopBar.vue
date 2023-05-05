@@ -113,7 +113,11 @@ const login = async () => {
 //用户注册
 const register = () => {
     isShow.value = false
-    router.push("/register");
+    //打开新标签页
+    let routeUrl = router.resolve({
+        path: "/register",
+    });
+    window.open(routeUrl.href, '_blank');
 }
 //用户退出登录
 const userLogOut = () => {

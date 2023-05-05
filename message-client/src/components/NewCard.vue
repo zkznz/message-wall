@@ -76,6 +76,7 @@ import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 
 const store = useMainStore();
+console.log("upload", uploadAPI);
 //请求头
 const headers = {
     authorization: store.token
