@@ -24,6 +24,7 @@ export interface IWall {
 }
 //评论信息
 export interface IComment {
+    id?: number,
     wallId: number
     moment: Date,
     time?: string

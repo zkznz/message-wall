@@ -14,7 +14,7 @@
         <div class="comment">
             <div class="comment-content">
                 <a-textarea placeholder="请输入内容..." :auto-size="{ minRows: 2, maxRows: 5 }"
-                    v-model:value="message"></a-textarea>
+                    v-model:value="comment"></a-textarea>
                 <div class="comment-input">
                     <a-input v-model:value="name" placeholder="签名"></a-input>
                     <a-button shape="round" :style="{ 'background-color': disabled ? '#ccc' : 'black' }"
@@ -36,9 +36,11 @@
                         <div class="name">
                             <p>{{ item.name }}</p>
                             <span>{{ item.time }}</span>
+                            <div class="delmsg" v-if="userInfo && userInfo.role === 'admin'"
+                                @click="delComment(item.id as number)">删除</div>
                         </div>
 
-                        <div class="message">{{ item.comment }}</div>
+                        <div class="comment">{{ item.comment }}</div>
                     </div>
                     <div class="more" v-if="total != commentData.length" @click="handleTime">
                         加载更多
@@ -50,16 +52,18 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, reactive, ref, computed, watch } from 'vue'
+import { defineProps, reactive, ref, computed, watch, defineEmits, onMounted, onUnmounted } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams } from '@/type'
-import { findComment, addComment } from '@/api'
+import { message } from 'ant-design-vue'
+import { findComment, addComment, delComments, delMessage } from '@/api'
 import moment from 'moment'
 //头像背景
 import { portrait } from '@/utils/data'
 import { useMainStore } from '@/store'
 //接收留言卡片详情数据
 const props = defineProps(['note']);
+const emits = defineEmits(['delMsg']);
 const noteItem = computed(() => reactive(props.note));
 let commentParams = reactive<ICommentParams>({
     wallId: noteItem.value.id,
@@ -73,9 +77,9 @@ let total = ref<number>(0);
 //评论名字
 let name = ref<string>('');
 //评论内容
-let message = ref<string>('');
+let comment = ref<string>('');
 //按钮禁用
-let disabled = computed(() => message.value.trim() === "" || name.value.trim() === "");
+let disabled = computed(() => comment.value.trim() === "" || name.value.trim() === "");
 //评论详情数组
 let commentData = ref<IComment[]>([]);
 //用户信息
@@ -104,30 +108,54 @@ const handleLoading = () => {
     }
     handleTime();
 }
-watch(noteItem, () => handleLoading());
+watch(noteItem, () => {
+    handleLoading();
+    name.value = "";
+    comment.value = "";
+});
+handleTime();
 //添加评论
 const submitComment = async () => {
     let data: IComment = {
         wallId: noteItem.value.id,
         userId: mainStore.user.id,
         imgUrl: userInfo.avatar || String(Math.floor(Math.random() * 14)),
-        comment: message.value,
+        comment: comment.value,
         name: name.value,
         moment: new Date()
     }
-    let res = await addComment(data);
-    if (res.status === 200) {
-        total.value++;
-        commentData.value.unshift(data);
+    try {
+        let res = await addComment(data);
+        if (res.status === 200) {
+            total.value++;
+            commentData.value.unshift(data);
+        }
+        name.value = "";
+        comment.value = "";
+    } catch (error) {
+        name.value = "";
+        comment.value = "";
     }
-    name.value = "";
-    message.value = "";
 }
-//删除留言
-const deleteCard = () => {
-
+//删除留言信息
+const deleteCard = async () => {
+    let res = await delMessage(noteItem.value.id);
+    console.log("res", res);
+    if (res.status === 200) {
+        //发请求通知父组件关闭弹窗并重新加载
+        emits('delMsg');
+        message.success("删除成功");
+    }
 }
-
+//删除评论
+const delComment = async (id: number) => {
+    let res = await delComments(id);
+    if (res.status === 200) {
+        //重新加载评论
+        handleLoading();
+        message.info("评论已删除");
+    }
+}
 </script>
 
 <style lang="less" scoped>
@@ -208,20 +236,27 @@ const deleteCard = () => {
 
             .name {
                 display: flex;
+                flex: 1;
+                justify-content: space-between;
 
                 p {
-                    width: 100px;
                     font-size: 14px;
                     font-weight: 600;
-                    margin-right: 5px;
                 }
 
                 span {
                     line-height: 24px;
                     font-size: 12px;
                     color: @gray-2;
+                    margin-left: -70px;
+
                 }
 
+                .delmsg {
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: @error
+                }
 
             }
 
@@ -233,7 +268,9 @@ const deleteCard = () => {
                 height: 28px;
             }
 
-            .message {
+
+
+            .comment {
                 width: 100%;
                 padding-left: 37px;
             }

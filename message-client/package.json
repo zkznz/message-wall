@@ -17,6 +17,7 @@
     "moment": "^2.29.4",
     "pinia": "^2.0.33",
     "pinia-plugin-persist": "^1.0.0",
+    "resize-observer-polyfill": "^1.5.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },

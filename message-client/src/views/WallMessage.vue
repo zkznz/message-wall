@@ -44,7 +44,7 @@
       <!-- 弹窗 -->
       <PopModal :isPop="isPop" :title="title" @close="handleClose">
         <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard" @abandon="handleClose"></NewCard>
-        <CardDetail :note="noteList[cardIndex]" v-else></CardDetail>
+        <CardDetail @delMsg="handleDelMsg" :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
       <!-- 照片详情 -->
       <ShowView @back="handleBack" @next="handleNext" v-if="id == 1 && isShow" :cardIndex="cardIndex" :picture="noteList">
@@ -115,6 +115,11 @@ const handleClose = (): void => {
   isShow.value = false;
   cardIndex.value = -1;
 }
+//删除留言信息处理函数
+const handleDelMsg = () => {
+  handleClose();
+  loading();
+}
 //点击单个标签
 const handleLabel = (label: string, index: number): void => {
   title.value = label;
@@ -145,7 +150,6 @@ const showPop = (index: number): void => {
     isPop.value = false;
     isShow.value = false;
   }
-
 }
 //添加留言卡片
 const addCard = (): void => {
