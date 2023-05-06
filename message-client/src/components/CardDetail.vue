@@ -61,6 +61,11 @@ import { useMainStore } from '@/store'
 //接收留言卡片详情数据
 const props = defineProps(['note']);
 const noteItem = computed(() => reactive(props.note));
+let commentParams = reactive<ICommentParams>({
+    wallId: noteItem.value.id,
+    page: 1,
+    pagesize: 2
+})
 //获取仓库
 const mainStore = useMainStore();
 //评论数
@@ -76,7 +81,7 @@ let commentData = ref<IComment[]>([]);
 //用户信息
 const userInfo = JSON.parse(localStorage.getItem("userInfo") as string);
 //获取评论详情
-const handleTime = async (commentParams: ICommentParams): Promise<void> => {
+const handleTime = async () => {
     let res = await findComment(commentParams);
     if (res.status == 200) {
         //处理时间
@@ -92,12 +97,12 @@ const handleTime = async (commentParams: ICommentParams): Promise<void> => {
 //重新获取评论
 const handleLoading = () => {
     commentData.value = [];
-    let commentParams = {
+    commentParams = {
         wallId: noteItem.value.id,
         page: 1,
         pagesize: 2
     }
-    handleTime(commentParams);
+    handleTime();
 }
 watch(noteItem, () => handleLoading());
 //添加评论

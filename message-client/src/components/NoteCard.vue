@@ -20,14 +20,14 @@
 <script setup lang="ts">
 import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
-import { defineProps, computed, inject, defineEmits, toRefs, reactive, PropType } from 'vue';
+import { defineProps, computed, inject, defineEmits, reactive } from 'vue';
 import { addLikeFeedback, delLikeFeedback } from '@/api'
 import moment from 'moment'
 import { useMainStore } from '@/store'
 const store = useMainStore();
 const props = defineProps(['note']);
 const noteItem = computed(() => reactive(props.note));
-const emits = defineEmits(['handlePop', 'loading']);
+const emits = defineEmits(['handlePop']);
 const title = inject('title', '');
 const messageTime = computed(() => {
     return moment(noteItem.value.moment).format('YYYY.MM.DD')
@@ -37,13 +37,12 @@ const labelName = computed(() => {
 })
 const showPop = () => {
     emits('handlePop');
-    emits('loading');
 }
 //点赞
 const addLike = async () => {
     //点过赞就取消
     if (noteItem.value.islike > 0) {
-        let res = await delLikeFeedback(noteItem.value.id, noteItem.value.userId, noteItem.value.type);
+        let res = await delLikeFeedback(noteItem.value.id, store.user.id, noteItem.value.type);
         if (res.status == 200) {
             noteItem.value.like--;
             noteItem.value.islike = 0;
