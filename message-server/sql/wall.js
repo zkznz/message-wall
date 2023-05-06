@@ -27,7 +27,7 @@ exports.findIslike = 'select count(*) as total from feedbacks where wallId=? and
 exports.findComment = 'select * from comments where wallId=? and isdeleted=0 order by id desc limit ?,?'
 
 //通过id查找反馈
-exports.findFeedbacksById = 'select * from feedbacks where wallId=? and userId=? and type=? and isdeleted=1'
+exports.findFeedbacksById = 'select * from feedbacks where wallId=? and userId=? and type=?'
 //通过id查找评论
 exports.findCommentsById = 'select * from comments where wallId=? and userId=? and isdeleted=1'
 

@@ -51,14 +51,14 @@ exports.addFeedBacks = (req, res) => {
 
 }
 exports.addComment = (req, res) => {
-    const { wallId, userId } = req.body;
+    const { wallId, userId, comment } = req.body;
     db.query(wallSql.findCommentsById, [wallId, userId], (err, results) => {
         if (err)
             return res.msg(err);
         //如果数据库存在该数据
         if (results.length > 0) {
-            const sql = "update comments set isdeleted=0 where wallId=? and userId=?";
-            db.query(sql, [wallId, userId], (err, results) => {
+            const sql = "update comments set isdeleted=0,comment=? where wallId=? and userId=? limit 1";
+            db.query(sql, [comment, wallId, userId], (err, results) => {
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -113,7 +113,7 @@ exports.delFeedBacks = (req, res) => {
     })
 }
 exports.delComments = (req, res) => {
-    db.query(wallSql.delComments, [req.params.id, req.params.type], (err, results) => {
+    db.query(wallSql.delComments, [req.params.id], (err, results) => {
         if (err)
             return res.msg(err);
         if (results.affectedRows < 1)
