@@ -15,15 +15,18 @@ exports.addMessage = (req, res) => {
         })
     })
 }
+
 exports.addFeedBacks = (req, res) => {
     const { wallId, userId, type, moment } = req.body;
+
     db.query(wallSql.findFeedbacksById, [wallId, userId, type], (err, results) => {
         if (err)
             return res.msg(err);
         //如果数据库存在该数据
         if (results.length > 0) {
-            const sql = "update feedbacks set isdeleted=0 where wallId=? and userId=? and type=? and moment=?";
-            db.query(sql, [wallId, userId, type, moment], (err, results) => {
+            const sql = "update feedbacks set isdeleted=0,moment=? where wallId=? and userId=? and type=?";
+            db.query(sql, [moment, wallId, userId, type], (err, results) => {
+
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -37,6 +40,7 @@ exports.addFeedBacks = (req, res) => {
         //数据库不存在数据，添加行
         else {
             db.query(wallSql.addFeedBacks, req.body, (err, results) => {
+
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -51,39 +55,17 @@ exports.addFeedBacks = (req, res) => {
 
 }
 exports.addComment = (req, res) => {
-    const { wallId, userId, comment, moment } = req.body;
-    db.query(wallSql.findCommentsById, [wallId, userId], (err, results) => {
+
+    db.query(wallSql.addComment, req.body, (err, results) => {
         if (err)
             return res.msg(err);
-        //如果数据库存在该数据
-        if (results.length > 0) {
-            const sql = "update comments set isdeleted=0,comment=? where wallId=? and userId=? and moment=? limit 1";
-            db.query(sql, [comment, wallId, userId, moment], (err, results) => {
-                if (err)
-                    return res.msg(err);
-                if (results.affectedRows < 1)
-                    return res.msg("添加失败");
-                res.send({
-                    status: 200,
-                    msg: '添加成功！'
-                })
-            })
-        }
-        //数据库不存在数据，添加行
-        else {
-            db.query(wallSql.addComment, req.body, (err, results) => {
-                if (err)
-                    return res.msg(err);
-                if (results.affectedRows < 1)
-                    return res.msg("添加失败");
-                res.send({
-                    status: 200,
-                    msg: '添加成功！'
-                })
-            })
-        }
+        if (results.affectedRows < 1)
+            return res.msg("添加失败");
+        res.send({
+            status: 200,
+            msg: '添加成功！'
+        })
     })
-
 }
 //删除
 exports.delMessage = (req, res) => {
@@ -100,6 +82,7 @@ exports.delMessage = (req, res) => {
 }
 
 exports.delFeedBacks = (req, res) => {
+    console.log("req", req.params);
     db.query(wallSql.delFeedbacks, [req.params.id, req.params.userId, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);
@@ -112,7 +95,7 @@ exports.delFeedBacks = (req, res) => {
     })
 }
 exports.delComments = (req, res) => {
-    db.query(wallSql.delComments, [req.params.id], (err, results) => {
+    db.query(wallSql.delComments, [req.query.userId, req.query.moment], (err, results) => {
         if (err)
             return res.msg(err);
         if (results.affectedRows < 1)

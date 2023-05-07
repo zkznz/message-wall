@@ -17,7 +17,7 @@ where walls.id = ? `
 //删除反馈
 exports.delFeedbacks = 'update feedbacks set isdeleted=1 where wallId=? and userId=? and type=?'
 //删除评论
-exports.delComments = 'update comments set isdeleted=1 where id=?'
+exports.delComments = 'update comments set isdeleted=1 where userId=? and moment=?'
 
 //分页查找留言
 exports.findMessagePage = 'select * from walls where type=? and label=? and isdeleted=0 order by id desc limit ?,?'

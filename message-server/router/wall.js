@@ -13,7 +13,7 @@ router.post("/addcomment", wallHandler.addComment);
 //删除
 router.get("/delmessage/:id", wallHandler.delMessage);
 router.get("/delfeedbacks/:id/:userId/:type", wallHandler.delFeedBacks);
-router.get("/delcomments/:id", wallHandler.delComments);
+router.get("/delcomments", wallHandler.delComments);
 
 //查找整个留言墙卡片的数据
 router.get("/findMessagePage", wallHandler.findMessagePage);
