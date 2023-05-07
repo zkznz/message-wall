@@ -16,14 +16,14 @@ exports.addMessage = (req, res) => {
     })
 }
 exports.addFeedBacks = (req, res) => {
-    const { wallId, userId, type } = req.body;
+    const { wallId, userId, type, moment } = req.body;
     db.query(wallSql.findFeedbacksById, [wallId, userId, type], (err, results) => {
         if (err)
             return res.msg(err);
         //如果数据库存在该数据
         if (results.length > 0) {
-            const sql = "update feedbacks set isdeleted=0 where wallId=? and userId=? and type=?";
-            db.query(sql, [wallId, userId, type], (err, results) => {
+            const sql = "update feedbacks set isdeleted=0 where wallId=? and userId=? and type=? and moment=?";
+            db.query(sql, [wallId, userId, type, moment], (err, results) => {
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -51,14 +51,14 @@ exports.addFeedBacks = (req, res) => {
 
 }
 exports.addComment = (req, res) => {
-    const { wallId, userId, comment } = req.body;
+    const { wallId, userId, comment, moment } = req.body;
     db.query(wallSql.findCommentsById, [wallId, userId], (err, results) => {
         if (err)
             return res.msg(err);
         //如果数据库存在该数据
         if (results.length > 0) {
-            const sql = "update comments set isdeleted=0,comment=? where wallId=? and userId=? limit 1";
-            db.query(sql, [comment, wallId, userId], (err, results) => {
+            const sql = "update comments set isdeleted=0,comment=? where wallId=? and userId=? and moment=? limit 1";
+            db.query(sql, [comment, wallId, userId, moment], (err, results) => {
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
