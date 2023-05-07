@@ -100,7 +100,6 @@ exports.delMessage = (req, res) => {
 }
 
 exports.delFeedBacks = (req, res) => {
-    console.log("req", req.params);
     db.query(wallSql.delFeedbacks, [req.params.id, req.params.userId, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);

@@ -6,8 +6,14 @@ exports.addFeedBacks = "insert into feedbacks set?"
 exports.addComment = "insert into comments set?"
 
 //删除留言
-exports.delMessage = `update walls,feedbacks,comments set walls.isdeleted=1,feedbacks.isdeleted=1,comments.isdeleted=1 
-where walls.id=? and walls.id=feedbacks.wallId and walls.id=comments.wallId`
+exports.delMessage = `update walls 
+left join feedbacks on walls.id = feedbacks.wallId 
+left join comments on walls.id = comments.wallId 
+set walls.isdeleted = 1, 
+feedbacks.isdeleted = case when feedbacks.wallId = walls.id then 1 else feedbacks.isdeleted end, 
+comments.isdeleted = case when comments.wallId = walls.id then 1 else comments.isdeleted end 
+where walls.id = ? `
+
 //删除反馈
 exports.delFeedbacks = 'update feedbacks set isdeleted=1 where wallId=? and userId=? and type=?'
 //删除评论
