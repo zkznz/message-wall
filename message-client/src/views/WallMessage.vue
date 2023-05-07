@@ -118,6 +118,8 @@ const handleClose = (): void => {
 //删除留言信息处理函数
 const handleDelMsg = () => {
   handleClose();
+  noteList = [];
+  page.value = 1;
   loading();
 }
 //点击单个标签

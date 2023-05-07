@@ -140,11 +140,10 @@ const submitComment = async () => {
 //删除留言信息
 const deleteCard = async () => {
     let res = await delMessage(noteItem.value.id);
-    console.log("res", res);
     if (res.status === 200) {
         //发请求通知父组件关闭弹窗并重新加载
         emits('delMsg');
-        message.success("删除成功");
+        message.info("留言已删除");
     }
 }
 //删除评论
