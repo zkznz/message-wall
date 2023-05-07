@@ -26,7 +26,7 @@ export interface IWall {
 export interface IComment {
     id?: number,
     wallId: number
-    moment: Date,
+    moment: Date | string,
     time?: string
     userId: number,
     comment: string,
@@ -75,8 +75,13 @@ export interface ICommentParams {
     page: number,
     pagesize: number,
 }
+//删除评论请求参数
+export interface IDelComment {
+    userId: number,
+    moment: Date | string
+}
 //添加点赞反馈请求参数
-export interface ILikeParams {
+export interface IFeedBacksParams {
     wallId: number,
     userId: number,
     type: number,

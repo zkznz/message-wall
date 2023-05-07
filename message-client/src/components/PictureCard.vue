@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
-import { delLikeFeedback, addLikeFeedback } from '@/api'
+import { delFeedback, addFeedback } from '@/api'
 import { useMainStore } from '@/store'
 const props = defineProps(['picture'])
 const store = useMainStore();
@@ -28,8 +28,7 @@ const emits = defineEmits(['handle'])
 const addLike = async () => {
     //点过赞就取消
     if (props.picture.islike > 0) {
-        let res = await delLikeFeedback(props.picture.id, props.picture.userId, props.picture.type);
-        console.log(res);
+        let res = await delFeedback(props.picture.id, props.picture.userId, 0);
         if (res.status == 200) {
             props.picture.like--;
             props.picture.islike = 0;
@@ -39,10 +38,10 @@ const addLike = async () => {
         let data = {
             wallId: props.picture.id,
             userId: store.user.id,
-            type: props.picture.type,
+            type: 0,
             moment: new Date()
         }
-        let res = await addLikeFeedback(data);
+        let res = await addFeedback(data);
         if (res.status == 200) {
             props.picture.like++;
             props.picture.islike++;

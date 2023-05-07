@@ -21,7 +21,7 @@
 import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
 import { defineProps, computed, inject, defineEmits, reactive } from 'vue';
-import { addLikeFeedback, delLikeFeedback } from '@/api'
+import { addFeedback, delFeedback } from '@/api'
 import moment from 'moment'
 import { useMainStore } from '@/store'
 const store = useMainStore();
@@ -42,7 +42,7 @@ const showPop = () => {
 const addLike = async () => {
     //点过赞就取消
     if (noteItem.value.islike > 0) {
-        let res = await delLikeFeedback(noteItem.value.id, store.user.id, noteItem.value.type);
+        let res = await delFeedback(noteItem.value.id, store.user.id, 0);
         if (res.status == 200) {
             noteItem.value.like--;
             noteItem.value.islike = 0;
@@ -52,10 +52,10 @@ const addLike = async () => {
         let data = {
             wallId: noteItem.value.id,
             userId: store.user.id,
-            type: noteItem.value.type,
+            type: 0,
             moment: new Date()
         }
-        let res = await addLikeFeedback(data);
+        let res = await addFeedback(data);
         if (res.status == 200) {
             noteItem.value.like++;
             noteItem.value.islike++;

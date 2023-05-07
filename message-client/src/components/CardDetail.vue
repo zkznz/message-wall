@@ -1,13 +1,13 @@
 <template>
     <div class="card">
         <div class="card-header" v-if="userInfo && userInfo.role === 'admin'">
-            <p class="contact">联系墙主撕掉该标签 {{ noteItem.revoke }}</p>
+            <p class="contact">联系墙主撕掉该便签 {{ noteItem.revoke }}</p>
             <span class="report">举报 {{ noteItem.report }}</span>
             <span class="delcard" @click="deleteCard">删除</span>
         </div>
         <div class="card-header" v-else>
-            <p class="contact">联系墙主撕掉该标签</p>
-            <span class="report">举报</span>
+            <p class="contact" @click="revokeNote">联系墙主撕掉该便签</p>
+            <span class="report" @click="reportNote">举报</span>
         </div>
         <NoteCard :note="noteItem" style="margin-top: 35px;width: 100%;"></NoteCard>
         <!-- 评论区 -->
@@ -36,8 +36,8 @@
                         <div class="name">
                             <p>{{ item.name }}</p>
                             <span>{{ item.time }}</span>
-                            <div class="delmsg" v-if="userInfo && userInfo.role === 'admin'"
-                                @click="delComment(item.id as number)">删除</div>
+                            <div class="delmsg" v-if="userInfo && userInfo.role === 'admin'" @click="delComment(item)">删除
+                            </div>
                         </div>
 
                         <div class="comment">{{ item.comment }}</div>
@@ -52,11 +52,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, reactive, ref, computed, watch, defineEmits, onMounted, onUnmounted } from 'vue'
+import { defineProps, reactive, ref, computed, watch, defineEmits } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
-import { IComment, ICommentParams } from '@/type'
+import { IComment, ICommentParams, IFeedBacksParams } from '@/type'
 import { message } from 'ant-design-vue'
-import { findComment, addComment, delComments, delMessage } from '@/api'
+import { findComment, addComment, delComments, delMessage, addFeedback } from '@/api'
 import moment from 'moment'
 //头像背景
 import { portrait } from '@/utils/data'
@@ -113,7 +113,7 @@ watch(noteItem, () => {
     name.value = "";
     comment.value = "";
 });
-handleTime();
+handleLoading();
 //添加评论
 const submitComment = async () => {
     let data: IComment = {
@@ -127,7 +127,9 @@ const submitComment = async () => {
     try {
         let res = await addComment(data);
         if (res.status === 200) {
+            noteItem.value.comtotal++;
             total.value++;
+            data.time = moment(data.moment).format('YYYY.MM.DD hh:mm');
             commentData.value.unshift(data);
         }
         name.value = "";
@@ -147,12 +149,45 @@ const deleteCard = async () => {
     }
 }
 //删除评论
-const delComment = async (id: number) => {
-    let res = await delComments(id);
+const delComment = async (commentItem: IComment) => {
+    let data = {
+        userId: commentItem.userId,
+        moment: commentItem.moment
+    }
+    let res = await delComments(data);
     if (res.status === 200) {
-        //重新加载评论
-        handleLoading();
+        noteItem.value.comtotal--;
+        total.value--;
+        //删除评论数组中指定元素
+        let itemIndex = commentData.value.findIndex((item) => commentItem.id === item.id);
+        commentData.value.splice(itemIndex, 1);
         message.info("评论已删除");
+    }
+}
+//联系墙主撤销便签
+const revokeNote = async () => {
+    let data: IFeedBacksParams = {
+        wallId: noteItem.value.id,
+        userId: mainStore.user.id,
+        type: 2,
+        moment: new Date()
+    }
+    let res = await addFeedback(data);
+    if (res.status === 200) {
+        message.info("感谢你的反馈");
+    }
+}
+//举报便签
+const reportNote = async () => {
+    let data: IFeedBacksParams = {
+        wallId: noteItem.value.id,
+        userId: mainStore.user.id,
+        type: 1,
+        moment: new Date()
+    }
+    let res = await addFeedback(data);
+    if (res.status === 200) {
+        message.info("感谢你的反馈");
     }
 }
 </script>

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { IWall, IMessage, ICommentParams, ILikeParams, IComment, IRegForm, IUser, InfoForm, IEmail, IPwd } from '@/type'
+import { IWall, IMessage, ICommentParams, IFeedBacksParams, IComment, IRegForm, IUser, InfoForm, IEmail, IPwd, IDelComment } from '@/type'
 //用户注册
 export const register = (data: IRegForm) => request({
     url: "/user/register",
@@ -82,7 +82,7 @@ export const findComment = (data: ICommentParams) => request({
     params: data
 })
 //添加点赞反馈
-export const addLikeFeedback = (data: ILikeParams) => request({
+export const addFeedback = (data: IFeedBacksParams) => request({
     url: "/api/wall/addfeedbacks",
     method: 'post',
     data
@@ -93,12 +93,13 @@ export const delMessage = (id: number) => request({
     method: 'get'
 })
 //删除评论
-export const delComments = (id: number) => request({
-    url: `/api/wall/delcomments/${id}`,
-    method: 'get'
+export const delComments = (data: IDelComment) => request({
+    url: `/api/wall/delcomments`,
+    method: 'get',
+    params: data
 })
 //删除点赞反馈
-export const delLikeFeedback = (id: number, userId: number, type: number) => request({
+export const delFeedback = (id: number, userId: number, type: number) => request({
     url: `/api/wall/delfeedbacks/${id}/${userId}/${type}`,
     method: 'get'
 })
