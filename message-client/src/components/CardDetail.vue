@@ -33,7 +33,7 @@
                             <img class="user" :src="item.imgUrl" alt="">
                         </div>
                         <div class="user" v-else :style="{ 'background-image': portrait[item.imgUrl] }"></div>
-                        <div class="name">
+                        <div :class="(userInfo && userInfo.role === 'admin') ? 'admin' : 'name'">
                             <p>{{ item.name }}</p>
                             <span>{{ item.time }}</span>
                             <div class="delmsg" v-if="userInfo && userInfo.role === 'admin'" @click="delComment(item)">删除
@@ -51,7 +51,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" scoped>
 import { defineProps, reactive, ref, computed, watch, defineEmits } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams, IFeedBacksParams } from '@/type'
@@ -83,7 +83,7 @@ let disabled = computed(() => comment.value.trim() === "" || name.value.trim() =
 //评论详情数组
 let commentData = ref<IComment[]>([]);
 //用户信息
-const userInfo = JSON.parse(localStorage.getItem("userInfo") as string);
+const userInfo = reactive(JSON.parse(localStorage.getItem("userInfo") as string));
 //获取评论详情
 const handleTime = async () => {
     let res = await findComment(commentParams);
@@ -158,9 +158,7 @@ const delComment = async (commentItem: IComment) => {
     if (res.status === 200) {
         noteItem.value.comtotal--;
         total.value--;
-        //删除评论数组中指定元素
-        let itemIndex = commentData.value.findIndex((item) => commentItem.id === item.id);
-        commentData.value.splice(itemIndex, 1);
+        handleLoading();
         message.info("评论已删除");
     }
 }
@@ -236,10 +234,6 @@ const reportNote = async () => {
             display: flex;
             padding-top: 10px;
 
-
-
-
-
             .ant-btn {
                 background-color: black;
                 color: #fff;
@@ -267,8 +261,8 @@ const reportNote = async () => {
             flex-wrap: wrap;
             padding-bottom: 22px;
 
-
-            .name {
+            //管理员样式
+            .admin {
                 display: flex;
                 flex: 1;
                 justify-content: space-between;
@@ -291,6 +285,26 @@ const reportNote = async () => {
                     font-size: 14px;
                     color: @error
                 }
+            }
+
+            .name {
+                display: flex;
+                flex: 1;
+                // justify-content: space-between;
+
+                p {
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                span {
+                    line-height: 24px;
+                    font-size: 12px;
+                    color: @gray-2;
+                    margin-left: 20px;
+
+                }
+
 
             }
 
@@ -301,8 +315,6 @@ const reportNote = async () => {
                 width: 28px;
                 height: 28px;
             }
-
-
 
             .comment {
                 width: 100%;

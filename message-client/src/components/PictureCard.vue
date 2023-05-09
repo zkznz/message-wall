@@ -17,7 +17,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" scoped>
 import { defineProps, defineEmits } from 'vue'
 import { delFeedback, addFeedback } from '@/api'
 import { useMainStore } from '@/store'

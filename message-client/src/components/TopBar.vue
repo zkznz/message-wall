@@ -66,7 +66,7 @@ const store = useMainStore();
 let { type, user } = storeToRefs(store);
 let id = computed(() => route.query.id);
 //用户信息
-const userData = JSON.parse(localStorage.getItem("userInfo") as string) || user;
+const userData = reactive(JSON.parse(localStorage.getItem("userInfo") as string)) || user;
 
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)

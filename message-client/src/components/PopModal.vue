@@ -13,7 +13,7 @@
     </transition>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" scoped>
 import { CloseOutlined } from '@ant-design/icons-vue';
 import { defineProps, defineEmits } from 'vue';
 const props = defineProps({
