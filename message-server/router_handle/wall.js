@@ -18,7 +18,6 @@ exports.addMessage = (req, res) => {
 
 exports.addFeedBacks = (req, res) => {
     const { wallId, userId, type, moment } = req.body;
-
     db.query(wallSql.findFeedbacksById, [wallId, userId, type], (err, results) => {
         if (err)
             return res.msg(err);
@@ -26,7 +25,6 @@ exports.addFeedBacks = (req, res) => {
         if (results.length > 0) {
             const sql = "update feedbacks set isdeleted=0,moment=? where wallId=? and userId=? and type=?";
             db.query(sql, [moment, wallId, userId, type], (err, results) => {
-
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -40,7 +38,6 @@ exports.addFeedBacks = (req, res) => {
         //数据库不存在数据，添加行
         else {
             db.query(wallSql.addFeedBacks, req.body, (err, results) => {
-
                 if (err)
                     return res.msg(err);
                 if (results.affectedRows < 1)
@@ -55,7 +52,6 @@ exports.addFeedBacks = (req, res) => {
 
 }
 exports.addComment = (req, res) => {
-
     db.query(wallSql.addComment, req.body, (err, results) => {
         if (err)
             return res.msg(err);
@@ -82,7 +78,6 @@ exports.delMessage = (req, res) => {
 }
 
 exports.delFeedBacks = (req, res) => {
-    console.log("req", req.params);
     db.query(wallSql.delFeedbacks, [req.params.id, req.params.userId, req.params.type], (err, results) => {
         if (err)
             return res.msg(err);
