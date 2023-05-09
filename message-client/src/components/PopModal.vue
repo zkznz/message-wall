@@ -13,13 +13,17 @@
     </transition>
 </template>
 
-<script setup lang="ts" scoped>
+<script setup lang="ts" >
 import { CloseOutlined } from '@ant-design/icons-vue';
 import { defineProps, defineEmits } from 'vue';
+import { useMainStore } from '@/store';
+import { storeToRefs } from 'pinia'
+const store = useMainStore();
 const props = defineProps({
     title: String,
-    isPop: Boolean
 })
+let { isPop } = storeToRefs(store);
+console.log("isPop", isPop.value);
 const emit = defineEmits(['close']);
 //关闭弹窗
 const closePop = () => {

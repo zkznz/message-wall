@@ -17,7 +17,7 @@
     </div>
 </template>
 
-<script setup lang="ts" scoped>
+<script setup lang="ts">
 import { cardColor } from '@/mock'
 import { label } from '@/utils/data'
 import { defineProps, computed, inject, defineEmits, reactive } from 'vue';

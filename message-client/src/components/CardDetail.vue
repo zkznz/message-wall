@@ -40,7 +40,7 @@
                             </div>
                         </div>
 
-                        <div class="comment">{{ item.comment }}</div>
+                        <div class="review">{{ item.comment }}</div>
                     </div>
                     <div class="more" v-if="total != commentData.length" @click="handleTime">
                         加载更多
@@ -51,7 +51,7 @@
     </div>
 </template>
 
-<script setup lang="ts" scoped>
+<script setup lang="ts">
 import { defineProps, reactive, ref, computed, watch, defineEmits } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
 import { IComment, ICommentParams, IFeedBacksParams } from '@/type'
@@ -256,71 +256,75 @@ const reportNote = async () => {
             }
         }
 
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            padding-bottom: 22px;
-
-            //管理员样式
-            .admin {
+        .comment {
+            .content {
                 display: flex;
-                flex: 1;
-                justify-content: space-between;
+                flex-wrap: wrap;
+                padding-bottom: 22px;
+                height: 72px;
 
-                p {
-                    font-size: 14px;
-                    font-weight: 600;
+                //管理员样式
+                .admin {
+                    display: flex;
+                    flex: 1;
+                    justify-content: space-between;
+
+                    p {
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+
+                    span {
+                        line-height: 24px;
+                        font-size: 12px;
+                        color: @gray-2;
+                        margin-left: -70px;
+
+                    }
+
+                    .delmsg {
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: @error
+                    }
                 }
 
-                span {
-                    line-height: 24px;
-                    font-size: 12px;
-                    color: @gray-2;
-                    margin-left: -70px;
+                .name {
+                    display: flex;
+                    flex: 1;
+                    justify-content: space-between;
+
+                    p {
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+
+                    span {
+                        line-height: 24px;
+                        font-size: 12px;
+                        color: @gray-2;
+
+                    }
+
 
                 }
 
-                .delmsg {
-                    cursor: pointer;
-                    font-size: 14px;
-                    color: @error
-                }
-            }
-
-            .name {
-                display: flex;
-                flex: 1;
-                // justify-content: space-between;
-
-                p {
-                    font-size: 14px;
-                    font-weight: 600;
+                .user {
+                    flex: none;
+                    border-radius: 20px;
+                    margin-right: 8px;
+                    width: 28px;
+                    height: 28px;
                 }
 
-                span {
-                    line-height: 24px;
-                    font-size: 12px;
-                    color: @gray-2;
-                    margin-left: 20px;
-
+                .review {
+                    width: 100%;
+                    padding-left: 37px;
                 }
-
-
-            }
-
-            .user {
-                flex: none;
-                border-radius: 20px;
-                margin-right: 8px;
-                width: 28px;
-                height: 28px;
-            }
-
-            .comment {
-                width: 100%;
-                padding-left: 37px;
             }
         }
+
+
 
         .more {
             color: @gray-1;

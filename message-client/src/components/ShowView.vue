@@ -15,7 +15,7 @@
     </div>
 </template>
 
-<script setup lang="ts" scoped>
+<script setup lang="ts">
 import { computed, defineProps, reactive, ref, watch } from 'vue'
 import { IPicture } from '@/type'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue';

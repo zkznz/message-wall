@@ -112,7 +112,7 @@ const sendCode = async () => {
 }
 </script>
 
-<style lang="less" >
+<style lang="less" scoped>
 body {
     background-color: #F4F5F7;
 }

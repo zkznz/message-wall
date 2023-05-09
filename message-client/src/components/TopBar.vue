@@ -63,10 +63,10 @@ const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 //控制登录页面和用户详情页
-let { type, user } = storeToRefs(store);
+let { type, user, isPop } = storeToRefs(store);
 let id = computed(() => route.query.id);
 //用户信息
-const userData = reactive(JSON.parse(localStorage.getItem("userInfo") as string)) || user;
+const userData = user.value;
 
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
@@ -87,6 +87,7 @@ const handleLogin = () => {
     if (type.value == 0)
         isShow.value = !isShow.value;
     else {
+        isPop.value = false;
         router.push("/personal");
     }
 }

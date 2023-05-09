@@ -5,7 +5,7 @@ import { message } from 'ant-design-vue'
 export const useMainStore = defineStore('main', {
     state: () => {
         return {
-            user: {
+            user: JSON.parse(localStorage.getItem('userInfo') as string) || {
                 id: 0,
                 userId: 0,
                 name: '',
@@ -21,6 +21,8 @@ export const useMainStore = defineStore('main', {
             type: 0,
             //检测邮箱是否被注册
             isExist: false,
+            //控制弹窗
+            isPop: false
         }
     },
     actions: {

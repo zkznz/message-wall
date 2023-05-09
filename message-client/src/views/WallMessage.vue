@@ -42,7 +42,7 @@
         <span class="iconfont icon-tianjia"></span>
       </div>
       <!-- 弹窗 -->
-      <PopModal :isPop="isPop" :title="title" @close="handleClose">
+      <PopModal :title="title" @close="handleClose">
         <NewCard :id="id" v-if="cardIndex == -1" @submit="submitNewCard" @abandon="handleClose"></NewCard>
         <CardDetail @delMsg="handleDelMsg" :note="noteList[cardIndex]" v-else></CardDetail>
       </PopModal>
@@ -83,7 +83,7 @@ let labelIndex = ref<number>(-1);
 //留言卡片标签下标
 let cardIndex = ref<number>(-1);
 //控制弹窗
-let isPop = ref<boolean>(false);
+let { isPop } = storeToRefs(store);
 //控制图片详情显示
 let isShow = ref<boolean>(false);
 let title = ref<string>('写留言');
