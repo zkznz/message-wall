@@ -81,7 +81,7 @@ export const findComment = (data: ICommentParams) => request({
     method: 'get',
     params: data
 })
-//添加点赞反馈
+//添加反馈
 export const addFeedback = (data: IFeedBacksParams) => request({
     url: "/api/wall/addfeedbacks",
     method: 'post',
@@ -98,7 +98,7 @@ export const delComments = (data: IDelComment) => request({
     method: 'get',
     params: data
 })
-//删除点赞反馈
+//删除反馈
 export const delFeedback = (id: number, userId: number, type: number) => request({
     url: `/api/wall/delfeedbacks/${id}/${userId}/${type}`,
     method: 'get'
