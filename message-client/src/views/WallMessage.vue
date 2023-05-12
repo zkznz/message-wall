@@ -162,11 +162,14 @@ const addCard = (): void => {
 const loading = async (currentPage = 1) => {
   let messageData = {
     type: id.value,
+    userId: store.user.id,
     label: labelIndex.value,
     page: currentPage,
     pagesize: pagesize.value
   }
   let res = await findMessage(messageData);
+  console.log("data", messageData);
+  console.log("message", res.data);
   flag.value = false;
   if (res.status == 200) {
     noteList.push(...res.data);
@@ -354,7 +357,7 @@ onMounted(() => {
   width: 88%;
   margin: 0 auto;
   margin-top: 30px;
-  columns: 6;
+  columns: 4;
   column-gap: @padding-4;
 }
 

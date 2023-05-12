@@ -1,51 +1,51 @@
 <template>
     <div class="pic-card">
         <div class="pic-bg" @click="showView"></div>
-        <img :src="picture.imgUrl" alt="" class="pic-img">
+        <img :src="pictureItem.imgUrl" alt="" class="pic-img">
         <!-- 图片点赞 -->
         <div class="pic-like">
             <div class="like">
-                <span class="iconfont icon-aixin" :class="[picture.islike > 0 ? 'aixin-active' : 'icon-aixin']"
+                <span class="iconfont icon-aixin" :class="[pictureItem.islike > 0 ? 'aixin-active' : 'icon-aixin']"
                     @click="addLike"></span>
-                <span class="like-data">{{ picture.like }}</span>
+                <span class="like-data">{{ pictureItem.like }}</span>
             </div>
             <div class="total">
                 <span class="iconfont icon-liuyan"></span>
-                <span class="total-data">{{ picture.comtotal }}</span>
+                <span class="total-data">{{ pictureItem.comtotal }}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed, reactive } from 'vue'
 import { delFeedback, addFeedback } from '@/api'
 import { useMainStore } from '@/store'
 const props = defineProps(['picture'])
 const store = useMainStore();
+let pictureItem = computed(() => reactive(props.picture));
 const emits = defineEmits(['handle'])
 //点赞
 const addLike = async () => {
     //点过赞就取消
-    if (props.picture.islike > 0) {
-        let res = await delFeedback(props.picture.id, store.user.id, 0);
-        if (res.status == 200) {
-            props.picture.like--;
-            props.picture.islike = 0;
+    if (pictureItem.value.islike > 0) {
+        let res = await delFeedback(pictureItem.value.id, store.user.id, 0);
+        if (res.status === 200) {
+            pictureItem.value.like--;
+            pictureItem.value.islike = 0;
         }
     }
     else {
         let data = {
-            wallId: props.picture.id,
+            wallId: pictureItem.value.id,
             userId: store.user.id,
             type: 0,
             moment: new Date()
         }
         let res = await addFeedback(data);
-        console.log(res);
         if (res.status == 200) {
-            props.picture.like++;
-            props.picture.islike++;
+            pictureItem.value.like++;
+            pictureItem.value.islike++;
         }
     }
 }
@@ -60,7 +60,6 @@ const showView = () => {
 
     .pic-img {
         width: 100%;
-
     }
 
     &:hover .pic-bg {

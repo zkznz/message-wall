@@ -64,6 +64,7 @@ export interface InfoForm {
 }
 //获取留言墙数据的请求参数
 export interface IMessage {
+    userId: number,
     page: number,
     pagesize: number,
     label: number,
