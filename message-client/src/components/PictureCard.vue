@@ -28,7 +28,7 @@ const emits = defineEmits(['handle'])
 const addLike = async () => {
     //点过赞就取消
     if (props.picture.islike > 0) {
-        let res = await delFeedback(props.picture.id, props.picture.userId, 0);
+        let res = await delFeedback(props.picture.id, store.user.id, 0);
         if (res.status == 200) {
             props.picture.like--;
             props.picture.islike = 0;
@@ -42,6 +42,7 @@ const addLike = async () => {
             moment: new Date()
         }
         let res = await addFeedback(data);
+        console.log(res);
         if (res.status == 200) {
             props.picture.like++;
             props.picture.islike++;
