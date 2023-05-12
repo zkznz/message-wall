@@ -49,6 +49,7 @@ export const useMainStore = defineStore('main', {
         },
         async login(data: IUser) {
             let res = await userLogin(data);
+            this.token = res.token;
             localStorage.setItem('token', res.token);
             this.getInfo();
             message.success(res.msg);
@@ -69,6 +70,7 @@ export const useMainStore = defineStore('main', {
         logOut() {
             localStorage.removeItem('userInfo');
             localStorage.removeItem('token');
+            this.token = '';
             this.type = 0;
         }
     },

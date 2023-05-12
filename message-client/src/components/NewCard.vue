@@ -74,11 +74,13 @@ import { uploadAPI } from '@/api/upload'
 import { PlusOutlined, LoadingOutlined, EditOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from 'ant-design-vue';
+import { storeToRefs } from "pinia"
 
 const store = useMainStore();
+let { token } = storeToRefs(store);
 //请求头
 const headers = {
-    authorization: store.token
+    authorization: token.value
 }
 let fileList = ref([]);
 let id = ref<number>(inject('id', 0));
