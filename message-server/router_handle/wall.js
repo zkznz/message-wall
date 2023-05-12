@@ -103,7 +103,7 @@ exports.delComments = (req, res) => {
 }
 //查找
 exports.findMessagePage = (req, res) => {
-    let { page, pagesize, label, type } = req.query;
+    let { page, pagesize, label, type, userId } = req.query;
     const currentPage = (page - 1) * pagesize;
     pagesize = parseInt(pagesize);
     //查找全部
@@ -124,13 +124,12 @@ exports.findMessagePage = (req, res) => {
             for (let item of results) {
                 //查询点赞数
                 item.like = await control.findFeedbacksTotal(item.id, 0);
-                console.log('like', item.like);
                 //查询举报数
                 item.report = await control.findFeedbacksTotal(item.id, 1);
                 //查询撤销数
                 item.revoke = await control.findFeedbacksTotal(item.id, 2);
                 //是否点赞
-                item.islike = await control.findIslike(item.id, item.userId);
+                item.islike = await control.findIslike(item.id, userId);
                 console.log('islike', item.islike);
                 //查询评论数
                 item.comtotal = await control.findCommentTotal(item.id);
@@ -174,7 +173,7 @@ exports.findMessagePage = (req, res) => {
                 //查询撤销数
                 item.revoke = await control.findFeedbacksTotal(item.id, 2);
                 //是否点赞
-                item.islike = await control.findIslike(item.id, item.userId);
+                item.islike = await control.findIslike(item.id, userId);
                 //查询评论数
                 item.comtotal = await control.findCommentTotal(item.id);
             }
