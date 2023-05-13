@@ -181,7 +181,7 @@ const handleChange = (info: UploadChangeParam) => {
 const submit = () => {
     formRef.value?.validate().then(async () => {
         store.submitInfo(data.infoForm);
-        router.push("/");
+        router.go(-1);
     }).catch(() => {
         return;
     });
@@ -190,7 +190,7 @@ const submit = () => {
 const cancel = () => {
     formRef.value?.resetFields();
     data.infoForm = user;
-    router.push("/");
+    router.go(-1);
 }
 //销毁账号
 const delCount = () => {

@@ -15,7 +15,7 @@
                     <div style="cursor: pointer;" @click="userLogOut">退出登录</div>
                 </template>
                 <!-- <div class="user" @click="handleLogin"></div> -->
-                <a-avatar size="large" style="cursor: pointer;" :src="userData.avatar" @click="handleLogin">
+                <a-avatar size="large" style="cursor: pointer;" :src="user.avatar" @click="handleLogin">
                     <template #icon>
                         <UserOutlined />
                     </template>
@@ -65,9 +65,6 @@ const store = useMainStore();
 //控制登录页面和用户详情页
 let { type, user, isPop } = storeToRefs(store);
 let id = computed(() => route.query.id);
-//用户信息
-const userData = user.value;
-
 let disabled = computed((): boolean => {
     if (userInfo.name.trim().length > 0 && userInfo.password.trim().length > 0)
         return false;

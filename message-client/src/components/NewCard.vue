@@ -6,19 +6,20 @@
         </div>
     </div>
     <!-- 上传图片 -->
-    <div class="upload" v-if="wallInfo.imgUrl">
-        <img class="upload-image" :src="wallInfo.imgUrl" alt="file" />
-        <a-button class="edit-btn" type="primary" shape="circle">
-            <template #icon>
-                <edit-outlined />
-            </template>
-        </a-button>
-    </div>
-
+    <a-upload v-if="wallInfo.imgUrl" v-model:file-list="fileList" :show-upload-list="false" name="file" :action="uploadAPI"
+        :headers="headers" :before-upload="beforeUpload" @change="handleChange">
+        <div class="upload">
+            <img class="upload-image" :src="wallInfo.imgUrl" alt="file" />
+            <a-button class="edit-btn" type="primary" shape="circle">
+                <template #icon>
+                    <edit-outlined />
+                </template>
+            </a-button>
+        </div>
+    </a-upload>
     <a-upload v-if="id == 1 && !wallInfo.imgUrl" v-model:file-list="fileList" name="file" list-type="picture-card"
         class="avatar-uploader" :show-upload-list="false" :action="uploadAPI" :headers="headers"
         :before-upload="beforeUpload" @change="handleChange">
-
         <div v-if="!wallInfo.imgUrl">
             <loading-outlined v-if="loading"></loading-outlined>
             <plus-outlined v-else></plus-outlined>
@@ -79,9 +80,9 @@ import { storeToRefs } from "pinia"
 const store = useMainStore();
 let { token } = storeToRefs(store);
 //请求头
-const headers = {
+const headers = computed(() => ({
     authorization: token.value
-}
+}))
 let fileList = ref([]);
 let id = ref<number>(inject('id', 0));
 let userId: number = store.user.id;
@@ -200,7 +201,6 @@ const handleChange = (info: UploadChangeParam) => {
     }
 }
 
-.upload-image {}
 
 
 

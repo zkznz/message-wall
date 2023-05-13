@@ -1,1 +1,1 @@
-export const uploadAPI = process.env.VUE_APP_API_BASE_URL + '/api/profile'
+export const uploadAPI = process.env.NODE_ENV === 'development' ? process.env.VUE_APP_API_BASE_URL + '/api/profile' : '/api/profile'

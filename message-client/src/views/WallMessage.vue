@@ -185,6 +185,7 @@ watch(id, () => {
   isShow.value = false;
   labelIndex.value = -1;
   cardIndex.value = -1;
+  page.value = 1;
   noteList = [];
   loading();
 });
@@ -196,6 +197,7 @@ const submitNewCard = async (wall: IWall) => {
     if (res.status == 200) {
       message.success("感谢您的记录！");
       noteList = [];
+      page.value = 1;
       handleClose();
       loading();
     }
@@ -230,7 +232,7 @@ const handleScroll = () => {
 onMounted(() => {
   loading();
   //监听页面滚动
-  window.addEventListener('scroll', useThrottle(handleScroll, 200));
+  window.addEventListener('scroll', useThrottle(handleScroll, 500));
 })
 </script>
 
