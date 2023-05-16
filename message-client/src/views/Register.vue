@@ -90,10 +90,6 @@ const submitForm = () => {
 </script>
 
 <style lang="less" scoped>
-// body {
-//     background-color: #F4F5F7;
-// }
-
 .content {
     height: 100vh;
     display: flex;

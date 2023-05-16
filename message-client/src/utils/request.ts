@@ -26,8 +26,6 @@ service.interceptors.response.use(res => {
 }, err => {
     message.error(err.response.data.msg);
     if (err.response.status === 401) {
-        // localStorage.removeItem("userInfo");
-        // localStorage.removeItem("token");
         const store = useMainStore();
         store.logOut();
         router.push("/");
