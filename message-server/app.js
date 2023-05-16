@@ -1,9 +1,11 @@
 const express = require('express');
 const config = require('./config/default')
 const ejs = require("ejs")
-const path = require("path");
 const cors = require("cors");
+//token认证
 const expressJwt = require("express-jwt");
+//校验规则
+const joi = require('joi');
 const app = express();
 
 //获取静态资源
@@ -38,6 +40,9 @@ app.use((err, req, res, next) => {
         return res.status(401).send({
             msg: '请先点击头像进行登录'
         })
+    }
+    if ((err instanceof joi.ValidationError)) {
+        return res.msg(err);
     }
 })
 //注册用户相关的路由
