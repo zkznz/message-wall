@@ -1,6 +1,6 @@
 module.exports = {
     qq: {
-        user: '1174633615@qq.com',
-        password: 'wralfjpjloeuijgj'
+        user: '117@qq.com',
+        password: 'sss' //smtp权限码
     }
 }
