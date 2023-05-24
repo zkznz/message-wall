@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + Date.now() + random(1, 100));
     }
 })
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 router.post('/profile', upload.single('file'), function (req, res, next) {
     // req.file 是 `avatar` 文件的信息
     // req.body 将具有文本域数据，如果存在的话

@@ -8,10 +8,16 @@ import "./style/common.less"
 import 'ant-design-vue/dist/antd.css';
 //引入字体图标
 import "@/assets/fonts/icon-fonts/iconfont.css"
+//引入图片懒加载
+import lazyPlugin from "vue3-lazy"
 //创建pinia实例
 const pinia = createPinia();
 const app = createApp(App);
 app.use(Antd);
 app.use(pinia);
 app.use(router);
+app.use(lazyPlugin, {
+    loading: '/img/default.png',
+    error: '/img/error.png'
+})
 app.mount('#app')

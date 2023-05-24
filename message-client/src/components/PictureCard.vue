@@ -1,7 +1,7 @@
 <template>
     <div class="pic-card">
         <div class="pic-bg" @click="showView"></div>
-        <img :src="pictureItem.imgUrl" alt="" class="pic-img">
+        <img v-lazy="pictureItem.imgUrl" alt="" class="pic-img">
         <!-- 图片点赞 -->
         <div class="pic-like">
             <div class="like">

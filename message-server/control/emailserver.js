@@ -20,7 +20,7 @@ const randomFns = () => {
 //验证邮箱正则
 const regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
 
-//注册发送邮箱给客户
+//发送邮箱给客户
 exports.emailSignup = (email, res) => {
     if (regEmail.test(email)) {
         let code = randomFns()
@@ -32,7 +32,7 @@ exports.emailSignup = (email, res) => {
             <p>你好！</p>
             <p>您正在找回轻语留言账号密码</p>
             <p>你的验证码是：<strong style="color: #ff4e2a;">${code}</strong></p>
-            <p>***该验证码2分钟内有效***</p>` // html 内容
+            <p>***该验证码1分钟内有效***</p>` // html 内容
         }
         //发送消息
         transport.sendMail(options, (err, msg) => {

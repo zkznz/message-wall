@@ -23,7 +23,6 @@ const props = defineProps({
     title: String,
 })
 let { isPop } = storeToRefs(store);
-console.log("isPop", isPop.value);
 const emit = defineEmits(['close']);
 //关闭弹窗
 const closePop = () => {

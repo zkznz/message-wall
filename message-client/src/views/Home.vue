@@ -1,6 +1,6 @@
 <template>
   <!-- 背景图片虚化 -->
-  <img src="@/assets/img/bg.png" class="bg" alt="">
+  <img src="/img/bg.png" class="bg" alt="">
   <div style="padding-bottom: 60px;">
     <TopBar></TopBar>
     <router-view></router-view>

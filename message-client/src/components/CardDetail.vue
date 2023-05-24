@@ -28,7 +28,6 @@
                 </div>
                 <div class="comment">
                     <div class="content" v-for="item in commentData">
-
                         <div v-if="item.imgUrl.length !== 1 && item.imgUrl.length !== 2">
                             <img class="user" :src="item.imgUrl" alt="">
                         </div>
