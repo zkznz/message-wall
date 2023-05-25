@@ -66,9 +66,10 @@ import { useRoute } from 'vue-router'
 import { IWall } from '@/type'
 import { addMessage, findMessage } from '@/api'
 import { message } from 'ant-design-vue';
-import useThrottle from '@/hooks/throttle'
+// import useThrottle from '@/hooks/throttle'
 import { useMainStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import useScroll from '@/hooks/useScroll'
 
 const store = useMainStore();
 const route = useRoute();
@@ -98,6 +99,8 @@ let total = ref<number>(1);
 let page = ref<number>(1);
 let pagesize = ref<number>(8);
 let wallInfo = reactive({});
+//判断页面是否滚动到底部
+let { isReachBottom } = useScroll();
 //留言墙卡片列表
 let noteList = reactive<IWall[]>([]);
 //点击全部标签
@@ -168,8 +171,6 @@ const loading = async (currentPage = 1) => {
     pagesize: pagesize.value
   }
   let res = await findMessage(messageData);
-  console.log("data", messageData);
-  console.log("message", res.data);
   flag.value = false;
   if (res.status == 200) {
     noteList.push(...res.data);
@@ -189,6 +190,20 @@ watch(id, () => {
   noteList = [];
   loading();
 });
+//监听是否到达底部
+watch(isReachBottom, () => {
+  //没有更多数据不需要发请求
+  if (total.value == noteList.length) {
+    isOk.value = false;
+    ismore.value = false;
+  }
+
+  else {
+    isOk.value = true;
+    page.value += 1;
+    setTimeout(() => loading(page.value), 1000);
+  }
+})
 //提交留言信息给服务器，新建留言
 const submitNewCard = async (wall: IWall) => {
   wallInfo = wall;
@@ -209,30 +224,18 @@ const submitNewCard = async (wall: IWall) => {
 
 }
 //滚动事件处理函数
-const handleScroll = () => {
-  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-  let clientHeight = document.documentElement.clientHeight;
-  let scrollHeight = document.documentElement.scrollHeight;
-  if (scrollTop + clientHeight > scrollHeight) {
-    //没有更多数据不需要发请求
-    if (total.value == noteList.length) {
-      isOk.value = false;
-      ismore.value = false;
-    }
+// const handleScroll = () => {
+//   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//   let clientHeight = document.documentElement.clientHeight;
+//   let scrollHeight = document.documentElement.scrollHeight;
+//   if (scrollTop + clientHeight > scrollHeight) {
 
-    else {
-      isOk.value = true;
-      page.value += 1;
-      setTimeout(() => loading(page.value), 1000);
-    }
 
-  }
-}
+//   }
+// }
 //初始化加载
 onMounted(() => {
   loading();
-  //监听页面滚动
-  window.addEventListener('scroll', useThrottle(handleScroll, 500));
 })
 </script>
 
