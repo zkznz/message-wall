@@ -166,7 +166,7 @@ const handleChange = (info: UploadChangeParam) => {
     }
     if (file.status === 'done') {
         data.infoForm.avatar = file.response.data.img;
-        message.success("修改成功");
+        message.success("图片上传成功");
     }
     if (info.file.status === 'error') {
         if (info.file.response) {
