@@ -313,6 +313,7 @@ onMounted(() => {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+  padding-left: 30px;
 
   .note-card {
     margin-top: 10px;
