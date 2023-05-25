@@ -21,7 +21,7 @@ export default function useScroll(elRef?: any) {
             // homeStore.fetchHouselistData()
             isReachBottom.value = !isReachBottom.value
         }
-    }, 500)
+    }, 800)
     onMounted(() => {
         if (elRef) {
             el = elRef.value

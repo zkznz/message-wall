@@ -1,7 +1,7 @@
 const joi = require('joi');
 
 //用户名校验规则
-const name = joi.string().alphanum().min(1).max(10).required();
+const name = joi.string().min(1).max(10).required();
 //密码校验规则
 const password = joi.string().min(3).max(15).required();
 //邮箱校验规则

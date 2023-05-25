@@ -66,7 +66,6 @@ import { useRoute } from 'vue-router'
 import { IWall } from '@/type'
 import { addMessage, findMessage } from '@/api'
 import { message } from 'ant-design-vue';
-// import useThrottle from '@/hooks/throttle'
 import { useMainStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import useScroll from '@/hooks/useScroll'
@@ -201,7 +200,7 @@ watch(isReachBottom, () => {
   else {
     isOk.value = true;
     page.value += 1;
-    setTimeout(() => loading(page.value), 1000);
+    setTimeout(() => loading(page.value), 800);
   }
 })
 //提交留言信息给服务器，新建留言

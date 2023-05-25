@@ -12,15 +12,17 @@
                 </div>
                 <div class="info">
                     <a-form layout="vertical" :model="formData" ref="formRef">
-                        <a-form-item label="邮箱" name="email" :rules="emailRules" validateTrigger="submit">
+                        <a-form-item label="邮箱" name="email" :rules="emailRules" validateTrigger="blur">
                             <a-input size="large" placeholder="用户邮箱" v-model:value="formData.email" />
                         </a-form-item>
                         <a-form-item label="验证码" name="code" :rules="codeRules" validateTrigger="submit">
                             <a-row :gutter="24">
                                 <a-col :span="10"><a-input size="large" :validate-event="false"
                                         v-model:value="formData.code" /></a-col>
-                                <a-col :span="14"><a-button size="large" shape="round" class="send-btn"
-                                        @click="sendCode">发送验证码</a-button></a-col>
+                                <a-col :span="14"><a-button :disabled="isSend" size="large" shape="round"
+                                        :style="isSend ? 'background-color:#3b73f078;' : ''" class="send-btn"
+                                        @click="sendCode">{{
+                                            isSend ? `${second}秒后重新发送` : '发送验证码' }}</a-button></a-col>
                             </a-row>
 
                         </a-form-item>
@@ -56,6 +58,10 @@ let formData = reactive({
     code: '',
     password: ''
 })
+let isSend = ref<boolean>(false);
+let timer: any = null;
+//一分钟倒计时变量
+let second = ref<number>(60);
 //校验邮箱
 let checkEmail = async (rule: Rule, value: string) => {
     if (value.length === 0)
@@ -108,7 +114,17 @@ const submitForm = () => {
 const sendCode = async () => {
     let data = { email: formData.email }
     let res = await getCode(data);
-    console.log('res', res);
+    console.log(res);
+    //开启定时器
+    isSend.value = true;
+    timer = setInterval(() => {
+        second.value--;
+        if (second.value <= 0) {
+            clearInterval(timer);
+            isSend.value = false;
+            second.value = 60;
+        }
+    }, 1000)
 }
 </script>
 
